@@ -1,0 +1,18 @@
+plugins {
+    id 'kotlin'
+}
+
+group = 'org.example'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform(libs.junit.bom)
+    //testImplementation "org.junit.jupiter:junit-jupiter"
+}
+
+test {
+    useJUnitPlatform()
+}

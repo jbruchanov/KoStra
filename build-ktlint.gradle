@@ -1,0 +1,17 @@
+apply plugin: libs.plugins.ktlint.get().pluginId
+//https://github.com/jlleitschuh/ktlint-gradle
+
+def isAndroid = { plugins.findPlugin("com.android.application") != null || plugins.findPlugin("com.android.library") != null }
+
+ktlint {
+    version.set(libs.versions.ktlint)
+    verbose.set(true)
+    android.set(isAndroid())
+    outputToConsole.set(true)
+    outputColorName.set("RED")
+}
+
+
+afterEvaluate { p ->
+    p.tasks["lint"].dependsOn ktlintCheck
+}
