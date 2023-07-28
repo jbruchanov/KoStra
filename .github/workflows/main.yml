@@ -5,7 +5,7 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  jvmAndroidTest:
+  kostraCI:
     runs-on: ubuntu-latest
 
     steps:
