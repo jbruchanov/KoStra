@@ -30,6 +30,7 @@ refreshversions = { id = "de.fayard.refreshVersions", version.ref = "refreshvers
 xcode = { id = "org.openbakery.xcode-plugin", version.ref = "xcode-plugin" }
 
 [versions]
+
 project = "0.0.1-SNAPSHOT"
 android-sdk-compile = "33"
 android-sdk-min = "24"
@@ -37,13 +38,13 @@ android-sdk-target = "33"
 
 kotlin = "1.9.0"
 jvmtarget = "17"
-android-gradle-plugin = "8.0.2"
+android-gradle-plugin = "8.1.0"
 androidx-activity-compose = "1.7.2"
 androidx-app-compat = "1.6.1"
 androidx-arch-core-testing = "2.2.0"
 androidx-core-ktx = "1.10.1"
 androidx-lifecycle = "2.6.1"
-gradle-publish = "1.1.0"
+gradle-publish = "1.2.0"
 gradle-plugin = "8.2.0"
 #https://firebase.google.com/support/release-notes/android
 google-services = "4.3.15"
