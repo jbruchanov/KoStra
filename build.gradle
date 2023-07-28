@@ -9,13 +9,13 @@ plugins {
     alias(libs.plugins.android.application).apply(false)
     alias(libs.plugins.android.library).apply(false)
     alias(libs.plugins.ktlint).apply(false)
-    alias(libs.plugins.google.services).apply(false)
-    alias(libs.plugins.firebase.crashlytics).apply(false)
-    alias(libs.plugins.firebase.appdistribution).apply(false)
+    alias(libs.plugins.gradle.publish).apply(false)
+    //can't be present here
+    //alias(libs.plugins.gradle.plugin).apply(false)
 }
 
-//'modules' doesn't work in android project as already defined
-ext.pmodules = [
-        lib         : { project(":kostra-lib") },
-        gradleplugin: { project(":kostra-gradle-plugin") },
-]
+["ktlintCheck", "ktlintFormat", "test", "clean"].forEach { taskName ->
+    tasks.register(taskName) {
+        dependsOn gradle.includedBuild('kostra-gradle-plugin').task(":$taskName")
+    }
+}

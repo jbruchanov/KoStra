@@ -15,27 +15,26 @@ plugins {
     id("de.fayard.refreshVersions") version "0.51.0"
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
-        google()
-        mavenCentral()
-        //xmlutil
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://androidx.dev/storage/compose-compiler/repository/" }
-    }
-}
-
-rootProject.name = "KoStra"
-
-include("kostra-lib")
-include("kostra-gradle-plugin")
-
 refreshVersions {
     //workaround to avoid having empty versions.properties generated in root
     file("build/").mkdirs()
     versionsPropertiesFile = file("build/versions.properties")
 }
 
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
+        google()
+        mavenCentral()
+    }
+}
 
+rootProject.name = "kostra"
+
+include(":kostra-lib")
+['appJvm', 'shared'].forEach { dirName ->
+    include(":$dirName")
+    project(":$dirName").projectDir = file("sample/$dirName")
+}
+includeBuild("kostra-gradle-plugin")

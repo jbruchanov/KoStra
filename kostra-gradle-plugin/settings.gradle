@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
+        gradlePluginPortal()
+        google()
+    }
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
+        google()
+        mavenCentral()
+    }
+}

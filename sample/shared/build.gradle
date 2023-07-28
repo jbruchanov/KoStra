@@ -1,0 +1,97 @@
+plugins {
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
+    id("kostra")
+}
+apply from: "$rootProject.projectDir/build-ktlint.gradle"
+
+kotlin {
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = libs.versions.jvmtarget.get()
+            }
+        }
+    }
+
+    jvm {
+        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
+    }
+    jvmTest
+    /*
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+     */
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(project(":kostra-lib"))
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+
+        jvmMain {
+            dependsOn(commonMain)
+        }
+
+        /*
+        androidMain
+        androidUnitTest {
+            //makes AS asking to run unit test on Jvm or android
+            //dependsOn(jvmTest)
+            dependencies {
+
+            }
+        }
+
+        iosX64Main
+        iosArm64Main
+        iosSimulatorArm64Main
+
+        iosMain {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(delegate)
+            iosArm64Main.dependsOn(delegate)
+            iosSimulatorArm64Main.dependsOn(delegate)
+        }
+
+        iosX64Test
+        iosArm64Test
+        iosSimulatorArm64Test
+        iosTest {
+            dependsOn(commonTest)
+            iosX64Test.dependsOn(delegate)
+            iosArm64Test.dependsOn(delegate)
+            iosSimulatorArm64Test.dependsOn(delegate)
+        }
+         */
+    }
+}
+
+kostra {
+    message = "test"
+}
+
+android {
+    namespace = "com.jibru.kostra.appsample"
+    compileSdk = libs.versions.android.sdk.compile.get().toInteger()
+    defaultConfig {
+        minSdk = libs.versions.android.sdk.min.get().toInteger()
+        targetSdk = libs.versions.android.sdk.target.get().toInteger()
+    }
+
+    compileOptions {
+        sourceCompatibility = libs.versions.jvmtarget.get()
+        targetCompatibility = libs.versions.jvmtarget.get()
+    }
+    kotlin {
+        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
+    }
+}

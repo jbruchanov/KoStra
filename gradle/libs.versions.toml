@@ -14,6 +14,9 @@ unittests-android = ["androidx-arch-core-testing"]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+gradle-jvmapp = { id = "org.gradle.application"}
+gradle-plugin = { id = "org.gradle.java-gradle-plugin", version.ref = "gradle-plugin" }
+gradle-publish = { id = "com.gradle.plugin-publish", version.ref = "gradle-publish" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebase-appdistribution" }
 jetbrains-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -27,7 +30,7 @@ refreshversions = { id = "de.fayard.refreshVersions", version.ref = "refreshvers
 xcode = { id = "org.openbakery.xcode-plugin", version.ref = "xcode-plugin" }
 
 [versions]
-
+project = "0.0.1-SNAPSHOT"
 android-sdk-compile = "33"
 android-sdk-min = "24"
 android-sdk-target = "33"
@@ -40,6 +43,8 @@ androidx-app-compat = "1.6.1"
 androidx-arch-core-testing = "2.2.0"
 androidx-core-ktx = "1.10.1"
 androidx-lifecycle = "2.6.1"
+gradle-publish = "1.1.0"
+gradle-plugin = "8.2.0"
 #https://firebase.google.com/support/release-notes/android
 google-services = "4.3.15"
 gson = "2.10.1"

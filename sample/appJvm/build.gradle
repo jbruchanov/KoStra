@@ -1,0 +1,30 @@
+plugins {
+    id("org.jetbrains.kotlin.jvm").version(libs.versions.kotlin)
+    id("application")
+}
+
+java {
+    sourceCompatibility = libs.versions.jvmtarget.get()
+    targetCompatibility = libs.versions.jvmtarget.get()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClassName = "com.jibru.kostra.appsample.jvm.AppKt"
+}
+
+dependencies {
+    implementation(project(":shared"))
+    implementation(project(":kostra-lib"))
+}

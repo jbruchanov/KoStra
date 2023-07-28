@@ -13,5 +13,6 @@ ktlint {
 
 
 afterEvaluate { p ->
-    p.tasks["lint"].dependsOn ktlintCheck
+    def task = p.tasks.findByName("lint") ?: p.tasks.findByName("check")
+    task.dependsOn ktlintCheck
 }

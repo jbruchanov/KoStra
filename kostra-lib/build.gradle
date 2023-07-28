@@ -1,24 +1,14 @@
-apply plugin: libs.plugins.jetbrains.multiplatform.get().pluginId
-apply plugin: libs.plugins.android.library.get().pluginId
+plugins {
+    id("org.jetbrains.kotlin.multiplatform")
+}
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
 
-group = "com.jibru"
-version = "0.0.1-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
+project.group = "com.jibru"
+project.version = libs.versions.project.get()
 
 kotlin {
     jvm {
         jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = libs.versions.jvmtarget.get()
-            }
-        }
     }
 
     sourceSets {
@@ -28,12 +18,6 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        jvmMain {}
-        jvmTest {}
-        jsMain {}
-        jsTest {}
-        nativeMain {}
-        nativeTest {}
     }
 }
 
@@ -42,37 +26,5 @@ tasks.jvmTest {
     testLogging {
         showExceptions = true
         showStandardStreams = true
-    }
-}
-
-android {
-    namespace = "com.jibru.kostra"
-    compileSdk = libs.versions.android.sdk.compile.get().toInteger()
-    defaultConfig {
-        minSdk = libs.versions.android.sdk.min.get().toInteger()
-        targetSdk = libs.versions.android.sdk.target.get().toInteger()
-    }
-
-    sourceSets.main {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        res.srcDirs("src/androidMain/res")
-        resources.srcDirs("src/commonMain/resources")
-    }
-
-    compileOptions {
-        sourceCompatibility = libs.versions.jvmtarget.get()
-        targetCompatibility = libs.versions.jvmtarget.get()
-    }
-    kotlin {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
-
-    testOptions {
-        unitTests.all {
-            useJUnitPlatform()
-            //necessary for test.ThreeTenTestInit
-            //https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic
-            systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
-        }
     }
 }

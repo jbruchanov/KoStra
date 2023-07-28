@@ -1,18 +1,55 @@
 plugins {
-    id 'kotlin'
+    id 'org.jetbrains.kotlin.jvm' version(libs.versions.kotlin)
+    id 'maven-publish'
+    id 'java-gradle-plugin'
+    id 'org.jlleitschuh.gradle.ktlint' version(libs.versions.ktlintplugin)
 }
+apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 
-group = 'org.example'
-
-repositories {
-    mavenCentral()
-}
+project.version = libs.versions.project.get()
 
 dependencies {
-    testImplementation platform(libs.junit.bom)
-    //testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation(libs.bundles.unittests.jvm)
+    testImplementation(libs.truth)
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
+}
+
+java {
+    withSourcesJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmtarget.get()))
+    }
+
 }
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.jibru'
+            artifactId = 'kostra.gradle.plugin'
+            from components.java
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        ktPlugin {
+            id = "kostra"
+            displayName = "KoStra"
+            tags.set(["kotlin", "multiplatform", "i18n"])
+            implementationClass = "com.jibru.kostra.KostraPlugin"
+        }
+    }
 }
