@@ -14,8 +14,10 @@ plugins {
     //alias(libs.plugins.gradle.plugin).apply(false)
 }
 
-["ktlintCheck", "ktlintFormat", "test", "clean"].forEach { taskName ->
-    tasks.register(taskName) {
-        dependsOn gradle.includedBuild('kostra-gradle-plugin').task(":$taskName")
+if (!gradle.getIncludedBuilds().isEmpty()) {
+    ["ktlintCheck", "ktlintFormat", "test", "clean"].forEach { taskName ->
+        tasks.register(taskName) {
+            dependsOn gradle.includedBuild('kostra-gradle-plugin').task(":$taskName")
+        }
     }
 }

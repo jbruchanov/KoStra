@@ -29,9 +29,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "kostra"
 
-include(":kostra-lib")
-['appJvm', 'shared'].forEach { dirName ->
-    include(":$dirName")
-    project(":$dirName").projectDir = file("sample/$dirName")
+def incBuild = false
+if (incBuild) {
+    ['appJvm', 'shared'].forEach { dirName ->
+        include(":$dirName")
+        project(":$dirName").projectDir = file("sample/$dirName")
+    }
+    includeBuild("kostra-gradle-plugin")
+} else {
+    include("kostra-gradle-plugin")
 }
-includeBuild("kostra-gradle-plugin")
+

@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("kostra")
 }
+
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
 
 kotlin {
@@ -75,8 +76,10 @@ kotlin {
     }
 }
 
-kostra {
-    message = "test"
+if (plugins.findPlugin("kostra") != null) {
+    kostra {
+        message = "test"
+    }
 }
 
 android {
