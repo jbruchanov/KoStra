@@ -12,7 +12,7 @@ apply from: ktlint
 project.version = libs.versions.project.get()
 
 dependencies {
-    testImplementation(libs.bundles.unittests.jvm)
+    testImplementation(libs.bundles.unittest.jvm)
     testImplementation(libs.truth)
 }
 
