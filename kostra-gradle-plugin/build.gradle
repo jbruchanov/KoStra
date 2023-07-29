@@ -4,7 +4,10 @@ plugins {
     id 'java-gradle-plugin'
     id 'org.jlleitschuh.gradle.ktlint' version(libs.versions.ktlintplugin)
 }
-apply from: "$rootProject.projectDir/../build-ktlint.gradle"
+def ktlint = "build-ktlint.gradle"
+    .with { if (file(it).exists()) it else "../$it" }
+
+apply from: ktlint
 
 project.version = libs.versions.project.get()
 

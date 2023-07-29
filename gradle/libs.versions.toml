@@ -38,7 +38,7 @@ android-sdk-target = "33"
 
 kotlin = "1.9.0"
 jvmtarget = "17"
-android-gradle-plugin = "8.1.0"
+android-gradle-plugin = "8.0.2"
 androidx-activity-compose = "1.7.2"
 androidx-app-compat = "1.6.1"
 androidx-arch-core-testing = "2.2.0"
