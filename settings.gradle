@@ -39,4 +39,3 @@ if (incBuild) {
 } else {
     include("kostra-gradle-plugin")
 }
-
