@@ -12,6 +12,8 @@ apply from: ktlint
 project.version = libs.versions.project.get()
 
 dependencies {
+    implementation(libs.kotlin.poet)
+
     testImplementation(libs.bundles.unittest.jvm)
     testImplementation(libs.truth)
 }
