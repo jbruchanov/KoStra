@@ -2,12 +2,13 @@ package com.jibru.kostra.internal
 
 import com.jibru.kostra.Fixtures
 import com.jibru.kostra.Fixtures.Resources.K
+import com.jibru.kostra.MissionResourceException
 import com.jibru.kostra.StringResourceKey
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class KostraResProvidersTest : KostraResProviders {
+class KostraResProvidersLocaleTest : KostraResProviders {
 
     private val localeUnspecified = Qualifiers.Undefined
     private val localeEn = Qualifiers(locale = Locale("en", null))
