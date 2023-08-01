@@ -22,6 +22,7 @@ object AndroidResourcesXmlParser {
     private const val TagStringArray = "string-array"
     private const val TagPlurals = "plurals"
     private const val TagItem = "item"
+    internal const val parseStringArrays = false
 
     private val logger = LoggerFactory.getLogger(AndroidResourcesXmlParser::class.java)
 
@@ -61,7 +62,7 @@ object AndroidResourcesXmlParser {
                         level--
                     }
 
-                    level == 2 && androidResourcesFile && part == TagStringArray -> {
+                    level == 2 && androidResourcesFile && part == TagStringArray && parseStringArrays -> {
                         val key = xmlReader.attrName()
                         if (key != null) {
                             val items = mutableListOf<String>()

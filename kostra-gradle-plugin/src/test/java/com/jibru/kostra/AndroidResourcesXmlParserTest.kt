@@ -7,6 +7,7 @@ import com.jibru.kostra.plugin.ResItem
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.condition.EnabledIf
 import javax.xml.stream.XMLStreamException
 
 internal class AndroidResourcesXmlParserTest {
@@ -26,11 +27,6 @@ internal class AndroidResourcesXmlParserTest {
             -->
             <string name="text2">text2</string>
             ignore
-            <string-array name="empty" />
-            <string-array name="colors">
-                <item>#FFFF0000</item>
-                <item>#FF00FF00</item>
-            </string-array>
             <plurals name="plural_empty" />
             <plurals name="plural_dogs">
                 <item quantity="one">dog</item>
@@ -39,7 +35,7 @@ internal class AndroidResourcesXmlParserTest {
         </resources>
         """.trimIndent()
         val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
-        assertThat(result).hasSize(6)
+        assertThat(result).hasSize(4)
         assertAll(
             {
                 val item = result[0] as ResItem.StringRes
@@ -54,25 +50,13 @@ internal class AndroidResourcesXmlParserTest {
                 assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
             },
             {
-                val item = result[2] as ResItem.StringArray
-                assertThat(item.key).isEqualTo("empty")
-                assertThat(item.items).isEmpty()
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
-            },
-            {
-                val item = result[3] as ResItem.StringArray
-                assertThat(item.key).isEqualTo("colors")
-                assertThat(item.items).isEqualTo(listOf("#FFFF0000", "#FF00FF00"))
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
-            },
-            {
-                val item = result[4] as ResItem.Plurals
+                val item = result[2] as ResItem.Plurals
                 assertThat(item.key).isEqualTo("plural_empty")
                 assertThat(item.items).isEmpty()
                 assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
             },
             {
-                val item = result[5] as ResItem.Plurals
+                val item = result[3] as ResItem.Plurals
                 assertThat(item.key).isEqualTo("plural_dogs")
                 assertThat(item.items).isEqualTo(
                     mapOf(
@@ -80,6 +64,37 @@ internal class AndroidResourcesXmlParserTest {
                         "other" to "dogs",
                     ),
                 )
+                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+            },
+        )
+    }
+
+    @Test
+    @EnabledIf(value = "isParseXmlEnabled")
+    fun `findStrings WHEN string arrays types`() {
+        val stringXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <resources>
+            <string-array name="empty" />
+            <string-array name="colors">
+                <item>#FFFF0000</item>
+                <item>#FF00FF00</item>
+            </string-array>
+        </resources>
+        """.trimIndent()
+        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        assertThat(result).hasSize(2)
+        assertAll(
+            {
+                val item = result[0] as ResItem.StringArray
+                assertThat(item.key).isEqualTo("empty")
+                assertThat(item.items).isEmpty()
+                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+            },
+            {
+                val item = result[1] as ResItem.StringArray
+                assertThat(item.key).isEqualTo("colors")
+                assertThat(item.items).isEqualTo(listOf("#FFFF0000", "#FF00FF00"))
                 assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
             },
         )
@@ -190,6 +205,7 @@ internal class AndroidResourcesXmlParserTest {
     }
 
     @Test
+    @EnabledIf(value = "isParseXmlEnabled")
     fun `findStrings WHEN string-array`() {
         val stringXml = """
             <?xml version="1.0" encoding="UTF-8"?>
@@ -245,4 +261,6 @@ internal class AndroidResourcesXmlParserTest {
         val testAsserts = xmls.map { { assertThat(xmlParser.findStrings("$header\n$it", Qualifiers.Undefined)).isEmpty() } }
         assertAll(*testAsserts.toTypedArray())
     }
+
+    private fun isParseXmlEnabled() = AndroidResourcesXmlParser.parseStringArrays
 }

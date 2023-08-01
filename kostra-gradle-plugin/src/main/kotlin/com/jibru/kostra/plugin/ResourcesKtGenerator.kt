@@ -2,7 +2,6 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.DrawableResourceKey
-import com.jibru.kostra.StringArrayResourceKey
 import com.jibru.kostra.StringResourceKey
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -47,7 +46,6 @@ class ResourcesKtGenerator(
             .forEach { resItem ->
                 val type = when {
                     resItem is ResItem.StringRes -> StringResourceKey::class
-                    resItem is ResItem.StringArray -> StringArrayResourceKey::class
                     resItem is ResItem.FileRes && resItem.drawable -> DrawableResourceKey::class
                     else -> BinaryResourceKey::class
                 }

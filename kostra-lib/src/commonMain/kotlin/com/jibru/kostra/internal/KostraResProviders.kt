@@ -5,7 +5,6 @@ import com.jibru.kostra.DrawableResourceKey
 import com.jibru.kostra.MissionResourceException
 import com.jibru.kostra.ResourceContainer
 import com.jibru.kostra.ResourceKey
-import com.jibru.kostra.StringArrayResourceKey
 import com.jibru.kostra.StringResourceKey
 
 @Suppress("UNCHECKED_CAST")
@@ -19,11 +18,6 @@ interface KostraResProviders {
     fun KostraResources.pluralResource(key: StringResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
         val res = strings[key] ?: throw MissionResourceException(key, "Undefined string resource")
         return res.resolveResource(qualifiers) as ResourceItem<String>
-    }
-
-    fun KostraResources.stringArrayResource(key: StringArrayResourceKey, qualifiers: Qualifiers): ResourceItem<List<String>> {
-        val res = stringArrays[key] ?: throw MissionResourceException(key, "Undefined stringArrayResource resource")
-        return res.resolveResource(qualifiers) as ResourceItem<List<String>>
     }
 
     fun KostraResources.painterResource(key: DrawableResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
