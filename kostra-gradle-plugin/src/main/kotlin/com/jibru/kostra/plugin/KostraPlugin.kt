@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

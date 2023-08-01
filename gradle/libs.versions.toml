@@ -30,8 +30,8 @@ refreshversions = { id = "de.fayard.refreshVersions", version.ref = "refreshvers
 xcode = { id = "org.openbakery.xcode-plugin", version.ref = "xcode-plugin" }
 
 [versions]
-
-project = "0.0.1-SNAPSHOT"
+project-version = "0.0.1-SNAPSHOT"
+project-group = "com.jibru.kostra"
 android-sdk-compile = "33"
 android-sdk-min = "24"
 android-sdk-target = "33"
@@ -87,8 +87,11 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains-compose-ui" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "jetbrains-compose-ui" }
+jetbrains-compose-components-resources = { module = " org.jetbrains.compose.components:components-resources", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-material = { module = " org.jetbrains.compose.material:material", version.ref = "jetbrains-compose-ui" }
+jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose-ui" }
+jetbrains-compose-ui-graphics = { module = " org.jetbrains.compose.ui:ui-graphics", version.ref = "jetbrains-compose-ui" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle" }
 kmp-buffer = { module = "com.ditchoom:buffer", version.ref = "kmp-buffer" }
 compose-mp-flow = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "compose-mp-flow" }

@@ -1,7 +1,8 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
+import com.jibru.kostra.internal.Qualifiers
 import java.io.File
 import java.io.Reader
 import java.io.StringReader
@@ -24,19 +25,19 @@ object AndroidResourcesXmlParser {
 
     private val logger = LoggerFactory.getLogger(AndroidResourcesXmlParser::class.java)
 
-    fun findStrings(file: File, locale: String): List<ResourceItem> {
+    fun findStrings(file: File, qualifiers: Qualifiers): List<ResItem> {
         logger.info(file.absolutePath)
-        return findStrings(file.bufferedReader(), locale)
+        return findStrings(file.bufferedReader(), qualifiers)
     }
 
-    fun findStrings(xml: String, locale: String) = findStrings(StringReader(xml), locale)
+    fun findStrings(xml: String, qualifiers: Qualifiers) = findStrings(StringReader(xml), qualifiers)
 
-    fun findStrings(reader: Reader, locale: String): List<ResourceItem> {
+    fun findStrings(reader: Reader, qualifiers: Qualifiers): List<ResItem> {
         val xmlParser = XMLInputFactory.newInstance()
         val xmlReader = xmlParser.createXMLStreamReader(reader)
         var androidResourcesFile = false
         var level = 0
-        val result = mutableListOf<ResourceItem>()
+        val result = mutableListOf<ResItem>()
         while (xmlReader.hasNext()) {
             xmlReader.next()
             if (xmlReader.isStartElement) {
@@ -53,7 +54,7 @@ object AndroidResourcesXmlParser {
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
-                            result.add(ResourceItem.StringRes(key, text, locale))
+                            result.add(ResItem.StringRes(key, text, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -68,7 +69,7 @@ object AndroidResourcesXmlParser {
                                 items.add(xmlReader.text())
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
-                            result.add(ResourceItem.StringArray(key, items, locale))
+                            result.add(ResItem.StringArray(key, items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -84,7 +85,7 @@ object AndroidResourcesXmlParser {
                                 items[quantity] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResourceItem.Plurals(key, items, locale))
+                            result.add(ResItem.Plurals(key, items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -102,18 +103,15 @@ object AndroidResourcesXmlParser {
         val reader = this
         val key = reader.attrName()
         if (key != null) {
-            val items = mutableListOf<String>()
-            run {
-                while (reader.hasNext()) {
-                    reader.next()
-                    when {
-                        reader.isStartElement && reader.localName == TagItem -> onItemAction()
-                        //comment or something we don't care about
-                        reader.isCharacters || reader.eventType == XMLStreamConstants.COMMENT -> Unit
-                        reader.isCharacters -> Unit
-                        reader.isEndElement -> break
-                        else -> throw IllegalStateException("Unexpected state:$reader")
-                    }
+            while (reader.hasNext()) {
+                reader.next()
+                when {
+                    reader.isStartElement && reader.localName == TagItem -> onItemAction()
+                    //comment or something we don't care about
+                    reader.isCharacters || reader.eventType == XMLStreamConstants.COMMENT -> Unit
+                    reader.isCharacters -> Unit
+                    reader.isEndElement -> break
+                    else -> throw IllegalStateException("Unexpected state:$reader")
                 }
             }
         }

@@ -29,6 +29,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "kostra"
 include("kostra-lib")
+include("kostra-model")
 
 def incBuild = false
 if (incBuild) {

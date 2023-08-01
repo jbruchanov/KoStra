@@ -6,14 +6,34 @@ plugins {
 }
 def ktlint = "build-ktlint.gradle"
     .with { if (file(it).exists()) it else "../$it" }
-
 apply from: ktlint
 
-project.version = libs.versions.project.get()
+project.group = libs.versions.project.group.get()
+project.version = libs.versions.project.version.get()
+
+def kostraModelSrc = "kostra-model/src/commonMain/kotlin"
+sourceSets {
+    /*
+        simple workaround for includedBuild
+        for easier refactoring of model which GradlePlugin (GP) depends on just for code generation
+        if it's taken as submodule GP compiles it and conflicts to root project as it compiles as well
+        using maven dep + dependencySubstitution doesn't seem to work direction includeBuild -> project(:kostra-model)
+        so adding these files into gradle plugin is not necessary as the plugin is unrelated to the library and there won't be class duplicates
+
+        Also, copy seems to be necessary, otherwise the kostra-model itself doesn't take those files as source set
+        At the end of the file, task deps added
+     */
+    main.kotlin.srcDirs += file("build/$kostraModelSrc")
+}
+
+task copyModel(type: Copy) {
+    group "build"
+    from "../$kostraModelSrc"
+    into "build/$kostraModelSrc"
+}
 
 dependencies {
     implementation(libs.kotlin.poet)
-
     testImplementation(libs.bundles.unittest.jvm)
     testImplementation(libs.truth)
 }
@@ -54,7 +74,13 @@ gradlePlugin {
             id = "kostra"
             displayName = "KoStra"
             tags.set(["kotlin", "multiplatform", "i18n"])
-            implementationClass = "com.jibru.kostra.KostraPlugin"
+            implementationClass = "com.jibru.kostra.plugin.KostraPlugin"
         }
     }
 }
+
+def tasks = ["compileKotlin", "sourcesJar", "runKtlintCheckOverMainSourceSet"]
+tasks.forEach {
+    project.tasks.getByName(it) { dependsOn(copyModel) }
+}
+
