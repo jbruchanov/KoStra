@@ -33,7 +33,6 @@ class ResourcesKtGeneratorTest {
             listOf(
                 string("str1"),
                 string("2str"),
-                stringArray("class"),
                 file("img", category = "Drawable"),
                 file("icon2", category = "drawable"),
                 file("audio1", category = "raw"),
@@ -50,7 +49,6 @@ class ResourcesKtGeneratorTest {
             listOf(
                 string("str1"),
                 string("2str"),
-                stringArray("class"),
                 file("img", category = "Drawable"),
                 file("icon2", category = "drawable"),
                 file("audio1", category = "raw"),
@@ -63,7 +61,6 @@ class ResourcesKtGeneratorTest {
 
             import com.jibru.kostra.BinaryResourceKey
             import com.jibru.kostra.DrawableResourceKey
-            import com.jibru.kostra.StringArrayResourceKey
             import com.jibru.kostra.StringResourceKey
 
             public object K {
@@ -81,15 +78,11 @@ class ResourcesKtGeneratorTest {
                 public val `2str`: StringResourceKey = StringResourceKey("2str")
                 public val str1: StringResourceKey = StringResourceKey("str1")
               }
-              public object stringArray {
-                public val `class`: StringArrayResourceKey = StringArrayResourceKey("class")
-              }
             }
             """.trimIndent(),
         )
     }
 
     private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiers = Qualifiers.Undefined)
-    private fun stringArray(key: String) = ResItem.StringArray(key, items = emptyList(), qualifiers = Qualifiers.Undefined)
     private fun file(key: String, category: String) = ResItem.FileRes(key, File("X"), qualifiers = Qualifiers.Undefined, category = category)
 }

@@ -7,9 +7,6 @@ interface ResourceKey {
 interface AssetResourceKey : ResourceKey
 
 @JvmInline
-value class StringArrayResourceKey(override val key: String) : ResourceKey
-
-@JvmInline
 value class StringResourceKey(override val key: String) : ResourceKey
 
 @JvmInline
