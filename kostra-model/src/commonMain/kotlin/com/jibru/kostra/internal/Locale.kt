@@ -2,7 +2,7 @@ package com.jibru.kostra.internal
 
 class Locale(language: String, region: String?) {
 
-    constructor(languageRegion: String) : this(languageRegion.substringBefore("-"), languageRegion.substringAfter("-"))
+    constructor(languageRegion: String) : this(languageRegion.substringBefore("-"), languageRegion.substringAfter("-", "").takeIf { it.isNotEmpty() })
 
     val language: String = language.lowercase()
     val region: String? = region?.lowercase()

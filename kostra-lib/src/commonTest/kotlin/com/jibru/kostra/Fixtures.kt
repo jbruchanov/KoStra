@@ -1,5 +1,6 @@
 package com.jibru.kostra
 
+import com.jibru.kostra.internal.Dpi
 import com.jibru.kostra.internal.KostraResources
 import com.jibru.kostra.internal.Locale
 import com.jibru.kostra.internal.Qualifiers
@@ -7,6 +8,7 @@ import com.jibru.kostra.internal.ResourceItem
 
 object Fixtures {
 
+    @Suppress("ClassName")
     object Resources {
 
         @Suppress("ktlint")
@@ -15,6 +17,13 @@ object Fixtures {
                 val test1 = StringResourceKey("test1")
                 val test2 = StringResourceKey("test2")
                 val test3 = StringResourceKey("test3")
+            }
+
+            object drawable {
+                val undefinedDpi = DrawableResourceKey("undefinedDpi")
+                val xxHdpiOnly = DrawableResourceKey("xxHdpiOnly")
+                val multipleDpi = DrawableResourceKey("multipleDpi")
+                val multipleDpiLocale = DrawableResourceKey("multipleDpiLocale")
             }
         }
 
@@ -39,6 +48,45 @@ object Fixtures {
                         key,
                         values = listOf(
                             ResourceItem(key, value = "EN", qualifiers = Qualifiers(locale = Locale("en"))),
+                        ),
+                    )
+                },
+            ),
+        )
+
+        val drawableResources = create(
+            drawables = mapOf(
+                K.drawable.undefinedDpi.let { key ->
+                    key to ResourceContainer.Value(
+                        key = key,
+                        value = ResourceItem(key, value = "undefined", qualifiers = Qualifiers.Undefined),
+                    )
+                },
+                K.drawable.xxHdpiOnly.let { key ->
+                    key to ResourceContainer.Value(
+                        key = key,
+                        value = ResourceItem(key, value = "XXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXHDPI)),
+                    )
+                },
+                K.drawable.multipleDpi.let { key ->
+                    key to ResourceContainer.Value(
+                        key = key,
+                        values = listOf(
+                            ResourceItem(key, value = "Fallback", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.Undefined)),
+                            ResourceItem(key, value = "XXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXHDPI)),
+                            ResourceItem(key, value = "XXXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXXHDPI)),
+                        ),
+                    )
+                },
+                K.drawable.multipleDpiLocale.let { key ->
+                    key to ResourceContainer.Value(
+                        key = key,
+                        values = listOf(
+                            ResourceItem(key, value = "enGB, XXHDPI", qualifiers = Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI)),
+                            ResourceItem(key, value = "enGB, Undefined", qualifiers = Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.Undefined)),
+                            ResourceItem(key, value = "en XXHDPI", qualifiers = Qualifiers(locale = Locale("en"), dpi = Dpi.XXHDPI)),
+                            ResourceItem(key, value = "NoLocale, XXXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXXHDPI)),
+                            ResourceItem(key, value = "Fallback", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.Undefined)),
                         ),
                     )
                 },
