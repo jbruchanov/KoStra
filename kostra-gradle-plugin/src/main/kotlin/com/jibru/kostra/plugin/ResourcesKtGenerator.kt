@@ -1,5 +1,9 @@
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
+import com.jibru.kostra.BinaryResourceKey
+import com.jibru.kostra.DrawableResourceKey
+import com.jibru.kostra.StringArrayResourceKey
+import com.jibru.kostra.StringResourceKey
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
@@ -9,7 +13,7 @@ class ResourcesKtGenerator(
     private val packageName: String,
     private val className: String,
 ) {
-    fun generateKClass(allResources: List<ResourceItem>): String {
+    fun generateKClass(allResources: List<ResItem>): String {
         val file = FileSpec.builder(packageName, className)
             .addType(
                 TypeSpec
@@ -22,7 +26,7 @@ class ResourcesKtGenerator(
         return file.toString().replace("\n\n ", "\n ")
     }
 
-    private fun TypeSpec.Builder.addResources(resources: List<ResourceItem>): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addResources(resources: List<ResItem>): TypeSpec.Builder {
         resources
             .groupBy { it.category.replaceFirstChar { k -> k.lowercase() } }
             .toSortedMap()
@@ -37,17 +41,27 @@ class ResourcesKtGenerator(
         return this
     }
 
-    private fun TypeSpec.Builder.addCategoryItems(resources: List<ResourceItem>): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addCategoryItems(resources: List<ResItem>): TypeSpec.Builder {
         resources
             .sortedBy { it.key }
-            .forEach {
+            .forEach { resItem ->
+                val type = when {
+                    resItem is ResItem.StringRes -> StringResourceKey::class
+                    resItem is ResItem.StringArray -> StringArrayResourceKey::class
+                    resItem is ResItem.FileRes && resItem.drawable -> DrawableResourceKey::class
+                    else -> BinaryResourceKey::class
+                }
+
                 addProperty(
-                    PropertySpec.builder(it.key, String::class, KModifier.PUBLIC)
-                        .addModifiers(KModifier.CONST)
-                        .initializer("%S", it.key)
+                    PropertySpec.builder(resItem.key, type, KModifier.PUBLIC)
+                        .initializer("%T(%S)", type, resItem.key)
                         .build(),
                 )
             }
         return this
+    }
+
+    companion object {
+        private val drawableCategories = setOf("drawable")
     }
 }

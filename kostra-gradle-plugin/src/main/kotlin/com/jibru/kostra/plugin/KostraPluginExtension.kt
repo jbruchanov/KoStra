@@ -1,4 +1,4 @@
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
 import org.gradle.api.provider.Property
 

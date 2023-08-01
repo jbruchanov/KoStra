@@ -1,7 +1,10 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
-apply from: "$rootProject.projectDir/build-ktlint.gradle"
+
+def ktlint = "build-ktlint.gradle"
+    .with { if (file(it).exists()) it else "../$it" }
+apply from: ktlint
 
 project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
@@ -17,9 +20,6 @@ kotlin {
                 compileOnly(libs.jetbrains.compose.runtime)
                 compileOnly(libs.jetbrains.compose.ui.graphics)
                 compileOnly(libs.jetbrains.compose.components.resources)
-
-                implementation(project(":kostra-model"))
-                implementation(libs.kotlinx.datetime)
             }
         }
         commonTest {
