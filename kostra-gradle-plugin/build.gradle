@@ -26,10 +26,20 @@ sourceSets {
     main.kotlin.srcDirs += file("build/$kostraModelSrc")
 }
 
+task deleteModel() {
+    outputs.upToDateWhen { false }
+    group "kostra"
+    doLast {
+        file("build/kostra-model").deleteDir()
+    }
+}
+
 task copyModel(type: Copy) {
-    group "build"
+    outputs.upToDateWhen { false }
+    group "kostra"
     from "../$kostraModelSrc"
     into "build/$kostraModelSrc"
+    dependsOn(deleteModel)
 }
 
 dependencies {
