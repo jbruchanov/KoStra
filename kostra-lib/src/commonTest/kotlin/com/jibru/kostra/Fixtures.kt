@@ -93,26 +93,16 @@ object Fixtures {
             ),
         )
 
-        fun create(
+        private fun create(
             strings: Map<StringResourceKey, ResourceContainer> = emptyMap(),
             plurals: Map<PluralResourceKey, ResourceContainer> = emptyMap(),
-            stringArrays: Map<StringArrayResourceKey, ResourceContainer> = emptyMap(),
             drawables: Map<DrawableResourceKey, ResourceContainer> = emptyMap(),
             binary: Map<ResourceKey, ResourceContainer> = emptyMap(),
         ) = object : KostraResources {
             override val strings: Map<StringResourceKey, ResourceContainer> = strings
             override val plurals: Map<PluralResourceKey, ResourceContainer> = plurals
-            override val stringArrays: Map<StringArrayResourceKey, ResourceContainer> = stringArrays
             override val drawables: Map<DrawableResourceKey, ResourceContainer> = drawables
             override val binary: Map<ResourceKey, ResourceContainer> = binary
         }
-
-        private inline fun <reified T : ResourceKey> String.key(): T = when (T::class) {
-            StringResourceKey::class -> StringResourceKey(this)
-            StringArrayResourceKey::class -> StringArrayResourceKey(this)
-            DrawableResourceKey::class -> DrawableResourceKey(this)
-            BinaryResourceKey::class -> BinaryResourceKey(this)
-            else -> throw UnsupportedOperationException("invalid output: ${T::class}")
-        } as T
     }
 }
