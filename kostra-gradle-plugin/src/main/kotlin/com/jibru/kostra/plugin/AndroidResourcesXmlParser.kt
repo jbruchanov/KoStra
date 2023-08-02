@@ -16,24 +16,20 @@ import org.slf4j.LoggerFactory
  * Currently, implement only string variants:
  * string, string-array, plurals
  */
-object AndroidResourcesXmlParser {
-    private const val TagResources = "resources"
-    private const val TagString = "string"
-    private const val TagStringArray = "string-array"
-    private const val TagPlurals = "plurals"
-    private const val TagItem = "item"
-    internal const val parseStringArrays = false
+class AndroidResourcesXmlParser(
+    private val keyMapper: (String, File?) -> String = { key, _ -> key }
+) {
 
     private val logger = LoggerFactory.getLogger(AndroidResourcesXmlParser::class.java)
 
     fun findStrings(file: File, qualifiers: Qualifiers): List<ResItem> {
         logger.info(file.absolutePath)
-        return findStrings(file.bufferedReader(), qualifiers)
+        return findStrings(file.bufferedReader(), qualifiers, file)
     }
 
-    fun findStrings(xml: String, qualifiers: Qualifiers) = findStrings(StringReader(xml), qualifiers)
+    fun findStrings(xml: String, qualifiers: Qualifiers) = findStrings(StringReader(xml), qualifiers, null)
 
-    fun findStrings(reader: Reader, qualifiers: Qualifiers): List<ResItem> {
+    fun findStrings(reader: Reader, qualifiers: Qualifiers, file: File?): List<ResItem> {
         val xmlParser = XMLInputFactory.newInstance()
         val xmlReader = xmlParser.createXMLStreamReader(reader)
         var androidResourcesFile = false
@@ -55,7 +51,7 @@ object AndroidResourcesXmlParser {
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
-                            result.add(ResItem.StringRes(key, text, qualifiers))
+                            result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -70,7 +66,7 @@ object AndroidResourcesXmlParser {
                                 items.add(xmlReader.text())
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
-                            result.add(ResItem.StringArray(key, items, qualifiers))
+                            result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -86,7 +82,7 @@ object AndroidResourcesXmlParser {
                                 items[quantity] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResItem.Plurals(key, items, qualifiers))
+                            result.add(ResItem.Plurals(keyMapper(key, file), items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -137,4 +133,13 @@ object AndroidResourcesXmlParser {
         ?.let { getAttributeValue(it) }
 
     private fun XMLStreamReader.text() = elementText
+
+    companion object {
+        private const val TagResources = "resources"
+        private const val TagString = "string"
+        private const val TagStringArray = "string-array"
+        private const val TagPlurals = "plurals"
+        private const val TagItem = "item"
+        internal const val parseStringArrays = false
+    }
 }
