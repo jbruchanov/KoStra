@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamException
 
 internal class AndroidResourcesXmlParserTest {
 
-    private val xmlParser = AndroidResourcesXmlParser
+    private val xmlParser = AndroidResourcesXmlParser()
 
     @Test
     fun `findStrings WHEN different types`() {
