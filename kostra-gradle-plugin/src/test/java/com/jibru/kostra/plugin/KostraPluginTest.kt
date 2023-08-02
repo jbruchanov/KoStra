@@ -1,4 +1,4 @@
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import org.gradle.api.Project

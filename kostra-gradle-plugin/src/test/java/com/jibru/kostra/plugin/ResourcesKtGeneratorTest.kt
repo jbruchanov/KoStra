@@ -1,9 +1,7 @@
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.internal.Qualifiers
-import com.jibru.kostra.plugin.ResItem
-import com.jibru.kostra.plugin.ResourcesKtGenerator
 import org.junit.jupiter.api.Test
 import java.io.File
 

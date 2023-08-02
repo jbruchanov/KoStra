@@ -3,13 +3,13 @@
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.internal.Qualifiers
-import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
 import org.slf4j.LoggerFactory
+import java.io.File
 
 /**
  * Simple implementation for android resources parser.
@@ -17,19 +17,19 @@ import org.slf4j.LoggerFactory
  * string, string-array, plurals
  */
 class AndroidResourcesXmlParser(
-    private val keyMapper: (String, File?) -> String = { key, _ -> key }
+    private val keyMapper: (String, File) -> String = { key, _ -> key },
 ) {
 
     private val logger = LoggerFactory.getLogger(AndroidResourcesXmlParser::class.java)
+    private val noFile = File("/")
 
+    internal fun findStrings(xml: String, qualifiers: Qualifiers) = findStrings(StringReader(xml), qualifiers, noFile)
     fun findStrings(file: File, qualifiers: Qualifiers): List<ResItem> {
         logger.info(file.absolutePath)
-        return findStrings(file.bufferedReader(), qualifiers, file)
+        return findStrings(file.reader(), qualifiers, file)
     }
 
-    fun findStrings(xml: String, qualifiers: Qualifiers) = findStrings(StringReader(xml), qualifiers, null)
-
-    fun findStrings(reader: Reader, qualifiers: Qualifiers, file: File?): List<ResItem> {
+    fun findStrings(reader: Reader, qualifiers: Qualifiers, file: File = noFile): List<ResItem> {
         val xmlParser = XMLInputFactory.newInstance()
         val xmlReader = xmlParser.createXMLStreamReader(reader)
         var androidResourcesFile = false
@@ -51,7 +51,7 @@ class AndroidResourcesXmlParser(
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
-                            result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers))
+                            result.add(ResItem.StringRes(keyMapper(key, file  ), text, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -66,7 +66,7 @@ class AndroidResourcesXmlParser(
                                 items.add(xmlReader.text())
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
-                            result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers))
+                            result.add(ResItem.StringArray(keyMapper(key, file  ), items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -82,7 +82,7 @@ class AndroidResourcesXmlParser(
                                 items[quantity] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResItem.Plurals(keyMapper(key, file), items, qualifiers))
+                            result.add(ResItem.Plurals(keyMapper(key, file  ), items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }

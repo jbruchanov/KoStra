@@ -1,9 +1,7 @@
-package com.jibru.kostra
+package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.internal.Qualifiers
-import com.jibru.kostra.plugin.AndroidResourcesXmlParser
-import com.jibru.kostra.plugin.ResItem
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
@@ -260,6 +258,20 @@ internal class AndroidResourcesXmlParserTest {
 
         val testAsserts = xmls.map { { assertThat(xmlParser.findStrings("$header\n$it", Qualifiers.Undefined)).isEmpty() } }
         assertAll(*testAsserts.toTypedArray())
+    }
+
+    @Test
+    fun `findStrings WHEN keyMapper then keys updated`() {
+        val stringXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <resources>
+            <string name="TEXT1">Text1</string>
+        </resources>
+        """.trimIndent()
+        val xmlParser = AndroidResourcesXmlParser(keyMapper = { key, _ -> key.lowercase() })
+        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val item = result[0] as ResItem.StringRes
+        assertThat(item.key).isEqualTo("text1")
     }
 
     private fun isParseXmlEnabled() = AndroidResourcesXmlParser.parseStringArrays
