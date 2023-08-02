@@ -24,3 +24,5 @@ jobs:
         run: ./gradlew ktlintCheck
       - name: Build & Test
         run: ./gradlew :build
+      - name: Build & Test with IncludeBuild
+        run: ./gradlew clean :build -PincludeBuild=true
