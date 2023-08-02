@@ -1,11 +1,13 @@
 package com.jibru.kostra.internal
 
+import com.jibru.kostra.internal.ext.takeIfNotEmpty
+
 class Locale(language: String, region: String?) {
 
-    constructor(languageRegion: String) : this(languageRegion.substringBefore("-"), languageRegion.substringAfter("-", "").takeIf { it.isNotEmpty() })
+    constructor(languageRegion: String) : this(languageRegion.substringBefore("-"), languageRegion.substringAfter("-", "").takeIfNotEmpty())
 
     val language: String = language.lowercase()
-    val region: String? = region?.lowercase()
+    val region: String? = region?.lowercase()?.let { if (it.startsWith("r")) it.substring(1) else it }
     val languageRegion = if (region == null) language else "$language-$region"
 
     init {
@@ -35,7 +37,7 @@ class Locale(language: String, region: String?) {
     }
 
     override fun toString(): String {
-        return "Locale(language='$language', region=$region)"
+        return if (this == Undefined) "Locale.Undefined" else "Locale(l='$language', r=$region)"
     }
 
     companion object {

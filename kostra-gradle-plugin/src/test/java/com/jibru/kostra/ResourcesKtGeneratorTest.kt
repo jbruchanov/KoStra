@@ -33,10 +33,10 @@ class ResourcesKtGeneratorTest {
             listOf(
                 string("str1"),
                 string("2str"),
-                file("img", category = "Drawable"),
-                file("icon2", category = "drawable"),
-                file("audio1", category = "raw"),
-                file("test", category = "_"),
+                file("img", group = "Drawable"),
+                file("icon2", group = "drawable"),
+                file("audio1", group = "raw"),
+                file("test", group = "_"),
             ),
         ).trim()
         println(result)
@@ -49,10 +49,10 @@ class ResourcesKtGeneratorTest {
             listOf(
                 string("str1"),
                 string("2str"),
-                file("img", category = "Drawable"),
-                file("icon2", category = "drawable"),
-                file("audio1", category = "raw"),
-                file("test", category = "_"),
+                file("img", group = "Drawable"),
+                file("icon2", group = "drawable"),
+                file("audio1", group = "raw"),
+                file("test", group = "_"),
             ),
         ).trim()
         assertThat(result).isEqualTo(
@@ -84,5 +84,5 @@ class ResourcesKtGeneratorTest {
     }
 
     private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiers = Qualifiers.Undefined)
-    private fun file(key: String, category: String) = ResItem.FileRes(key, File("X"), qualifiers = Qualifiers.Undefined, category = category)
+    private fun file(key: String, group: String) = ResItem.FileRes(key, File("X"), qualifiers = Qualifiers.Undefined, group = group)
 }

@@ -27,20 +27,20 @@ class ResourcesKtGenerator(
 
     private fun TypeSpec.Builder.addResources(resources: List<ResItem>): TypeSpec.Builder {
         resources
-            .groupBy { it.category.replaceFirstChar { k -> k.lowercase() } }
+            .groupBy { it.group.replaceFirstChar { k -> k.lowercase() } }
             .toSortedMap()
-            .onEach { (categoryName, categoryItems) ->
+            .onEach { (group, groupItems) ->
                 addType(
                     TypeSpec
-                        .objectBuilder(categoryName)
-                        .addCategoryItems(categoryItems)
+                        .objectBuilder(group)
+                        .addGroupItems(groupItems)
                         .build(),
                 )
             }
         return this
     }
 
-    private fun TypeSpec.Builder.addCategoryItems(resources: List<ResItem>): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addGroupItems(resources: List<ResItem>): TypeSpec.Builder {
         resources
             .sortedBy { it.key }
             .forEach { resItem ->
@@ -57,9 +57,5 @@ class ResourcesKtGenerator(
                 )
             }
         return this
-    }
-
-    companion object {
-        private val drawableCategories = setOf("drawable")
     }
 }

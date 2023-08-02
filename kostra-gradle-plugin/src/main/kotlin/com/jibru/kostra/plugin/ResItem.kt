@@ -6,14 +6,14 @@ import java.io.File
 sealed class ResItem {
     abstract val key: String
     abstract val qualifiers: Qualifiers
-    abstract val category: String
+    abstract val group: String
 
     data class StringRes(
         override val key: String,
         val value: String,
         override val qualifiers: Qualifiers,
     ) : ResItem() {
-        override val category: String = "string"
+        override val group: String = "string"
     }
 
     data class StringArray(
@@ -21,7 +21,7 @@ sealed class ResItem {
         val items: List<String>,
         override val qualifiers: Qualifiers,
     ) : ResItem() {
-        override val category: String = "stringArray"
+        override val group: String = "stringArray"
     }
 
     data class Plurals(
@@ -29,19 +29,19 @@ sealed class ResItem {
         val items: Map<String, String>,
         override val qualifiers: Qualifiers,
     ) : ResItem() {
-        override val category: String = "plural"
+        override val group: String = "plural"
     }
 
     data class FileRes(
         override val key: String,
         val file: File,
         override val qualifiers: Qualifiers,
-        override val category: String,
+        override val group: String,
     ) : ResItem() {
-        val drawable = drawableCategories.contains(category)
+        val drawable = group == GroupDrawable
     }
 
     companion object {
-        private val drawableCategories = setOf("drawable")
+        const val GroupDrawable = "drawable"
     }
 }
