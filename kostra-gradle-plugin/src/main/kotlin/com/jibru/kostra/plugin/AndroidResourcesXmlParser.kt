@@ -51,7 +51,7 @@ class AndroidResourcesXmlParser(
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
-                            result.add(ResItem.StringRes(keyMapper(key, file  ), text, qualifiers))
+                            result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -66,7 +66,7 @@ class AndroidResourcesXmlParser(
                                 items.add(xmlReader.text())
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
-                            result.add(ResItem.StringArray(keyMapper(key, file  ), items, qualifiers))
+                            result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -82,7 +82,7 @@ class AndroidResourcesXmlParser(
                                 items[quantity] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResItem.Plurals(keyMapper(key, file  ), items, qualifiers))
+                            result.add(ResItem.Plurals(keyMapper(key, file), items, qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }

@@ -1,44 +1,12 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
+import com.jibru.kostra.internal.Locale
 import com.jibru.kostra.internal.Qualifiers
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class ResourcesKtGeneratorTest {
-
-    @Test
-    fun `generateKClass no package`() {
-        val gen = ResourcesKtGenerator("", "ResQ")
-        val result = gen.generateKClass(listOf(string("str1"))).trim()
-        assertThat(result).isEqualTo(
-            """
-            import com.jibru.kostra.StringResourceKey
-
-            public object ResQ {
-              public object string {
-                public val str1: StringResourceKey = StringResourceKey("str1")
-              }
-            }
-            """.trimIndent(),
-        )
-    }
-
-    @Test
-    fun test() {
-        val gen = ResourcesKtGenerator("com.sample.app", "K")
-        val result = gen.generateKClass(
-            listOf(
-                string("str1"),
-                string("2str"),
-                file("img", group = "Drawable"),
-                file("icon2", group = "drawable"),
-                file("audio1", group = "raw"),
-                file("test", group = "_"),
-            ),
-        ).trim()
-        println(result)
-    }
 
     @Test
     fun generateKClass() {
@@ -75,6 +43,82 @@ class ResourcesKtGeneratorTest {
               public object string {
                 public val `2str`: StringResourceKey = StringResourceKey("2str")
                 public val str1: StringResourceKey = StringResourceKey("str1")
+              }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun `generateKClass no package`() {
+        val gen = ResourcesKtGenerator("", "ResQ")
+        val result = gen.generateKClass(listOf(string("str1"))).trim()
+        assertThat(result).isEqualTo(
+            """
+            import com.jibru.kostra.StringResourceKey
+
+            public object ResQ {
+              public object string {
+                public val str1: StringResourceKey = StringResourceKey("str1")
+              }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun `generateKClass WHEN drawable with unexpected extension`() {
+        val gen = ResourcesKtGenerator("")
+        val result = gen.generateKClass(
+            listOf(
+                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
+                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
+            ),
+        ).trim()
+        assertThat(result).isEqualTo(
+            """
+            import com.jibru.kostra.DrawableResourceKey
+
+            public object K {
+              public object drawable {
+                public val imageBin: DrawableResourceKey = DrawableResourceKey("imageBin")
+                public val imagePng: DrawableResourceKey = DrawableResourceKey("imagePng")
+              }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun `generateKClass WHEN strings and plurals`() {
+        val items = listOf(
+            ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
+            ResItem.StringRes("item1", "item1Fun", Qualifiers(others = setOf("fun"))),
+            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
+            ResItem.StringRes("item1", "item1FunCs", Qualifiers(locale = Locale("cs"), others = setOf("fun"))),
+
+            ResItem.Plurals("dog", mapOf("other" to "dogs", "one" to "dog"), Qualifiers.Undefined),
+            ResItem.Plurals("dog", mapOf("other" to "doggos", "one" to "doggo"), Qualifiers(others = setOf("fun"))),
+            ResItem.Plurals("dog", mapOf("other" to "psů", "one" to "pes", "few" to "psy", "custom" to "psiska!"), Qualifiers(locale = Locale("cs"))),
+            ResItem.Plurals(
+                "dog",
+                mapOf("other" to "!psů!", "one" to "!pes!", "many" to "!psy!", "custom" to "!psiska!"),
+                Qualifiers(locale = Locale("cs"), others = setOf("fun")),
+            ),
+        )
+
+        val result = ResourcesKtGenerator("").generateKClass(items).trim()
+        assertThat(result).isEqualTo(
+            """
+            import com.jibru.kostra.BinaryResourceKey
+            import com.jibru.kostra.StringResourceKey
+
+            public object K {
+              public object plural {
+                public val dog: BinaryResourceKey = BinaryResourceKey("dog")
+              }
+              public object string {
+                public val item1: StringResourceKey = StringResourceKey("item1")
               }
             }
             """.trimIndent(),

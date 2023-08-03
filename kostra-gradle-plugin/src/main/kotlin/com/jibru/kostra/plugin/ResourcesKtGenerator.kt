@@ -10,7 +10,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 class ResourcesKtGenerator(
     private val packageName: String,
-    private val className: String,
+    private val className: String = "K",
 ) {
     fun generateKClass(allResources: List<ResItem>): String {
         val file = FileSpec.builder(packageName, className)
@@ -42,6 +42,9 @@ class ResourcesKtGenerator(
 
     private fun TypeSpec.Builder.addGroupItems(resources: List<ResItem>): TypeSpec.Builder {
         resources
+            //at this point mutliple items with same key is only difference because of qualifiers
+            //so can be ignored as we need key+type
+            .distinctBy { it.key }
             .sortedBy { it.key }
             .forEach { resItem ->
                 val type = when {

@@ -12,7 +12,7 @@ private val dpiValues = dpiMap.keys
 
 data class GroupQualifiers(
     val group: String,
-    val qualifiers: Qualifiers
+    val qualifiers: Qualifiers,
 )
 
 const val QualifierDivider = "-"
@@ -53,7 +53,7 @@ internal fun File.groupQualifiers(): GroupQualifiers {
             Qualifiers(
                 locale = locale,
                 dpi = dpi,
-                others = values
+                others = values,
             )
         } ?: Qualifiers.Undefined
 
