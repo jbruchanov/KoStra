@@ -8,6 +8,8 @@ sealed class ResItem {
     abstract val qualifiers: Qualifiers
     abstract val group: String
 
+    val distinctKey by lazy(LazyThreadSafetyMode.NONE) { Triple(key, qualifiers, group) }
+
     data class StringRes(
         override val key: String,
         val value: String,

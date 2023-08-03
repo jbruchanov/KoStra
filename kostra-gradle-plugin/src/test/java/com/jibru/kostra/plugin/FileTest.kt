@@ -35,7 +35,7 @@ class FileTest {
                     assertEquals(expected, qualifiers)
                     assertEquals(if (qualifiers.dpi != Dpi.Undefined) "drawable" else "value", group)
                 }
-            }
+            },
         )
     }
 
