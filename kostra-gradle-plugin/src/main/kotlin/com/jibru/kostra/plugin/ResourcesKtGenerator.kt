@@ -11,8 +11,16 @@ import com.squareup.kotlinpoet.TypeSpec
 class ResourcesKtGenerator(
     private val packageName: String,
     private val className: String = "K",
-    private val items: List<ResItem>
+    private val items: List<ResItem>,
 ) {
+
+    //group:[string] -> key:[dog] -> items:[dogEn, dogEnGb, ...]
+    private val itemsPerGroupPerKey by lazy {
+        items
+            .groupBy { it.group.replaceFirstChar { k -> k.lowercase() } }
+            .mapValues { itemsPerGroup -> itemsPerGroup.value.groupBy { it -> it.key }.toSortedMap() }
+            .toSortedMap()
+    }
 
     //region kCLass
     fun generateKClass(): String {
@@ -20,7 +28,7 @@ class ResourcesKtGenerator(
             .addType(
                 TypeSpec
                     .objectBuilder(className)
-                    .addKClassResources(items)
+                    .addKClassResources()
                     .build(),
             )
             .build()
@@ -28,28 +36,24 @@ class ResourcesKtGenerator(
         return file.toString().replace("\n\n ", "\n ")
     }
 
-    private fun TypeSpec.Builder.addKClassResources(resources: List<ResItem>): TypeSpec.Builder {
-        resources
-            .groupBy { it.group.replaceFirstChar { k -> k.lowercase() } }
-            .toSortedMap()
-            .onEach { (group, groupItems) ->
+    private fun TypeSpec.Builder.addKClassResources(): TypeSpec.Builder {
+        itemsPerGroupPerKey
+            .onEach { (group, itemsPerKey) ->
                 addType(
                     TypeSpec
                         .objectBuilder(group)
-                        .addKClassGroupItems(groupItems)
+                        .addKClassGroupItems(group, itemsPerKey)
                         .build(),
                 )
             }
         return this
     }
 
-    private fun TypeSpec.Builder.addKClassGroupItems(resources: List<ResItem>): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addKClassGroupItems(group: String, resources: Map<String, List<ResItem>>): TypeSpec.Builder {
         resources
-            //at this point mutliple items with same key is only difference because of qualifiers
-            //so can be ignored as we need key+type
-            .distinctBy { it.key }
-            .sortedBy { it.key }
-            .forEach { resItem ->
+            .forEach { (key, itemsPerKey) ->
+                //at this point, all resource per key should belong to single group
+                val resItem = itemsPerKey.distinctBy { it::class }.single()
                 val type = when {
                     resItem is ResItem.StringRes -> StringResourceKey::class
                     resItem is ResItem.FileRes && resItem.drawable -> DrawableResourceKey::class
@@ -57,8 +61,8 @@ class ResourcesKtGenerator(
                 }
 
                 addProperty(
-                    PropertySpec.builder(resItem.key, type, KModifier.PUBLIC)
-                        .initializer("%T(%S)", type, resItem.key)
+                    PropertySpec.builder(key, type, KModifier.PUBLIC)
+                        .initializer("%T(%S)", type, key)
                         .build(),
                 )
             }
