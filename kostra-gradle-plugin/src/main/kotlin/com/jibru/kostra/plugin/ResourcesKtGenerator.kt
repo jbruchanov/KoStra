@@ -11,13 +11,16 @@ import com.squareup.kotlinpoet.TypeSpec
 class ResourcesKtGenerator(
     private val packageName: String,
     private val className: String = "K",
+    private val items: List<ResItem>
 ) {
-    fun generateKClass(allResources: List<ResItem>): String {
+
+    //region kCLass
+    fun generateKClass(): String {
         val file = FileSpec.builder(packageName, className)
             .addType(
                 TypeSpec
                     .objectBuilder(className)
-                    .addResources(allResources)
+                    .addKClassResources(items)
                     .build(),
             )
             .build()
@@ -25,7 +28,7 @@ class ResourcesKtGenerator(
         return file.toString().replace("\n\n ", "\n ")
     }
 
-    private fun TypeSpec.Builder.addResources(resources: List<ResItem>): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addKClassResources(resources: List<ResItem>): TypeSpec.Builder {
         resources
             .groupBy { it.group.replaceFirstChar { k -> k.lowercase() } }
             .toSortedMap()
@@ -33,14 +36,14 @@ class ResourcesKtGenerator(
                 addType(
                     TypeSpec
                         .objectBuilder(group)
-                        .addGroupItems(groupItems)
+                        .addKClassGroupItems(groupItems)
                         .build(),
                 )
             }
         return this
     }
 
-    private fun TypeSpec.Builder.addGroupItems(resources: List<ResItem>): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addKClassGroupItems(resources: List<ResItem>): TypeSpec.Builder {
         resources
             //at this point mutliple items with same key is only difference because of qualifiers
             //so can be ignored as we need key+type
@@ -61,4 +64,5 @@ class ResourcesKtGenerator(
             }
         return this
     }
+    //endregion
 }
