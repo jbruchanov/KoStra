@@ -1,21 +1,39 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.AssetResourceKey
+import com.jibru.kostra.DrawableResourceKey
+import com.jibru.kostra.PluralResourceKey
+import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.internal.Qualifiers
+import com.jibru.kostra.plugin.ext.relativeTo
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.typeNameOf
 import java.io.File
+
+interface StringValueResItem {
+    val key: String
+    val value: String
+    val qualifiers: Qualifiers
+    val group: String
+}
 
 sealed class ResItem {
     abstract val key: String
     abstract val qualifiers: Qualifiers
     abstract val group: String
 
+    abstract val resourceKeyType: TypeName
+
     val distinctKey by lazy(LazyThreadSafetyMode.NONE) { Triple(key, qualifiers, group) }
+    open val resourcesGroup get() = group
 
     data class StringRes(
         override val key: String,
-        val value: String,
+        override val value: String,
         override val qualifiers: Qualifiers,
-    ) : ResItem() {
-        override val group: String = "string"
+    ) : ResItem(), StringValueResItem {
+        override val group: String = String
+        override val resourceKeyType: TypeName = typeNameOf<StringResourceKey>()
     }
 
     data class StringArray(
@@ -23,7 +41,8 @@ sealed class ResItem {
         val items: List<String>,
         override val qualifiers: Qualifiers,
     ) : ResItem() {
-        override val group: String = "stringArray"
+        override val group: String = StringArray
+        override val resourceKeyType: TypeName = throw UnsupportedOperationException("StringArray arrays not supported!")
     }
 
     data class Plurals(
@@ -31,7 +50,8 @@ sealed class ResItem {
         val items: Map<String, String>,
         override val qualifiers: Qualifiers,
     ) : ResItem() {
-        override val group: String = "plural"
+        override val group: String = Plural
+        override val resourceKeyType: TypeName = typeNameOf<PluralResourceKey>()
     }
 
     data class FileRes(
@@ -39,11 +59,19 @@ sealed class ResItem {
         val file: File,
         override val qualifiers: Qualifiers,
         override val group: String,
-    ) : ResItem() {
-        val drawable = group == GroupDrawable
+        val root: File/* = file.parentFile.parentFile*/,
+    ) : ResItem(), StringValueResItem {
+        val drawable = group == Drawable
+        override val value by lazy { file.relativeTo(root, ignoreCase = true) }
+        override val resourcesGroup: String = if (drawable) Drawable else Binary
+        override val resourceKeyType: TypeName = if (drawable) typeNameOf<DrawableResourceKey>() else typeNameOf<AssetResourceKey>()
     }
 
     companion object {
-        const val GroupDrawable = "drawable"
+        const val Drawable = "drawable"
+        const val String = "string"
+        const val Binary = "binary"
+        const val Plural = "plural"
+        const val StringArray = "stringArray"
     }
 }
