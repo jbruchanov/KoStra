@@ -30,8 +30,8 @@ class FileResolver(
     }
 
     //extra resolveImpl due to ^ distinctByLast per root, not per file
-    private fun resolveImpl(rootFolder: File): List<ResItem> {
-        val listFiles = rootFolder.listFiles() ?: return emptyList()
+    private fun resolveImpl(resourcesRoot: File): List<ResItem> {
+        val listFiles = resourcesRoot.listFiles() ?: return emptyList()
         val items = listFiles.filter { it.isDirectory }
             .asSequence()
             //parse group + qualifiers
@@ -42,7 +42,7 @@ class FileResolver(
             .mapValues { items ->
                 items.value
                     .tryParallelStream()
-                    .map { (folder, groupQualifiers) -> resolve(folder, groupQualifiers) }
+                    .map { (folder, groupQualifiers) -> resolve(folder, resourcesRoot, groupQualifiers) }
                     .toList()
             }
             //returns ^ list of lists as it might be xml of strings
@@ -54,7 +54,7 @@ class FileResolver(
         return items
     }
 
-    private fun resolve(rootFolder: File, groupQualifiers: GroupQualifiers): List<ResItem> = with(config) {
+    private fun resolve(rootFolder: File, resRoot: File, groupQualifiers: GroupQualifiers): List<ResItem> = with(config) {
         val (group, qualifiers) = groupQualifiers
         val files = rootFolder.walkTopDown()
             .tryParallelStream()
@@ -67,9 +67,9 @@ class FileResolver(
                     stringFiles.any { regex -> regex.matches(name.lowercase()) } -> androidResourcesXmlParser.findStrings(file, qualifiers)
 
                     drawableGroups.any { regex -> regex.matches(group) } && drawableExtensions.contains(ext.lowercase()) ->
-                        listOf(ResItem.FileRes(key = key, file = file, qualifiers = qualifiers, group = ResItem.GroupDrawable))
+                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiers = qualifiers, group = ResItem.Drawable))
 
-                    else -> listOf(ResItem.FileRes(key = key, file = file, qualifiers = qualifiers, group = group))
+                    else -> listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiers = qualifiers, group = group))
                 }
             }
             .toList()

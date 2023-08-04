@@ -22,7 +22,7 @@ class FileResolverTest {
         assertThat(items).hasSize(3)
 
         assertThat(items).containsExactly(
-            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), Qualifiers.Undefined, ResItem.GroupDrawable),
+            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), Qualifiers.Undefined, ResItem.Drawable, root = resourcesRoot),
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
             ResItem.StringRes("item2", "item2", Qualifiers.Undefined),
         )
@@ -38,9 +38,9 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), Qualifiers.Undefined, ResItem.GroupDrawable),
-            ResItem.FileRes("sample", File(resourcesRoot, "raw/sample.xml"), Qualifiers.Undefined, "raw"),
-            ResItem.FileRes("xyz", File(resourcesRoot, "sound/xyz.mp3"), Qualifiers.Undefined, "sound"),
+            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), Qualifiers.Undefined, ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("sample", File(resourcesRoot, "raw/sample.xml"), Qualifiers.Undefined, "raw", root = resourcesRoot),
+            ResItem.FileRes("xyz", File(resourcesRoot, "sound/xyz.mp3"), Qualifiers.Undefined, "sound", root = resourcesRoot),
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
             ResItem.StringRes("item2", "item2", Qualifiers.Undefined),
         )
@@ -70,11 +70,11 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("imageWebp", File(resourcesRoot, "drawable/imageWebp.webp"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("imageJpg", File(resourcesRoot, "drawable/imageJpg.jpg"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("imageJpeg", File(resourcesRoot, "drawable/imageJpeg.jpeg"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("imageBmp", File(resourcesRoot, "drawable/imageBmp.bmp"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
+            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageWebp", File(resourcesRoot, "drawable/imageWebp.webp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageJpg", File(resourcesRoot, "drawable/imageJpg.jpg"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageJpeg", File(resourcesRoot, "drawable/imageJpeg.jpeg"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageBmp", File(resourcesRoot, "drawable/imageBmp.bmp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -87,9 +87,9 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("imageBin", File(resourcesRoot, "drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "obrazky/image.png"), Qualifiers.Undefined, group = "obrazky"),
+            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageBin", File(resourcesRoot, "drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "obrazky/image.png"), Qualifiers.Undefined, group = "obrazky", root = resourcesRoot),
         )
     }
 
@@ -112,11 +112,11 @@ class FileResolverTest {
         ).resolve(listOf(resourcesRoot))
 
         assertThat(items).containsExactly(
-            ResItem.FileRes("image", File(resourcesRoot, "DRAWABLE/image.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("meme", File(resourcesRoot, "drawable_MEMES/MEME.bin"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("icon", File(resourcesRoot, "icon/icon.ico"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("icons", File(resourcesRoot, "iCOns/icons.bmp"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("iconky", File(resourcesRoot, "iconky/iCONKy.bin"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
+            ResItem.FileRes("image", File(resourcesRoot, "DRAWABLE/image.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("meme", File(resourcesRoot, "drawable_MEMES/MEME.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("icon", File(resourcesRoot, "icon/icon.ico"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("icons", File(resourcesRoot, "iCOns/icons.bmp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("iconky", File(resourcesRoot, "iconky/iCONKy.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -129,9 +129,9 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("flat", File(resourcesRoot, "drawable/flat.webp"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("tower", File(resourcesRoot, "drawable/buildings/tower.webp"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("car", File(resourcesRoot, "drawable/cars/car.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
+            ResItem.FileRes("flat", File(resourcesRoot, "drawable/flat.webp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("tower", File(resourcesRoot, "drawable/buildings/tower.webp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("car", File(resourcesRoot, "drawable/cars/car.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -146,15 +146,15 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), Qualifiers(dpi = Dpi.Undefined), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-nodpi/image.png"), Qualifiers(dpi = Dpi.NoDpi), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-ldpi/image.png"), Qualifiers(dpi = Dpi.LDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-mdpi/image.png"), Qualifiers(dpi = Dpi.MDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-tvdpi/image.png"), Qualifiers(dpi = Dpi.TVDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-hdpi/image.png"), Qualifiers(dpi = Dpi.HDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-xhdpi/image.png"), Qualifiers(dpi = Dpi.XHDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxhdpi/image.png"), Qualifiers(dpi = Dpi.XXHDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxxhdpi/image.png"), Qualifiers(dpi = Dpi.XXXHDPI), group = ResItem.GroupDrawable),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), Qualifiers(dpi = Dpi.Undefined), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-nodpi/image.png"), Qualifiers(dpi = Dpi.NoDpi), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-ldpi/image.png"), Qualifiers(dpi = Dpi.LDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-mdpi/image.png"), Qualifiers(dpi = Dpi.MDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-tvdpi/image.png"), Qualifiers(dpi = Dpi.TVDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-hdpi/image.png"), Qualifiers(dpi = Dpi.HDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-xhdpi/image.png"), Qualifiers(dpi = Dpi.XHDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxhdpi/image.png"), Qualifiers(dpi = Dpi.XXHDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxxhdpi/image.png"), Qualifiers(dpi = Dpi.XXXHDPI), group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -173,28 +173,43 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-en/image.png"), Qualifiers(locale = Locale("en")), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-en-rGB/image.png"), Qualifiers(locale = Locale("en", "GB")), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-hdpi-en-rGB/image.png"), Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.HDPI), group = ResItem.GroupDrawable),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-hdpi-en-rUS/image.png"), Qualifiers(locale = Locale("en", "US"), dpi = Dpi.HDPI), group = ResItem.GroupDrawable),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-en/image.png"), Qualifiers(locale = Locale("en")), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-en-rGB/image.png"), Qualifiers(locale = Locale("en", "GB")), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes(
+                "image",
+                File(resourcesRoot, "drawable-hdpi-en-rGB/image.png"),
+                Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.HDPI),
+                group = ResItem.Drawable,
+                root = resourcesRoot,
+            ),
+            ResItem.FileRes(
+                "image",
+                File(resourcesRoot, "drawable-hdpi-en-rUS/image.png"),
+                Qualifiers(locale = Locale("en", "US"), dpi = Dpi.HDPI),
+                group = ResItem.Drawable,
+                root = resourcesRoot,
+            ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-en-rGB-xxhdpi/image.png"),
                 Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI),
-                group = ResItem.GroupDrawable,
+                group = ResItem.Drawable,
+                root = resourcesRoot,
             ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-en-rGB-q1-xxhdpi/image.png"),
                 Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI, others = setOf("q1")),
-                group = ResItem.GroupDrawable,
+                group = ResItem.Drawable,
+                root = resourcesRoot,
             ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-en-rGB-q1-xxhdpi-q2/image.png"),
                 Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI, others = setOf("q1", "q2")),
-                group = ResItem.GroupDrawable,
+                group = ResItem.Drawable,
+                root = resourcesRoot,
             ),
         )
     }

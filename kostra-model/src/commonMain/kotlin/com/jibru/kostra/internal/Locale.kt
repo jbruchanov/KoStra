@@ -8,7 +8,7 @@ class Locale(language: String, region: String?) {
 
     val language: String = language.lowercase()
     val region: String? = region?.lowercase()?.let { if (it.startsWith("r")) it.substring(1) else it }
-    val languageRegion = if (region == null) language else "$language-$region"
+    val languageRegion = if (this.region == null) this.language else "${this.language}${this.region}"
 
     init {
         if (language.isNotEmpty() && region != null) {

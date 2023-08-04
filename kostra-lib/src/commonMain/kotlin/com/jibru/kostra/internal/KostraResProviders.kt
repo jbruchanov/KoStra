@@ -11,17 +11,17 @@ import com.jibru.kostra.StringResourceKey
 interface KostraResProviders {
 
     fun KostraResources.stringResource(key: StringResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
-        val res = strings[key] ?: throw MissionResourceException(key, "Undefined string resource")
+        val res = string[key] ?: throw MissionResourceException(key, "Undefined string resource")
         return res.resolveResource(qualifiers) as ResourceItem<String>
     }
 
     fun KostraResources.pluralResource(key: StringResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
-        val res = strings[key] ?: throw MissionResourceException(key, "Undefined string resource")
+        val res = string[key] ?: throw MissionResourceException(key, "Undefined string resource")
         return res.resolveResource(qualifiers) as ResourceItem<String>
     }
 
     fun KostraResources.painterResource(key: DrawableResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
-        val res = drawables[key] ?: throw IllegalArgumentException("Unable to find binary resource for key:'${key.key}'")
+        val res = drawable[key] ?: throw IllegalArgumentException("Unable to find binary resource for key:'${key.key}'")
         return res.resolveResource(qualifiers) as ResourceItem<String>
     }
 
@@ -30,7 +30,7 @@ interface KostraResProviders {
     }
 
     fun KostraResources.resource(key: AssetResourceKey, qualifiers: Qualifiers): ResourceItem<*> {
-        val res = binary[key] ?: drawables[key] ?: throw IllegalArgumentException("Unable to find drawable/binary resource for key:'${key.key}'")
+        val res = binary[key] ?: drawable[key] ?: throw IllegalArgumentException("Unable to find drawable/binary resource for key:'${key.key}'")
         return res.resolveResource(qualifiers)
     }
 
@@ -38,7 +38,7 @@ interface KostraResProviders {
 }
 
 @Suppress("UnnecessaryVariable")
-internal fun ResourceContainer.resolveResource(qualifiers: Qualifiers): ResourceItem<*> {
+fun ResourceContainer.resolveResource(qualifiers: Qualifiers): ResourceItem<*> {
     val valueContainer = this.asValueContainer()
     val values = valueContainer.values
     val item = values.filterNotEmpty { it.qualifiers.locale == qualifiers.locale }?.firstOrNull(qualifiers.dpi)
