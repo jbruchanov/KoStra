@@ -6,21 +6,21 @@ import com.jibru.kostra.internal.Qualifiers
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class ResourcesKtGeneratorTest {
+class ResourcesKtGeneratorKClassTest {
 
     @Test
     fun generateKClass() {
-        val gen = ResourcesKtGenerator("com.sample.app", "K")
-        val result = gen.generateKClass(
-            listOf(
+        val result = ResourcesKtGenerator(
+            "com.sample.app", "K", listOf(
                 string("str1"),
                 string("2str"),
                 file("img", group = "Drawable"),
                 file("icon2", group = "drawable"),
                 file("audio1", group = "raw"),
                 file("test", group = "_"),
-            ),
-        ).trim()
+            )
+        ).generateKClass().trim()
+
         assertThat(result).isEqualTo(
             """
             package com.sample.app
@@ -51,8 +51,8 @@ class ResourcesKtGeneratorTest {
 
     @Test
     fun `generateKClass no package`() {
-        val gen = ResourcesKtGenerator("", "ResQ")
-        val result = gen.generateKClass(listOf(string("str1"))).trim()
+        val gen = ResourcesKtGenerator("", "ResQ", listOf(string("str1")))
+        val result = gen.generateKClass().trim()
         assertThat(result).isEqualTo(
             """
             import com.jibru.kostra.StringResourceKey
@@ -68,13 +68,13 @@ class ResourcesKtGeneratorTest {
 
     @Test
     fun `generateKClass WHEN drawable with unexpected extension`() {
-        val gen = ResourcesKtGenerator("")
-        val result = gen.generateKClass(
-            listOf(
-                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.GroupDrawable),
-            ),
-        ).trim()
+        val gen = ResourcesKtGenerator(
+            "", items = listOf(
+                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.Drawables),
+                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.Drawables),
+            )
+        )
+        val result = gen.generateKClass().trim()
         assertThat(result).isEqualTo(
             """
             import com.jibru.kostra.DrawableResourceKey
@@ -107,7 +107,7 @@ class ResourcesKtGeneratorTest {
             ),
         )
 
-        val result = ResourcesKtGenerator("").generateKClass(items).trim()
+        val result = ResourcesKtGenerator("", items = items).generateKClass().trim()
         assertThat(result).isEqualTo(
             """
             import com.jibru.kostra.BinaryResourceKey
