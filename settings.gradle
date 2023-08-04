@@ -28,8 +28,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kostra"
-include("kostra-lib")
-include("kostra-model")
+include("lib-kostra")
+include("lib-kostra-model")
+include("lib-kostra-compose")
 
 def incBuild = hasProperty("includeBuild") ? this["includeBuild"].toString().toBoolean() : false
 if (incBuild) {
