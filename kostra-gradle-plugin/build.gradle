@@ -89,8 +89,7 @@ gradlePlugin {
     }
 }
 
-def tasks = ["compileKotlin", "sourcesJar", "runKtlintCheckOverMainSourceSet"]
+def tasks = ["compileKotlin", "sourcesJar", "runKtlintCheckOverMainSourceSet", "runKtlintFormatOverMainSourceSet"]
 tasks.forEach {
     project.tasks.getByName(it) { dependsOn(copyModel) }
 }
-

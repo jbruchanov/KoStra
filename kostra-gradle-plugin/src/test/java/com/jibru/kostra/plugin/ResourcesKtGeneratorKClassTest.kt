@@ -11,14 +11,16 @@ class ResourcesKtGeneratorKClassTest {
     @Test
     fun generateKClass() {
         val result = ResourcesKtGenerator(
-            "com.sample.app", "K", listOf(
+            packageName = "com.sample.app",
+            className = "K",
+            listOf(
                 string("str1"),
                 string("2str"),
                 file("img", group = "Drawable"),
                 file("icon2", group = "drawable"),
                 file("audio1", group = "raw"),
                 file("test", group = "_"),
-            )
+            ),
         ).generateKClass().trim()
 
         assertThat(result).isEqualTo(
@@ -51,7 +53,7 @@ class ResourcesKtGeneratorKClassTest {
 
     @Test
     fun `generateKClass no package`() {
-        val gen = ResourcesKtGenerator("", "ResQ", listOf(string("str1")))
+        val gen = ResourcesKtGenerator(packageName = "", className = "ResQ", items = listOf(string("str1")))
         val result = gen.generateKClass().trim()
         assertThat(result).isEqualTo(
             """
@@ -69,10 +71,11 @@ class ResourcesKtGeneratorKClassTest {
     @Test
     fun `generateKClass WHEN drawable with unexpected extension`() {
         val gen = ResourcesKtGenerator(
-            "", items = listOf(
+            packageName = "",
+            items = listOf(
                 ResItem.FileRes("imagePng", File("drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.Drawables),
                 ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.Drawables),
-            )
+            ),
         )
         val result = gen.generateKClass().trim()
         assertThat(result).isEqualTo(
@@ -107,7 +110,7 @@ class ResourcesKtGeneratorKClassTest {
             ),
         )
 
-        val result = ResourcesKtGenerator("", items = items).generateKClass().trim()
+        val result = ResourcesKtGenerator(packageName = "", items = items).generateKClass().trim()
         assertThat(result).isEqualTo(
             """
             import com.jibru.kostra.BinaryResourceKey
