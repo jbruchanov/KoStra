@@ -28,8 +28,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":kostra-model"))
-                implementation(project(":kostra-lib"))
+                implementation(project(":lib-kostra-model"))
+                implementation(project(":lib-kostra"))
             }
         }
 

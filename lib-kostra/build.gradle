@@ -18,7 +18,7 @@ kotlin {
                 compileOnly(libs.jetbrains.compose.ui.graphics)
                 compileOnly(libs.jetbrains.compose.components.resources)
 
-                implementation(project(":kostra-model"))
+                implementation(project(":lib-kostra-model"))
                 implementation(libs.kotlinx.datetime)
             }
         }

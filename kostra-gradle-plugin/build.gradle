@@ -11,7 +11,7 @@ apply from: ktlint
 project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
 
-def kostraModelSrc = "kostra-model/src/commonMain/kotlin"
+def kostraModelSrc = "lib-kostra-model/src/commonMain/kotlin"
 sourceSets {
     /*
         simple workaround for includedBuild
@@ -30,7 +30,7 @@ task deleteModel() {
     outputs.upToDateWhen { false }
     group "kostra"
     doLast {
-        file("build/kostra-model").deleteDir()
+        file("build/lib-kostra-model").deleteDir()
     }
 }
 
