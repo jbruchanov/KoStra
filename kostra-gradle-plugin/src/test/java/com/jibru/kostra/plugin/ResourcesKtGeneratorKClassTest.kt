@@ -27,23 +27,23 @@ class ResourcesKtGeneratorKClassTest {
             """
             package com.sample.app
 
-            import com.jibru.kostra.AssetResourceKey
+            import com.jibru.kostra.BinaryResourceKey
             import com.jibru.kostra.DrawableResourceKey
             import com.jibru.kostra.StringResourceKey
 
             public object K {
               public object `_` {
-                public val test: AssetResourceKey = AssetResourceKey("test")
+                public val test: BinaryResourceKey = BinaryResourceKey("test")
               }
 
               public object drawable {
                 public val icon2: DrawableResourceKey = DrawableResourceKey("icon2")
 
-                public val img: AssetResourceKey = AssetResourceKey("img")
+                public val img: BinaryResourceKey = BinaryResourceKey("img")
               }
 
               public object raw {
-                public val audio1: AssetResourceKey = AssetResourceKey("audio1")
+                public val audio1: BinaryResourceKey = BinaryResourceKey("audio1")
               }
 
               public object string {

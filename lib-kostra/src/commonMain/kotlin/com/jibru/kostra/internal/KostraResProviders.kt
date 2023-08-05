@@ -3,6 +3,7 @@ package com.jibru.kostra.internal
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.DrawableResourceKey
 import com.jibru.kostra.MissionResourceException
+import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceContainer
 import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
@@ -15,9 +16,9 @@ interface KostraResProviders {
         return res.resolveResource(qualifiers) as ResourceItem<String>
     }
 
-    fun KostraResources.pluralResource(key: StringResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
-        val res = string[key] ?: throw MissionResourceException(key, "Undefined string resource")
-        return res.resolveResource(qualifiers) as ResourceItem<String>
+    fun KostraResources.pluralResource(key: PluralResourceKey, qualifiers: Qualifiers, count: Int): ResourceItem<Map<String, String>> {
+        val res = plural[key] ?: throw MissionResourceException(key, "Undefined string resource")
+        return res.resolveResource(qualifiers) as ResourceItem<Map<String, String>>
     }
 
     fun KostraResources.painterResource(key: DrawableResourceKey, qualifiers: Qualifiers): ResourceItem<String> {
@@ -49,7 +50,7 @@ fun ResourceContainer.resolveResource(qualifiers: Qualifiers): ResourceItem<*> {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun throwMissing(key: ResourceKey, type: String, value: Any): Nothing =
+private inline fun throwMissing(key: ResourceKey, type: String, value: Any): Nothing =
     throw MissionResourceException(key, "Unable to resolve value of key:'$key' based on $type:'$value'")
 
 private fun <T> List<T>.filterNotEmpty(predicate: (T) -> Boolean) = filter(predicate).takeIf { it.isNotEmpty() }
