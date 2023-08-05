@@ -4,7 +4,7 @@ plugins {
     id("kostra")
 }
 
-apply from: "$rootProject.projectDir/build-ktlint.gradle"
+apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 
 kotlin {
     androidTarget {
@@ -28,8 +28,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":lib-kostra-model"))
-                implementation(project(":lib-kostra"))
+                implementation("com.jibru:kostra-common")
             }
         }
 

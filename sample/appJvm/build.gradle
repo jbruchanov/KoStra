@@ -26,6 +26,5 @@ application {
 
 dependencies {
     implementation(project(":shared"))
-    implementation(project(":lib-kostra"))
-    implementation(project(":lib-kostra-model"))
+    implementation(libs.kostra.common)
 }
