@@ -114,8 +114,8 @@ class FileResolverTest {
         assertThat(items).containsExactly(
             ResItem.FileRes("image", File(resourcesRoot, "DRAWABLE/image.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
             ResItem.FileRes("meme", File(resourcesRoot, "drawable_MEMES/MEME.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("icon", File(resourcesRoot, "icon/icon.ico"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("icons", File(resourcesRoot, "iCOns/icons.bmp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("icon", File(resourcesRoot, "icon/icon.ICO"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("icons", File(resourcesRoot, "iCOns/ICONS.bmp"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
             ResItem.FileRes("iconky", File(resourcesRoot, "iconky/iCONKy.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
         )
     }

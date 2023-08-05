@@ -2,7 +2,7 @@ package com.jibru.kostra.plugin.ext
 
 import java.io.File
 
-fun File.relativeTo(to: File, ignoreCase: Boolean = false): String = buildString {
+fun File.relativeTo(to: File, ignoreCase: Boolean = true): String = buildString {
     val rootPath = to.absolutePath
     val path = absolutePath
     if (path.startsWith(rootPath, ignoreCase = ignoreCase)) {
