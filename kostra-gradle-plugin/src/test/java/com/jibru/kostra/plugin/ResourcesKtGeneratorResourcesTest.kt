@@ -1,8 +1,16 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.database.StringDatabase
+import com.jibru.kostra.internal.ext.takeIfNotEmpty
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIf
 import test.testResources
+import java.io.File
+import java.io.FileOutputStream
+import java.util.Properties
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 class ResourcesKtGeneratorResourcesTest {
 
@@ -50,4 +58,55 @@ class ResourcesKtGeneratorResourcesTest {
                 }
         }
     }
+
+    @Test
+    @EnabledIf("hasRealProjectLocation")
+    fun test() {
+        val sources = File(realProjectResources()!!).listFiles()!!.filter { it.name.startsWith("res") }
+        val items = FileResolver().resolve(sources)
+        val keysWithQualifiers = items.filter { it is ResItem.StringRes }
+            .groupBy { it.key }
+            .toSortedMap()
+            .mapValues { it.value.associateBy { it.qualifiers.locale.languageRegion } }
+
+        val locales = keysWithQualifiers.map { it.value.values.map { it.qualifiers.locale.languageRegion } }
+            .flatten()
+            .distinct()
+
+        val valuesPerLocale = locales.map {
+            it to keysWithQualifiers.mapValues { locale -> (locale.value[it] as? StringValueResItem)?.value }
+        }
+
+        val compress = true
+        val db = StringDatabase()
+        valuesPerLocale.forEach { (locale, items) ->
+            val values = items.values
+            db.set(values)
+            val l = locale.takeIfNotEmpty() ?: "default"
+            val data = db.save()
+            File("build/$l.db").writeBytes(data)
+            if (compress) {
+                ZipOutputStream(FileOutputStream(File("build/$l.db.zip"))).apply {
+                    putNextEntry(ZipEntry("$l.db"))
+                    write(data)
+                    closeEntry()
+                    close()
+                }
+            }
+        }
+    }
+
+    private fun StringDatabase.getAll() = buildList<String?> {
+        val db = this@getAll
+        for (i in 0 until db.count()) {
+            add(db.get(i))
+        }
+    }
+
+    private fun hasRealProjectLocation() = realProjectResources() != null
+    private fun realProjectResources() = File("../local.properties")
+        .takeIf { it.exists() }
+        ?.let {
+            Properties().apply { load(it.bufferedReader()) }["realProjectResources"]?.toString()
+        }
 }
