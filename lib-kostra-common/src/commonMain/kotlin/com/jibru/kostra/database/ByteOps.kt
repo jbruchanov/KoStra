@@ -1,18 +1,11 @@
 package com.jibru.kostra.database
 
 interface ByteOps {
-    fun ByteArray.readInt(offset: Int) =
-        (this[offset].toInt() and 0xFF shl 24) or
-            (this[offset + 1].toInt() and 0xFF shl 16) or
-            (this[offset + 2].toInt() and 0xFF shl 8) or
-            (this[offset + 3].toInt() and 0xFF)
 
-    fun ByteArray.writeInt(value: Int, offset: Int) {
-        this[offset] = (value shr 24).toByte()
-        this[offset + 1] = (value shr 16).toByte()
-        this[offset + 2] = (value shr 8).toByte()
-        this[offset + 3] = value.toByte()
-    }
+    val bytesPerInt: Int
+    fun ByteArray.readInt(offset: Int): Int
+
+    fun ByteArray.writeInt(value: Int, offset: Int)
 
     fun ByteArray.readByteAsUInt(offset: Int): Int = this[offset].toUByte().toInt()
     fun ByteArray.writeByte(value: UInt, offset: Int) {
@@ -23,5 +16,57 @@ interface ByteOps {
     fun ByteArray.readIntArray(offset: Int, size: Int) =
         IntArray(size) { readInt(offset + (it * Int.SIZE_BYTES)) }
 
-    companion object : ByteOps
+    fun validateInt(value: Int): Int
+
+    class Default(override val bytesPerInt: Int) : ByteOps {
+
+        private val delegate: ByteOps = when (bytesPerInt) {
+            4 -> ByteOps4Bytes
+            2 -> ByteOps2Bytes
+            else -> throw UnsupportedOperationException("Unsupported bytesPerInt:$bytesPerInt")
+        }
+
+        override fun validateInt(value: Int) = delegate.validateInt(value)
+
+        override fun ByteArray.readInt(offset: Int): Int = with(delegate) { readInt(offset) }
+        override fun ByteArray.writeInt(value: Int, offset: Int) = with(delegate) { writeInt(value, offset) }
+    }
+}
+
+internal object ByteOps4Bytes : ByteOps {
+
+    override fun validateInt(value: Int) = value
+
+    override val bytesPerInt = 4
+    override fun ByteArray.readInt(offset: Int) =
+        (this[offset].toInt() and 0xFF shl 24) or
+            (this[offset + 1].toInt() and 0xFF shl 16) or
+            (this[offset + 2].toInt() and 0xFF shl 8) or
+            (this[offset + 3].toInt() and 0xFF)
+
+    override fun ByteArray.writeInt(value: Int, offset: Int) {
+        this[offset] = (value shr 24).toByte()
+        this[offset + 1] = (value shr 16).toByte()
+        this[offset + 2] = (value shr 8).toByte()
+        this[offset + 3] = value.toByte()
+    }
+}
+
+internal object ByteOps2Bytes : ByteOps {
+
+    override fun validateInt(value: Int): Int {
+        require(value == -1 || value in 0..65535) { "Value:$value must be in 2bytes range [0-65535] or -1" }
+        return value
+    }
+
+    override val bytesPerInt = 2
+    override fun ByteArray.readInt(offset: Int) =
+        (this[offset].toInt() and 0xFF shl 8) or
+            (this[offset + 1].toInt() and 0xFF)
+
+    override fun ByteArray.writeInt(value: Int, offset: Int) {
+        val v = value and 0xFFFF
+        this[offset] = (v shr 8).toByte()
+        this[offset + 1] = v.toByte()
+    }
 }
