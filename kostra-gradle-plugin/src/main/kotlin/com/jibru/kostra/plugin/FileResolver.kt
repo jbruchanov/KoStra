@@ -65,7 +65,10 @@ class FileResolver(
                 val ext = file.ext()
                 val key = keyMapper(name.let { if (ext.isNotEmpty()) it.substringBefore(".$ext") else it }, file)
                 when {
-                    stringFiles.any { regex -> regex.matches(name.lowercase()) } -> androidResourcesXmlParser.findStrings(file, qualifiers)
+                    stringFiles.any { regex -> regex.matches(name.lowercase()) } -> {
+                        check(qualifiers.hasOnlyLocale) { "Only locale qualifiers allowed for strings, file:${file.absolutePath}, qualifiers:$groupQualifiers" }
+                        androidResourcesXmlParser.findStrings(file, qualifiers)
+                    }
 
                     drawableGroups.any { regex -> regex.matches(group) } && drawableExtensions.contains(ext.lowercase()) ->
                         listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiers = qualifiers, group = ResItem.Drawable))
