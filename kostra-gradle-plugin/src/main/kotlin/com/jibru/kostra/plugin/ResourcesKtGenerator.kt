@@ -1,12 +1,16 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.DrawableResourceKey
+import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceContainer
+import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.internal.AppResources
 import com.jibru.kostra.internal.Dpi
 import com.jibru.kostra.internal.KostraResourceHider
 import com.jibru.kostra.internal.Locale
 import com.jibru.kostra.internal.Qualifiers
 import com.jibru.kostra.internal.ResourceItem
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -31,6 +35,7 @@ class ResourcesKtGenerator(
     private val typeResourceItem = ResourceItem::class.asTypeName()
     private val typeResourceContainerValue = ResourceContainer.Value::class.asTypeName()
     private val typeResourceHider = KostraResourceHider::class.asTypeName()
+    private val typeResourceProvider = ClassName(typeResourceHider.packageName, "KostraResProviders")
     private val typeQualifiers = Qualifiers::class.asTypeName()
 
     //class name to have in code Qualifiers.cs, instead of just cs + import
@@ -171,7 +176,7 @@ class ResourcesKtGenerator(
                                 addStatement("%T(", appResourcesType)
                                 indent()
                                 itemsPerResourceGroupPerKey.forEach { (group, _) ->
-                                    addStatement("$group = with(%T) { %N },", typeResourceHider, group)
+                                    addStatement("$group = with(%T) { %N() },", typeResourceHider, group)
                                 }
                                 unindent()
                                 addStatement(")")
@@ -198,7 +203,7 @@ class ResourcesKtGenerator(
     ): PropertySpec {
         val item = items.getValue(items.keys.first()).first().resourceKeyType
         val mapKeyType = Map::class.asTypeName().parameterizedBy(item, ResourceContainer::class.asTypeName())
-        return PropertySpec.builder(property, mapKeyType, KModifier.PUBLIC)
+        return PropertySpec.builder(property, mapKeyType, KModifier.PRIVATE)
             .initializer(
                 CodeBlock.Builder()
                     .addStatement("buildMap(%L) {", items.size)
@@ -273,8 +278,8 @@ class ResourcesKtGenerator(
                             .addStatement("),")
                             .build(),
                     )
-                    addStatement("%T", qualifier)
-                    add(")")
+                    add("%T", qualifier)
+                    addStatement("),")
                 }
 
                 else -> throw UnsupportedOperationException(item.toString())
@@ -297,4 +302,142 @@ class ResourcesKtGenerator(
             add("))")
         }
         .build()
+
+    /**
+     * Generate all resource providers
+     * ```
+     * @Composable
+     * fun stringResource(...)
+     * ```
+     */
+    fun generateResourceProviders(): FileSpec {
+        val typeComposable = ClassName("androidx.compose.runtime", "Composable")
+        val typeComposePainter = ClassName("androidx.compose.ui.graphics.painter", "Painter")
+        val typeComposeResource = ClassName("org.jetbrains.compose.resources", "Resource")
+        val typeFunComposeResource = ClassName("org.jetbrains.compose.resources", "resource")
+        val typeFunComposePainterResource = ClassName("org.jetbrains.compose.resources", "painterResource")
+        val typeFunRememberDefaultResourceQualifiers = ClassName("com.jibru.kostra.compose", "rememberDefaultResourceQualifiers")
+
+        return FileSpec.builder(packageName, "ResourceProvider")
+            //fun stringResource(key: StringResourceKey): String
+            .addAnnotation(
+                AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+                    .addMember("%T::class", ClassName("org.jetbrains.compose.resources", "ExperimentalResourceApi"))
+                    .build(),
+            )
+            .addFunction(
+                FunSpec.builder("stringResource")
+                    .addAnnotation(typeComposable)
+                    .addParameter("key", StringResourceKey::class)
+                    .returns(String::class)
+                    .addCode(
+                        CodeBlock.builder()
+                            .addStatement("with(%T) {", typeResourceProvider)
+                            .indent()
+                            .addStatement("val qualifiers = rememberDefaultResourceQualifiers()")
+                            .addStatement("return %N.stringResource(key, qualifiers).value", resourcesPropertyName)
+                            .unindent()
+                            .addStatement("}")
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addFunction(
+                //fun stringResource(key: StringResourceKey, vararg formatArgs: String)
+                FunSpec.builder("stringResource")
+                    .addAnnotation(typeComposable)
+                    .addParameter("key", StringResourceKey::class)
+                    .addParameter("formatArgs", Any::class, KModifier.VARARG)
+                    .returns(String::class)
+                    .addCode(
+                        CodeBlock.builder()
+                            .addStatement("with(%T) {", typeResourceProvider)
+                            .indent()
+                            .addStatement("val qualifiers = rememberDefaultResourceQualifiers()")
+                            .addStatement("return %N.stringResource(key, qualifiers).value.format(*formatArgs)", resourcesPropertyName)
+                            .unindent()
+                            .addStatement("}")
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addFunction(
+                //public fun pluralStringResource(key: PluralResourceKey, count: Int, vararg formatArgs: Any): String {
+                FunSpec.builder("pluralStringResource")
+                    .addAnnotation(typeComposable)
+                    .addParameter("key", PluralResourceKey::class)
+                    .addParameter("count", Int::class)
+                    .returns(String::class)
+                    .addCode(
+                        CodeBlock.builder()
+                            .addStatement("with(%T) {", typeResourceProvider)
+                            .indent()
+                            .addStatement("val qualifiers = rememberDefaultResourceQualifiers()")
+                            .addStatement("val quantityKey = %S", "other")
+                            .addStatement("return %N.pluralResource(key, qualifiers, count).value.getValue(quantityKey)", resourcesPropertyName)
+                            .unindent()
+                            .addStatement("}")
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addFunction(
+                //public fun pluralStringResource(key: PluralResourceKey, count: Int, vararg formatArgs: Any): String {
+                FunSpec.builder("pluralStringResource")
+                    .addAnnotation(typeComposable)
+                    .addParameter("key", PluralResourceKey::class)
+                    .addParameter("count", Int::class)
+                    .addParameter("formatArgs", Any::class, KModifier.VARARG)
+                    .returns(String::class)
+                    .addCode(
+                        CodeBlock.builder()
+                            .addStatement("with(%T) {", typeResourceProvider)
+                            .indent()
+                            .addStatement("val qualifiers = rememberDefaultResourceQualifiers()")
+                            .addStatement("val quantityKey = %S", "other")
+                            .addStatement("return %N.pluralResource(key, qualifiers, count).value.getValue(quantityKey).format(*formatArgs)", resourcesPropertyName)
+                            .unindent()
+                            .addStatement("}")
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addFunction(
+                //public fun painterResource(key: DrawableResourceKey): Painter
+                FunSpec.builder("painterResource")
+                    .addAnnotation(typeComposable)
+                    .addParameter("key", DrawableResourceKey::class)
+                    .returns(typeComposePainter)
+                    .addCode(
+                        CodeBlock.builder()
+                            .addStatement("with(%T) {", typeResourceProvider)
+                            .indent()
+                            .addStatement("val qualifiers = rememberDefaultResourceQualifiers()")
+                            .addStatement("return %T(%N.painterResource(key, qualifiers).value)", typeFunComposePainterResource, resourcesPropertyName)
+                            .unindent()
+                            .addStatement("}")
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addFunction(
+                //public fun binaryResource(key: DrawableResourceKey): Resource
+                FunSpec.builder("binaryResource")
+                    .addAnnotation(typeComposable)
+                    .addParameter("key", DrawableResourceKey::class)
+                    .returns(typeComposeResource)
+                    .addCode(
+                        CodeBlock.builder()
+                            .addStatement("with(%T) {", typeResourceProvider)
+                            .indent()
+                            .addStatement("val qualifiers = %T()", typeFunRememberDefaultResourceQualifiers)
+                            .addStatement("return %T(%N.binaryResource(key, qualifiers).value)", typeFunComposeResource, resourcesPropertyName)
+                            .unindent()
+                            .addStatement("}")
+                            .build(),
+                    )
+                    .build(),
+            )
+            .build()
+    }
 }

@@ -1,6 +1,6 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.AssetResourceKey
+import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.DrawableResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.StringResourceKey
@@ -64,7 +64,7 @@ sealed class ResItem {
         val drawable = group == Drawable
         override val value by lazy { file.relativeTo(root, ignoreCase = true) }
         override val resourcesGroup: String = if (drawable) Drawable else Binary
-        override val resourceKeyType: TypeName = if (drawable) typeNameOf<DrawableResourceKey>() else typeNameOf<AssetResourceKey>()
+        override val resourceKeyType: TypeName = if (drawable) typeNameOf<DrawableResourceKey>() else typeNameOf<BinaryResourceKey>()
     }
 
     companion object {
