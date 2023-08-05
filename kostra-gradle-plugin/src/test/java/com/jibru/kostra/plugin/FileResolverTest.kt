@@ -8,6 +8,7 @@ import com.jibru.kostra.internal.Plural.Companion.toPluralList
 import com.jibru.kostra.internal.Qualifiers
 import com.jibru.kostra.internal.ext.takeIfNotEmpty
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import test.resources
 import test.testResources
 import java.io.File
@@ -282,21 +283,9 @@ class FileResolverTest {
         )
 
         addStrings(
-            file = "values-fun/strings.xml",
-            strings = mapOf("item1" to "item1Fun"),
-            plurals = mapOf("dog" to mapOf("other" to "doggos", "one" to "doggo")),
-        )
-
-        addStrings(
             file = "values-cs/strings.xml",
             strings = mapOf("item1" to "item1Cs"),
             plurals = mapOf("dog" to mapOf("other" to "psů", "one" to "pes", "few" to "psy", "many" to "psiska!")),
-        )
-
-        addStrings(
-            file = "values-fun-cs/strings.xml",
-            strings = mapOf("item1" to "item1FunCs"),
-            plurals = mapOf("dog" to mapOf("other" to "!psů!", "one" to "!pes!", "many" to "!psy!", "few" to "!psiska!")),
         )
 
         buildResources()
@@ -305,25 +294,37 @@ class FileResolverTest {
 
         assertThat(items).containsExactly(
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Fun", Qualifiers(others = setOf("fun"))),
             ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
-            ResItem.StringRes("item1", "item1FunCs", Qualifiers(locale = Locale("cs"), others = setOf("fun"))),
 
             ResItem.Plurals("dog", mapOf(Plural.Other to "dogs", Plural.One to "dog").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("dog", mapOf(Plural.Other to "doggos", Plural.One to "doggo").toPluralList(), Qualifiers(others = setOf("fun"))),
             ResItem.Plurals(
                 "dog",
                 mapOf(Plural.Other to "psů", Plural.One to "pes", Plural.Few to "psy", Plural.Many to "psiska!").toPluralList(),
                 Qualifiers(locale = Locale("cs")),
             ),
-            ResItem.Plurals(
-                "dog",
-                mapOf(Plural.Other to "!psů!", Plural.One to "!pes!", Plural.Many to "!psy!", Plural.Few to "!psiska!").toPluralList(),
-                Qualifiers(
-                    locale = Locale("cs"),
-                    others = setOf("fun"),
-                ),
-            ),
         )
+    }
+
+    @Test
+    fun `resolve WHEN any extra qualifiers THEN fails`() {
+        testResources {
+            addStrings(
+                file = "values-fun/strings.xml",
+                strings = mapOf("item1" to "item1"),
+                plurals = mapOf("dog" to mapOf("other" to "dogs", "one" to "dog")),
+            )
+            buildResources()
+            assertThrows<IllegalStateException> { FileResolver().resolve(resourcesRoot) }
+        }
+
+        testResources {
+            addStrings(
+                file = "values-xhdpi/strings.xml",
+                strings = mapOf("item1" to "item1"),
+                plurals = mapOf("dog" to mapOf("other" to "dogs", "one" to "dog")),
+            )
+            buildResources()
+            assertThrows<IllegalStateException> { FileResolver().resolve(resourcesRoot) }
+        }
     }
 }

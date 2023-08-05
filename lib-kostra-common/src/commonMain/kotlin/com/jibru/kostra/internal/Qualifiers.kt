@@ -5,6 +5,8 @@ data class Qualifiers(
     val dpi: Dpi = Dpi.Undefined,
     val others: Set<String> = emptySet(),
 ) {
+    val hasOnlyLocale = dpi == Dpi.Undefined && others.isEmpty()
+
     val key by lazy {
         if (this == Undefined) {
             ""
