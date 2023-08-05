@@ -62,7 +62,7 @@ class KostraResProvidersLocaleTest : KostraResProviders {
             assertEquals(K.string.test3, ex2.key)
             assertEquals(
                 "Unable to resolve value of key:'StringResourceKey(key=test3)' " +
-                    "based on qualifiers:'Qualifiers(locale=Locale(language='cs', region=null), dpi=Undefined, others=[])'",
+                    "based on qualifiers:'Qualifiers(key='cs', locale=Locale(l='cs', r=null), dpi=Undefined, others=[])'",
                 ex2.message,
             )
         }

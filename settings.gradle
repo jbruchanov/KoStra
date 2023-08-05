@@ -28,11 +28,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kostra"
-include("lib-kostra-common")
+//for testing the app-sample, open the sample as root of the project
 include("kostra-gradle-plugin")
-if (false) {
-    ['appJvm', 'shared'].forEach { dirName ->
-        include(":$dirName")
-        project(":$dirName").projectDir = file("sample/$dirName")
-    }
-}
+include("lib-kostra-common")

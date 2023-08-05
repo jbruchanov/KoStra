@@ -97,12 +97,12 @@ object Fixtures {
             strings: Map<StringResourceKey, ResourceContainer> = emptyMap(),
             plurals: Map<PluralResourceKey, ResourceContainer> = emptyMap(),
             drawables: Map<DrawableResourceKey, ResourceContainer> = emptyMap(),
-            binary: Map<AssetResourceKey, ResourceContainer> = emptyMap(),
+            binary: Map<BinaryResourceKey, ResourceContainer> = emptyMap(),
         ) = object : KostraResources {
             override val string: Map<StringResourceKey, ResourceContainer> = strings
             override val plural: Map<PluralResourceKey, ResourceContainer> = plurals
             override val drawable: Map<DrawableResourceKey, ResourceContainer> = drawables
-            override val binary: Map<AssetResourceKey, ResourceContainer> = binary
+            override val binary: Map<BinaryResourceKey, ResourceContainer> = binary
         }
     }
 }
