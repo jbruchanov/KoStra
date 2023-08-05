@@ -1,6 +1,8 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
+import com.jibru.kostra.internal.Plural
+import com.jibru.kostra.internal.Plural.Companion.toPluralList
 import com.jibru.kostra.internal.Qualifiers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -50,7 +52,7 @@ internal class AndroidResourcesXmlParserTest {
             {
                 val item = result[2] as ResItem.Plurals
                 assertThat(item.key).isEqualTo("plural_empty")
-                assertThat(item.items).isEmpty()
+                assertThat(item.items).isEqualTo(List<String?>(Plural.Map.size) { null })
                 assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
             },
             {
@@ -58,9 +60,9 @@ internal class AndroidResourcesXmlParserTest {
                 assertThat(item.key).isEqualTo("plural_dogs")
                 assertThat(item.items).isEqualTo(
                     mapOf(
-                        "one" to "dog",
-                        "other" to "dogs",
-                    ),
+                        Plural.One to "dog",
+                        Plural.Other to "dogs",
+                    ).toPluralList(),
                 )
                 assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
             },
