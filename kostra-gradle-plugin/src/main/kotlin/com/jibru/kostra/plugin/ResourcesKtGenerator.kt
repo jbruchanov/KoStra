@@ -262,6 +262,8 @@ class ResourcesKtGenerator(
                 qualifiers.getValue(item.qualifiers)
             }
             when (item) {
+                //TODO: KS32 REDO
+                /*
                 is StringValueResItem -> addStatement("%1T(%2T, %3S,  %4T),", typeResourceItem, type, item.value, qualifier)
                 is ResItem.Plurals -> {
                     add("%1T(%2T, ", typeResourceItem, type)
@@ -281,6 +283,7 @@ class ResourcesKtGenerator(
                     add("%T", qualifier)
                     addStatement("),")
                 }
+                 */
 
                 else -> throw UnsupportedOperationException(item.toString())
             }

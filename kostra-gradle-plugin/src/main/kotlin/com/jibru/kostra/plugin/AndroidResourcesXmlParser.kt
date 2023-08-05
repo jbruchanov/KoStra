@@ -2,6 +2,8 @@
 
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.internal.Plural
+import com.jibru.kostra.internal.Plural.Companion.toPluralList
 import com.jibru.kostra.internal.Qualifiers
 import java.io.Reader
 import java.io.StringReader
@@ -76,13 +78,13 @@ class AndroidResourcesXmlParser(
                     level == 2 && androidResourcesFile && part == TagPlurals -> {
                         val key = xmlReader.attrName()
                         if (key != null) {
-                            val items = mutableMapOf<String, String>()
+                            val items = mutableMapOf<Plural, String>()
                             xmlReader.parseNestedElements {
-                                val quantity = xmlReader.attrQuantity() ?: throw IllegalStateException("Expecting 'quantity' attribute, $xmlReader")
-                                items[quantity] = xmlReader.text()
+                                val pluralKey = xmlReader.attrQuantity() ?: throw IllegalStateException("Expecting 'quantity' attribute, $xmlReader")
+                                items[pluralKey] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResItem.Plurals(keyMapper(key, file), items, qualifiers))
+                            result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -127,7 +129,7 @@ class AndroidResourcesXmlParser(
     }
 
     private fun XMLStreamReader.attrName() = attr("name")
-    private fun XMLStreamReader.attrQuantity() = attr("quantity")
+    private fun XMLStreamReader.attrQuantity() = attr("quantity")?.let { Plural.Map.get(it) ?: throw IllegalStateException("Invalid key:'$it' for Plurals") }
     private fun XMLStreamReader.attr(name: String) = (0 until attributeCount)
         .firstOrNull { getAttributeLocalName(it) == name }
         ?.let { getAttributeValue(it) }

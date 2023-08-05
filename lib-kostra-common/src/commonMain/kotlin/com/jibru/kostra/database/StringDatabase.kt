@@ -7,7 +7,7 @@ package com.jibru.kostra.database
  * 1 - 4: int -> length of offsets
  * 5 - m: int[, int] -> each int is relative offset from start of the data
  * DATA:
- * m - end: int(len), data(string)[,int,data]
+ * m+1 - end: int(len), data(string)[,int,data]
  */
 class StringDatabase(private var data: ByteArray = ByteArray(0), bytesPerInt: Int = 4) : ByteOps by ByteOps.Default(bytesPerInt) {
 
@@ -37,7 +37,7 @@ class StringDatabase(private var data: ByteArray = ByteArray(0), bytesPerInt: In
                 strData.copyInto(data, destinationOffset = dataIndex + bytesPerInt)
             }
             dataIndex += newDataStep
-            headerIndex += this@StringDatabase.bytesPerInt
+            headerIndex += bytesPerInt
             validateInt(headerSize + dataIndex)
         }
 
@@ -48,32 +48,32 @@ class StringDatabase(private var data: ByteArray = ByteArray(0), bytesPerInt: In
 
     private fun ensureSize(data: ByteArray, size: Int): ByteArray {
         return if (size > data.size) {
-            //low increase index, this can happen only with UTF8+ symbols
-            ByteArray((size * 1.25).toInt()).also { data.copyInto(it) }
+            // this can happen only with UTF8+ symbols
+            ByteArray((size * 1.5).toInt()).also { data.copyInto(it) }
         } else {
             data
         }
     }
 
     fun get(index: Int): String? {
-        require(index >= 0) { "Invalid index:$index" }
-        require(data.size > headerSize) { "Invalid data, size:${data.size}" }
-
         val records = count()
         if (records == 0) return null
+
+        require(index >= 0) { "Invalid index:$index" }
+        require(data.size > headerSize) { "Invalid data, size:${data.size}" }
         require(index < records) { "Invalid index:$index, db has $records records!" }
 
-        val dataStart = headerSize + (records * bytesPerInt)
+        val dataAbsoluteOffset = headerSize + (records * bytesPerInt)
         val recordRelativeOffset = data.readInt(offset = headerSize + (index * bytesPerInt))
         if (recordRelativeOffset == nullConstant) return null
 
-        val recordAbsoluteOffset = dataStart + recordRelativeOffset
+        val recordAbsoluteOffset = dataAbsoluteOffset + recordRelativeOffset
         val dataLen = data.readInt(recordAbsoluteOffset)
         if (dataLen == 0) return ""
 
-        val start = recordAbsoluteOffset + bytesPerInt
+        val start = recordAbsoluteOffset + bytesPerInt/*dataLen*/
         val end = start + dataLen
-        val value = data.decodeToString(start, endIndex = end)
+        val value = data.decodeToString(startIndex = start, endIndex = end)
         return value
     }
 

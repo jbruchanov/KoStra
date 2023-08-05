@@ -2,6 +2,8 @@ package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.internal.Plural
+import com.jibru.kostra.internal.Plural.Companion.toPluralList
 import com.jibru.kostra.internal.Qualifiers
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -106,13 +108,20 @@ class ResourcesKtGeneratorKClassTest {
             ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
             ResItem.StringRes("item1", "item1FunCs", Qualifiers(locale = Locale("cs"), others = setOf("fun"))),
 
-            ResItem.Plurals("dog", mapOf("other" to "dogs", "one" to "dog"), Qualifiers.Undefined),
-            ResItem.Plurals("dog", mapOf("other" to "doggos", "one" to "doggo"), Qualifiers(others = setOf("fun"))),
-            ResItem.Plurals("dog", mapOf("other" to "psů", "one" to "pes", "few" to "psy", "custom" to "psiska!"), Qualifiers(locale = Locale("cs"))),
+            ResItem.Plurals("dog", mapOf(Plural.Other to "dogs", Plural.One to "dog").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("dog", mapOf(Plural.Other to "doggos", Plural.One to "doggo").toPluralList(), Qualifiers(others = setOf("fun"))),
             ResItem.Plurals(
                 "dog",
-                mapOf("other" to "!psů!", "one" to "!pes!", "many" to "!psy!", "custom" to "!psiska!"),
-                Qualifiers(locale = Locale("cs"), others = setOf("fun")),
+                mapOf(Plural.Other to "psů", Plural.One to "pes", Plural.Few to "psy", Plural.Other to "psiska!").toPluralList(),
+                Qualifiers(locale = Locale("cs")),
+            ),
+            ResItem.Plurals(
+                "dog",
+                mapOf(Plural.Other to "!psů!", Plural.One to "!pes!", Plural.Many to "!psy!", Plural.Other to "!psiska!").toPluralList(),
+                Qualifiers(
+                    locale = Locale("cs"),
+                    others = setOf("fun"),
+                ),
             ),
         )
 

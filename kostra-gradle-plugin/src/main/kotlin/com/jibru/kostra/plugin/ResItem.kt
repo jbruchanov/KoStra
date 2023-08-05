@@ -47,7 +47,8 @@ sealed class ResItem {
 
     data class Plurals(
         override val key: String,
-        val items: Map<String, String>,
+        //indexes matching [Plural]
+        val items: List<String?>,
         override val qualifiers: Qualifiers,
     ) : ResItem() {
         override val group: String = Plural
@@ -59,7 +60,7 @@ sealed class ResItem {
         val file: File,
         override val qualifiers: Qualifiers,
         override val group: String,
-        val root: File/* = file.parentFile.parentFile*/,
+        val root: File, /* = file.parentFile.parentFile*/
     ) : ResItem(), StringValueResItem {
         val drawable = group == Drawable
         override val value by lazy { file.relativeTo(root, ignoreCase = true) }
