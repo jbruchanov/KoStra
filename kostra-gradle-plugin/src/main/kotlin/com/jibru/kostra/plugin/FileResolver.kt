@@ -10,7 +10,7 @@ data class FileResolverConfig(
     val drawableGroups: Set<Regex> = setOf("drawables?.*".toRegex(), "mipmap?.*".toRegex()),
     val drawableExtensions: Set<String> = setOf("jpeg", "jpeg", "png", "webp", "bmp", "xml"),
     val useOnlyFilesWithSize: Boolean = true,
-    val parallelism: Boolean = true,
+    val parallelism: Boolean = false,
 )
 
 class FileResolver(
@@ -31,7 +31,8 @@ class FileResolver(
 
     //extra resolveImpl due to ^ distinctByLast per root, not per file
     private fun resolveImpl(resourcesRoot: File): List<ResItem> {
-        val listFiles = resourcesRoot.listFiles() ?: return emptyList()
+        //sorting seems to be necessary on mac
+        val listFiles = resourcesRoot.listFiles()?.sorted() ?: return emptyList()
         val items = listFiles.filter { it.isDirectory }
             .asSequence()
             //parse group + qualifiers
