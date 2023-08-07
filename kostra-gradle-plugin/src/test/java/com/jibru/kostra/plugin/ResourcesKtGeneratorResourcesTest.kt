@@ -1,6 +1,6 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.database.StringDatabase
+import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.internal.ext.takeIfNotEmpty
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -78,10 +78,10 @@ class ResourcesKtGeneratorResourcesTest {
         }
 
         val compress = true
-        val db = StringDatabase()
+        val db = BinaryDatabase()
         valuesPerLocale.forEach { (locale, items) ->
             val values = items.values
-            db.set(values)
+            db.setList(values)
             val l = locale.takeIfNotEmpty() ?: "default"
             val data = db.save()
             File("build/$l.db").writeBytes(data)
@@ -96,10 +96,10 @@ class ResourcesKtGeneratorResourcesTest {
         }
     }
 
-    private fun StringDatabase.getAll() = buildList<String?> {
+    private fun BinaryDatabase.getAll() = buildList<String?> {
         val db = this@getAll
         for (i in 0 until db.count()) {
-            add(db.get(i))
+            add(db.getListValue(i))
         }
     }
 

@@ -7,7 +7,16 @@ interface ByteOps {
 
     fun ByteArray.writeInt(value: Int, offset: Int)
 
-    fun ByteArray.readByteAsUInt(offset: Int): Int = this[offset].toUByte().toInt()
+    fun ByteArray.readLong(offset: Int): Long = with(ByteOps4Bytes) {
+        (readInt(offset).toLong() shl Int.SIZE_BITS) or (readInt(offset + Int.SIZE_BYTES).toUInt().toLong())
+    }
+
+    fun ByteArray.writeLong(value: Long, offset: Int) = with(ByteOps4Bytes) {
+        writeInt((value ushr Int.SIZE_BITS).toInt(), offset)
+        writeInt((value and 0xFFFFFFFF).toInt(), offset + Int.SIZE_BYTES)
+    }
+
+    fun ByteArray.readByteAsUInt(offset: Int): UInt = this[offset].toUByte().toUInt()
     fun ByteArray.writeByte(value: UInt, offset: Int) {
         require(value < Byte.MAX_VALUE.toUInt())
         this[offset] = value.toByte()
@@ -15,6 +24,9 @@ interface ByteOps {
 
     fun ByteArray.readIntArray(offset: Int, size: Int) =
         IntArray(size) { readInt(offset + (it * Int.SIZE_BYTES)) }
+
+    fun ByteArray.readLongArray(offset: Int, size: Int) =
+        LongArray(size) { readLong(offset + (it * Long.SIZE_BYTES)) }
 
     fun validateInt(value: Int): Int
 
