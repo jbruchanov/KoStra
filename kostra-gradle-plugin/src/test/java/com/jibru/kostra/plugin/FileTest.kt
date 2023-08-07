@@ -20,12 +20,10 @@ class FileTest {
             f("xxhdpi") to Qualifiers(dpi = Dpi.XXHDPI),
             f("en", "xhdpi") to Qualifiers(locale = Locale("en"), dpi = Dpi.XHDPI),
             f("en-rGB", "xxhdpi") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.XXHDPI),
-            f("en", "land") to Qualifiers(Locale("en"), others = setOf("land")),
-            f("en", "xxxhdpi", "land") to Qualifiers(locale = Locale("en"), dpi = Dpi.XXXHDPI, others = setOf("land")),
-            f("en-rGB", "xxhdpi", "land") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.XXHDPI, others = setOf("land")),
-            f("land", "en") to Qualifiers(Locale("en"), others = setOf("land")),
-            f("xxhdpi", "en", "xyz") to Qualifiers(locale = Locale("en"), dpi = Dpi.XXHDPI, others = setOf("xyz")),
-            f("123", "tvdpi", "456", "en-rGB") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.TVDPI, others = setOf("123", "456")),
+            f("en-rGB", "xxhdpi", "land") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.XXHDPI),
+            f("land", "en") to Qualifiers(Locale("en")),
+            f("xxhdpi", "en", "xyz") to Qualifiers(locale = Locale("en"), dpi = Dpi.XXHDPI),
+            f("123", "tvdpi", "456", "en-rGB") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.TVDPI),
         )
 
         assertAll(

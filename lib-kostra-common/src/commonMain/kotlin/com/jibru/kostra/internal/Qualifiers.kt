@@ -1,41 +1,21 @@
 package com.jibru.kostra.internal
 
-data class Qualifiers(
-    val locale: Locale = Locale.Undefined,
-    val dpi: Dpi = Dpi.Undefined,
-    val others: Set<String> = emptySet(),
-) {
-    val hasOnlyLocale = dpi == Dpi.Undefined && others.isEmpty()
+@JvmInline
+value class Qualifiers(val key: Int) {
+    constructor(locale: Locale = Locale.Undefined, dpi: Dpi = Dpi.Undefined) : this(pack(locale, dpi))
+    constructor(locale: String, dpi: Dpi = Dpi.Undefined) : this(pack(Locale(locale), dpi))
 
-    val key by lazy {
-        if (this == Undefined) {
-            ""
-        } else {
-            buildString {
-                if (locale != Locale.Undefined) {
-                    append(locale.languageRegion)
-                }
-                if (dpi != Dpi.Undefined) {
-                    if (isNotEmpty()) append("_")
-                    append(dpi.qualifier)
-                }
-                if (others.isNotEmpty()) {
-                    if (isNotEmpty()) append("_")
-                    //trivial hash doing sum on unicode values over each char with index offset
-                    val hash = others.sumOf { it.foldIndexed(0L) { i: Int, acc, v -> (acc + v.code.toLong()) * (i * 10) } } % Short.MAX_VALUE
-                    val len = others.sumOf { it.length }
-                    val key = "${others.size}$len$hash"
-                    append(key)
-                }
-            }
-        }
-    }
+    val hasOnlyLocale get() = dpi == Dpi.Undefined
+    val locale get() = Locale(key shr Dpi.Bits)
+    val dpi get() = Dpi.fromBits(key and Dpi.BitMask)
 
     override fun toString(): String {
-        return if (this == Undefined) "Qualifiers.Undefined" else "Qualifiers(key='$key', locale=$locale, dpi=$dpi, others=$others)"
+        return if (this == Undefined) "Qualifiers.Undefined" else "Qualifiers(locale=$locale, dpi=$dpi)"
     }
 
     companion object {
-        val Undefined = Qualifiers()
+        val Undefined = Qualifiers(0)
     }
 }
+
+private fun pack(locale: Locale, dpi: Dpi) = (locale.key shl Dpi.Bits) + dpi.key

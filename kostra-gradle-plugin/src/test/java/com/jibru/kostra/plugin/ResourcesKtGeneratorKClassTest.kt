@@ -104,12 +104,10 @@ class ResourcesKtGeneratorKClassTest {
     fun `generateKClass WHEN strings and plurals`() {
         val items = listOf(
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Fun", Qualifiers(others = setOf("fun"))),
+            ResItem.StringRes("item1", "item1Fun", Qualifiers()),
             ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
-            ResItem.StringRes("item1", "item1FunCs", Qualifiers(locale = Locale("cs"), others = setOf("fun"))),
 
             ResItem.Plurals("dog", mapOf(Plural.Other to "dogs", Plural.One to "dog").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("dog", mapOf(Plural.Other to "doggos", Plural.One to "doggo").toPluralList(), Qualifiers(others = setOf("fun"))),
             ResItem.Plurals(
                 "dog",
                 mapOf(Plural.Other to "psů", Plural.One to "pes", Plural.Few to "psy", Plural.Other to "psiska!").toPluralList(),
@@ -120,7 +118,6 @@ class ResourcesKtGeneratorKClassTest {
                 mapOf(Plural.Other to "!psů!", Plural.One to "!pes!", Plural.Many to "!psy!", Plural.Other to "!psiska!").toPluralList(),
                 Qualifiers(
                     locale = Locale("cs"),
-                    others = setOf("fun"),
                 ),
             ),
         )

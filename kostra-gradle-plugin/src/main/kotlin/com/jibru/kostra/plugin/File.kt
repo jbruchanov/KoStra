@@ -26,9 +26,9 @@ internal fun File.groupQualifiers(): GroupQualifiers {
         .takeIfNotEmpty()
         ?.split(QualifierDivider)
         ?.let { list ->
-            val values = list.toMutableSet()
-            val strLocale = locales.intersect(values).singleOrNull()
-                ?.also { values.remove(it) }
+            val otherModifiers = list.toMutableSet()
+            val strLocale = locales.intersect(otherModifiers).singleOrNull()
+                ?.also { otherModifiers.remove(it) }
 
             //looking for stuff like en-rUS
             val strLocaleRegion = strLocale
@@ -42,19 +42,15 @@ internal fun File.groupQualifiers(): GroupQualifiers {
                     val javaLocaleTag = "$strLocale-${it.substring(1)}"
                     if (locales.contains(javaLocaleTag)) it else null
                 }
-                ?.also { values.remove(it) }
+                ?.also { otherModifiers.remove(it) }
 
-            val strDpi = dpiValues.intersect(values)
+            val strDpi = dpiValues.intersect(otherModifiers)
                 .singleOrNull()
-                ?.also { values.remove(it) }
+                ?.also { otherModifiers.remove(it) }
 
             val locale = strLocale?.let { Locale(it, strLocaleRegion) } ?: Locale.Undefined
             val dpi = strDpi?.let { dpiMap.getValue(it) } ?: Dpi.Undefined
-            Qualifiers(
-                locale = locale,
-                dpi = dpi,
-                others = values,
-            )
+            Qualifiers(locale = locale, dpi = dpi)
         } ?: Qualifiers.Undefined
 
     return GroupQualifiers(group, qualifiers)

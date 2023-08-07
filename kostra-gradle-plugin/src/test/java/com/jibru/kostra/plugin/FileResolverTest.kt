@@ -200,20 +200,6 @@ class FileResolverTest {
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
-            ResItem.FileRes(
-                "image",
-                File(resourcesRoot, "drawable-en-rGB-q1-xxhdpi/image.png"),
-                Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI, others = setOf("q1")),
-                group = ResItem.Drawable,
-                root = resourcesRoot,
-            ),
-            ResItem.FileRes(
-                "image",
-                File(resourcesRoot, "drawable-en-rGB-q1-xxhdpi-q2/image.png"),
-                Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI, others = setOf("q1", "q2")),
-                group = ResItem.Drawable,
-                root = resourcesRoot,
-            ),
         )
     }
 
@@ -306,17 +292,7 @@ class FileResolverTest {
     }
 
     @Test
-    fun `resolve WHEN any extra qualifiers THEN fails`() {
-        testResources {
-            addStrings(
-                file = "values-fun/strings.xml",
-                strings = mapOf("item1" to "item1"),
-                plurals = mapOf("dog" to mapOf("other" to "dogs", "one" to "dog")),
-            )
-            buildResources()
-            assertThrows<IllegalStateException> { FileResolver().resolve(resourcesRoot) }
-        }
-
+    fun `resolve WHEN dpi qualifiers THEN fails`() {
         testResources {
             addStrings(
                 file = "values-xhdpi/strings.xml",
