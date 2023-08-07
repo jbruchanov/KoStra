@@ -35,4 +35,23 @@ class ByteOpsTest {
             assertEquals(65535, byteArray.readInt(offset = 6))
         }
     }
+
+    @Test
+    fun longs() {
+        with(ByteOps4Bytes) {
+            val byteArray = ByteArray(64)
+            byteArray.writeLong(Long.MIN_VALUE, offset = 0)
+            assertEquals(Long.MIN_VALUE, byteArray.readLong(offset = 0))
+
+            byteArray.writeLong(Long.MAX_VALUE, offset = 8)
+            assertEquals(Long.MAX_VALUE, byteArray.readLong(offset = 8))
+
+            byteArray.writeLong(0L, offset = 0)
+            assertEquals(0, byteArray.readLong(offset = 0))
+
+            byteArray.writeInt(Int.MAX_VALUE, offset = 20)
+            assertEquals(Int.MAX_VALUE, byteArray.readInt(offset = 20))
+            assertEquals(Int.MAX_VALUE.toLong(), byteArray.readLong(offset = 16))
+        }
+    }
 }
