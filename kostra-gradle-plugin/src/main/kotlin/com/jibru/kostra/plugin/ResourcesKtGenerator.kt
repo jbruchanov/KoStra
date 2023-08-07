@@ -22,6 +22,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import org.gradle.configurationcache.extensions.capitalized
+import java.util.SortedMap
 
 class ResourcesKtGenerator(
     private val packageName: String,
@@ -50,12 +51,13 @@ class ResourcesKtGenerator(
     }
 
     //map of qualifiers
-    private val qualifierRefsPerQualifiers by lazy {
+    private val qualifierRefsPerQualifiers: SortedMap<Qualifiers, ClassName> by lazy {
+        TODO("redone")
         items
             .map { it.qualifiers }
             .distinct()
             .filter { it != Qualifiers.Undefined }
-            .associateWith { ClassName(packageName, shareQualifiersClassName, it.key) }
+            .associateWith { ClassName(packageName, shareQualifiersClassName, it.key.toString()) }
             .toSortedMap { o1, o2 -> o1.key.compareTo(o2.key) }
     }
 
@@ -119,11 +121,12 @@ class ResourcesKtGenerator(
                         qualifierRefsPerQualifiers
                             .keys
                             .forEach {
-                                addProperty(
-                                    PropertySpec.builder(it.key, typeQualifiers)
-                                        .initializer(it.toCodeBlock())
-                                        .build(),
-                                )
+                                TODO("REDO")
+//                                addProperty(
+//                                    PropertySpec.builder(it.key, typeQualifiers)
+//                                        .initializer(it.toCodeBlock())
+//                                        .build(),
+//                                )
                             }
                     }
                     .build(),
@@ -300,9 +303,7 @@ class ResourcesKtGenerator(
             add("%T(%S, %S)", Locale::class, locale.language, locale.region)
             add(", dpi = ")
             add("%T.%L", Dpi::class, dpi.name)
-            add(", others = setOf(")
-            others.forEach { add("%S,", it) }
-            add("))")
+            add(")")
         }
         .build()
 
