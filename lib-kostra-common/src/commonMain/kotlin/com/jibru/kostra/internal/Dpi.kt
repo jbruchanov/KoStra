@@ -1,22 +1,25 @@
 package com.jibru.kostra.internal
 
 @Suppress("ktlint:standard:no-semi")
-enum class Dpi(val density: Float, val qualifier: String) {
-    Undefined(Float.NaN, ""),
-    NoDpi(0f, "nodpi"),
-    LDPI(0.75f, "ldpi"),
-    MDPI(1f, "mdpi"),
-    HDPI(1.5f, "hdpi"),
-    XHDPI(2f, "xhdpi"),
-    XXHDPI(3f, "xxhdpi"),
-    XXXHDPI(4f, "xxxhdpi"),
-    TVDPI(1.33f, "tvdpi"),
+enum class Dpi(val value: Int, val density: Float, val qualifier: String) {
+    Undefined(0, Float.NaN, ""),
+    NoDpi(1, 0f, "nodpi"),
+    LDPI(2, 0.75f, "ldpi"),
+    MDPI(3, 1f, "mdpi"),
+    HDPI(4, 1.5f, "hdpi"),
+    XHDPI(5, 2f, "xhdpi"),
+    XXHDPI(6, 3f, "xxhdpi"),
+    XXXHDPI(7, 4f, "xxxhdpi"),
+    TVDPI(8, 1.33f, "tvdpi"),
     ;
 
     companion object {
+        const val Bits = 4
+
         @Suppress("EnumValuesSoftDeprecate")
         private val values = values()
 
+        fun Dpi.fromBits(bits: Int) = values[bits]
         fun Dpi.next() = values[(this.ordinal + 1).coerceAtMost(XXXHDPI.ordinal)]
         fun Dpi.prev() = values[(this.ordinal - 1).coerceAtLeast(LDPI.ordinal)]
         fun getClosest(density: Float): Dpi {
