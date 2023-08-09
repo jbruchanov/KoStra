@@ -19,7 +19,7 @@ private enum class StorageType(val value: UInt) {
  * Data Strings:
  * m+1 - end: int(len), data(string)[,int,data]
  */
-class BinaryDatabase internal constructor(private var data: ByteArray = ByteArray(0), bytesPerInt: Int) : ByteOps by ByteOps.Default(bytesPerInt) {
+class BinaryDatabase internal constructor(private var data: ByteArray = ByteArray(0), bytesPerInt: Int) : ByteOps by ByteOps.Default(bytesPerInt), Database {
 
     constructor(data: ByteArray = ByteArray(0)) : this(data, bytesPerInt = 4)
 
@@ -107,7 +107,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         return data.readLong(keyOffset).absoluteValue
     }
 
-    fun getListValue(index: Int): String? = get(index, if (type == StorageType.KeyValue) BytesPerLong else bytesPerInt)
+    override fun getListValue(index: Int): String? = get(index, if (type == StorageType.KeyValue) BytesPerLong else bytesPerInt)
 
     private fun get(index: Int, bytesPerRef: Int): String? {
         val records = count()
@@ -172,7 +172,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         this@BinaryDatabase.forEach { key, s -> put(key, s) }
     }
 
-    fun toLongSparseArray() = LongSparseArray<String?>(count()).apply {
+    override fun toLongSparseArray() = LongSparseArray<String?>(count()).apply {
         this@BinaryDatabase.forEach { key, s -> put(key, s) }
     }
 

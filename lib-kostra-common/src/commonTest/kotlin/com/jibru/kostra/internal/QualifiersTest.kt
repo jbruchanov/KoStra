@@ -30,4 +30,37 @@ class QualifiersTest {
             assertEquals(expected, Qualifiers("en", it).hasOnlyLocale)
         }
     }
+
+    @Test
+    fun withNoLocaleLanguage() {
+        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoLocaleLanguage())
+        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en", dpi = Dpi.XXHDPI).withNoLocaleLanguage())
+        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI), Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI).withNoLocaleLanguage())
+
+        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoLocaleLanguage())
+        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoLocaleLanguage())
+        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.Undefined), Qualifiers(Locale.Undefined, dpi = Dpi.Undefined).withNoLocaleLanguage())
+    }
+
+    @Test
+    fun withNoLocale() {
+        assertEquals(Qualifiers(dpi = Dpi.XXHDPI), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoLocale())
+        assertEquals(Qualifiers(dpi = Dpi.XXHDPI), Qualifiers("en", dpi = Dpi.XXHDPI).withNoLocale())
+        assertEquals(Qualifiers(dpi = Dpi.XXHDPI), Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI).withNoLocale())
+
+        assertEquals(Qualifiers(dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoLocale())
+        assertEquals(Qualifiers(dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoLocale())
+        assertEquals(Qualifiers(dpi = Dpi.Undefined), Qualifiers(Locale.Undefined, dpi = Dpi.Undefined).withNoLocale())
+    }
+
+    @Test
+    fun withNoDpi() {
+        assertEquals(Qualifiers("en-GB", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoDpi())
+        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.XXHDPI).withNoDpi())
+        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.Undefined), Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI).withNoDpi())
+
+        assertEquals(Qualifiers("en-GB", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoDpi())
+        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoDpi())
+        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.Undefined), Qualifiers(Locale.Undefined, dpi = Dpi.Undefined).withNoDpi())
+    }
 }

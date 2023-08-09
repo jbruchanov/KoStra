@@ -49,10 +49,6 @@ fun ResourceContainer.resolveResource(qualifiers: Qualifiers): ResourceItem<*> {
     return item
 }
 
-@Suppress("NOTHING_TO_INLINE")
-private inline fun throwMissing(key: ResourceKey, type: String, value: Any): Nothing =
-    throw MissionResourceException(key, "Unable to resolve value of key:'$key' based on $type:'$value'")
-
 private fun <T> List<T>.filterNotEmpty(predicate: (T) -> Boolean) = filter(predicate).takeIf { it.isNotEmpty() }
 private fun List<ResourceItem<Any>>.firstOrNull(dpi: Dpi) =
     firstOrNull { it.qualifiers.dpi == dpi }

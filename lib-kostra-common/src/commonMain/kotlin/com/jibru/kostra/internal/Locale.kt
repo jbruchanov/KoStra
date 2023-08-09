@@ -19,6 +19,8 @@ value class Locale(val key: Int) {
 
     fun equalsLanguage(other: Locale): Boolean = this.languageCode == other.languageCode
 
+    fun languageLocale() = Locale(key / LocaleOffsets[2] * LocaleOffsets[2])
+
     val language: String
         get() {
             if (key == 0) return ""
@@ -53,6 +55,8 @@ value class Locale(val key: Int) {
     override fun toString(): String {
         return if (key == 0) "Locale.Undefined" else "Locale(l='$language', r=$region)"
     }
+
+    fun hasRegion(): Boolean = (key % LocaleOffsets[3]) != 0
 
     companion object {
         val Undefined = Locale(0)
