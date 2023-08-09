@@ -37,4 +37,14 @@ class StringDatabaseTest {
 
         assertFailsWith<MissingResourceException> { db.get(StringResourceKey(-1), Qualifiers.Undefined) }
     }
+
+    @Test
+    fun `get+format`() {
+        assertEquals("test2Default 0", db.get(K.string.test2Format, Qualifiers.Undefined, "0"))
+        assertEquals("test2EN 1", db.get(K.string.test2Format, Qualifiers("en"), 1))
+        assertEquals("test2EN 2.0", db.get(K.string.test2Format, Qualifiers("en-GB"), 2f))
+        assertEquals("test2enUS 3.0", db.get(K.string.test2Format, Qualifiers("en-US"), 3.0))
+        assertEquals("test2Default [4, 5]", db.get(K.string.test2Format, Qualifiers("cs"), listOf("4", 5)))
+        assertEquals("test2Default StringResourceKey(key=5)", db.get(K.string.test2Format, Qualifiers("cs-CZ"), StringResourceKey(5)))
+    }
 }
