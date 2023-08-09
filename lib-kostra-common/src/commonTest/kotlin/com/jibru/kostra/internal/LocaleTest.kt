@@ -72,4 +72,18 @@ class LocaleTest {
         assertFalse(Locale("en").equalsLanguage(Locale.Undefined))
         assertFalse(Locale("en").equalsLanguage(Locale("cs")))
     }
+
+    @Test
+    fun languageLocale() {
+        assertEquals(Locale.Undefined, Locale.Undefined.languageLocale())
+        assertEquals(Locale("en"), Locale("en").languageLocale())
+        assertEquals(Locale("en"), Locale("en", "GB").languageLocale())
+    }
+
+    @Test
+    fun hasRegion() {
+        assertFalse(Locale.Undefined.hasRegion())
+        assertFalse(Locale("en").hasRegion())
+        assertTrue(Locale("en", "gb").hasRegion())
+    }
 }

@@ -13,5 +13,7 @@ enum class Plural(val index: Int, val key: String) {
 
         val Map = values().associateBy { it.key }
         fun Map<Plural, String>.toPluralList() = Map.values.map { this[it] }
+
+        val size = Map.size
     }
 }

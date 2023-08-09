@@ -1,10 +1,13 @@
 package com.jibru.kostra
 
+import com.jibru.kostra.internal.AppResources
 import com.jibru.kostra.internal.Dpi
-import com.jibru.kostra.internal.KostraResources
 import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.internal.Plural
 import com.jibru.kostra.internal.Qualifiers
-import com.jibru.kostra.internal.ResourceItem
+import test.FileMemoryReferences
+import test.PluralMemoryDatabase
+import test.StringMemoryDatabase
 
 object Fixtures {
 
@@ -14,95 +17,102 @@ object Fixtures {
         @Suppress("ktlint")
         object K {
             object string {
-                val test1 = StringResourceKey("test1")
-                val test2 = StringResourceKey("test2")
-                val test3 = StringResourceKey("test3")
+                val test1 = StringResourceKey(1)
+                val test2 = StringResourceKey(2)
+                val test3 = StringResourceKey(3)
+            }
+
+            object plural {
+                val dog = PluralResourceKey(1)
+                val bug = PluralResourceKey(2)
             }
 
             object drawable {
-                val undefinedDpi = DrawableResourceKey("undefinedDpi")
-                val xxHdpiOnly = DrawableResourceKey("xxHdpiOnly")
-                val multipleDpi = DrawableResourceKey("multipleDpi")
-                val multipleDpiLocale = DrawableResourceKey("multipleDpiLocale")
+                val undefinedDpi = DrawableResourceKey(1)
+                val xxHdpiOnly = DrawableResourceKey(2)
+                val multipleDpi = DrawableResourceKey(3)
+                val multipleDpiLocale = DrawableResourceKey(4)
             }
         }
 
         val stringResources = create(
-            strings = mapOf(
-                /* Default */
-                K.string.test1.let { key -> key to ResourceContainer.Value(key, value = ResourceItem(key, value = "Simple", qualifiers = Qualifiers.Undefined)) },
-                /* Default + Locale variants */
-                K.string.test2.let { key ->
-                    key to ResourceContainer.Value(
-                        key,
-                        values = listOf(
-                            ResourceItem(key, value = "Default", qualifiers = Qualifiers.Undefined),
-                            ResourceItem(key, value = "EN", qualifiers = Qualifiers(locale = Locale("en"))),
-                            ResourceItem(key, value = "US", qualifiers = Qualifiers(locale = Locale("en-us"))),
+            strings = StringMemoryDatabase(
+                mapOf(
+                    Locale.Undefined to mapOf(
+                        K.string.test1 to "test1Default",
+                        K.string.test2 to "test2Default",
+                    ),
+                    Locale("en") to mapOf(
+                        K.string.test2 to "test2EN",
+                        K.string.test3 to "test3EN",
+                    ),
+                    Locale("en-US") to mapOf(
+                        K.string.test2 to "test2enUS",
+                        K.string.test3 to "test3enUS",
+                    ),
+                ),
+            ),
+        )
+
+        val pluralResources = create(
+            plurals = PluralMemoryDatabase(
+                mapOf(
+                    Locale.Undefined to mapOf(
+                        K.plural.dog to mapOf(Plural.Other to "dogs", Plural.One to "dog"),
+                    ),
+                    Locale("en") to mapOf(
+                        K.plural.dog to mapOf(Plural.Other to "dogs-en", Plural.One to "dog-en"),
+                        K.plural.bug to mapOf(Plural.Other to "bugs-en", Plural.One to "bug-en"),
+                    ),
+                    Locale("en-GB") to mapOf(
+                        K.plural.dog to mapOf(Plural.Other to "dogs-en-gb", Plural.One to "dog-en-gb"),
+                    ),
+
+                    Locale("cs") to mapOf(
+                        K.plural.bug to mapOf(
+                            Plural.One to "brouk",
+                            Plural.Few to "brouci",
+                            Plural.Many to "brouku", //1.5
+                            Plural.Other to "brouků", //100
                         ),
-                    )
-                },
-                /* Locale variants only */
-                K.string.test3.let { key ->
-                    key to ResourceContainer.Value(
-                        key,
-                        values = listOf(
-                            ResourceItem(key, value = "EN", qualifiers = Qualifiers(locale = Locale("en"))),
-                        ),
-                    )
-                },
+                    ),
+                ),
             ),
         )
 
         val drawableResources = create(
-            drawables = mapOf(
-                K.drawable.undefinedDpi.let { key ->
-                    key to ResourceContainer.Value(
-                        key = key,
-                        value = ResourceItem(key, value = "undefined", qualifiers = Qualifiers.Undefined),
-                    )
-                },
-                K.drawable.xxHdpiOnly.let { key ->
-                    key to ResourceContainer.Value(
-                        key = key,
-                        value = ResourceItem(key, value = "XXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXHDPI)),
-                    )
-                },
-                K.drawable.multipleDpi.let { key ->
-                    key to ResourceContainer.Value(
-                        key = key,
-                        values = listOf(
-                            ResourceItem(key, value = "Fallback", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.Undefined)),
-                            ResourceItem(key, value = "XXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXHDPI)),
-                            ResourceItem(key, value = "XXXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXXHDPI)),
-                        ),
-                    )
-                },
-                K.drawable.multipleDpiLocale.let { key ->
-                    key to ResourceContainer.Value(
-                        key = key,
-                        values = listOf(
-                            ResourceItem(key, value = "enGB, XXHDPI", qualifiers = Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI)),
-                            ResourceItem(key, value = "enGB, Undefined", qualifiers = Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.Undefined)),
-                            ResourceItem(key, value = "en XXHDPI", qualifiers = Qualifiers(locale = Locale("en"), dpi = Dpi.XXHDPI)),
-                            ResourceItem(key, value = "NoLocale, XXXHDPI", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.XXXHDPI)),
-                            ResourceItem(key, value = "Fallback", qualifiers = Qualifiers(locale = Locale.Undefined, dpi = Dpi.Undefined)),
-                        ),
-                    )
-                },
+            files = FileMemoryReferences(
+                mapOf(
+                    Qualifiers.Undefined to mapOf(
+                        K.drawable.undefinedDpi to "undefinedDpiDefault",
+                        K.drawable.multipleDpi to "multipleDpiDefault",
+                        K.drawable.multipleDpiLocale to "multipleDpiLocaleDefault",
+                    ),
+                    Qualifiers(dpi = Dpi.XXHDPI) to mapOf(
+                        K.drawable.xxHdpiOnly to "xxHdpiOnly",
+                        K.drawable.multipleDpi to "multipleDpiXXHDPI",
+                    ),
+                    Qualifiers(dpi = Dpi.XXXHDPI) to mapOf(
+                        K.drawable.multipleDpi to "multipleDpiXXXHDPI",
+                        K.drawable.multipleDpiLocale to "multipleDpiLocaleXXXHDPI",
+                    ),
+                    Qualifiers("en", Dpi.XXHDPI) to mapOf(
+                        K.drawable.multipleDpiLocale to "multipleDpiLocaleEnXXHDPI",
+                    ),
+                    Qualifiers("en-GB", Dpi.Undefined) to mapOf(
+                        K.drawable.multipleDpiLocale to "multipleDpiLocaleEnGBUndefined",
+                    ),
+                    Qualifiers("en-GB", Dpi.XXXHDPI) to mapOf(
+                        K.drawable.multipleDpiLocale to "multipleDpiLocaleEnGBXXXHDPI",
+                    ),
+                ),
             ),
         )
 
         private fun create(
-            strings: Map<StringResourceKey, ResourceContainer> = emptyMap(),
-            plurals: Map<PluralResourceKey, ResourceContainer> = emptyMap(),
-            drawables: Map<DrawableResourceKey, ResourceContainer> = emptyMap(),
-            binary: Map<BinaryResourceKey, ResourceContainer> = emptyMap(),
-        ) = object : KostraResources {
-            override val string: Map<StringResourceKey, ResourceContainer> = strings
-            override val plural: Map<PluralResourceKey, ResourceContainer> = plurals
-            override val drawable: Map<DrawableResourceKey, ResourceContainer> = drawables
-            override val binary: Map<BinaryResourceKey, ResourceContainer> = binary
-        }
+            strings: Strings = Strings,
+            plurals: Plurals = Plurals,
+            files: FileReferences = FileReferences,
+        ) = AppResources(strings, plurals, files)
     }
 }

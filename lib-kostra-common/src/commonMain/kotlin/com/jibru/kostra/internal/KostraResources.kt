@@ -1,16 +1,13 @@
 package com.jibru.kostra.internal
 
-import com.jibru.kostra.BinaryResourceKey
-import com.jibru.kostra.DrawableResourceKey
-import com.jibru.kostra.PluralResourceKey
-import com.jibru.kostra.ResourceContainer
-import com.jibru.kostra.StringResourceKey
+import com.jibru.kostra.FileReferences
+import com.jibru.kostra.Plurals
+import com.jibru.kostra.Strings
 
 interface KostraResources {
-    val string: Map<StringResourceKey, ResourceContainer>
-    val plural: Map<PluralResourceKey, ResourceContainer>
-    val drawable: Map<DrawableResourceKey, ResourceContainer>
-    val binary: Map<BinaryResourceKey, ResourceContainer>
+    val string: Strings
+    val plural: Plurals
+    val files: FileReferences
 }
 
 interface KostraResourceHider {
@@ -18,8 +15,7 @@ interface KostraResourceHider {
 }
 
 class AppResources(
-    override val string: Map<StringResourceKey, ResourceContainer> = emptyMap(),
-    override val plural: Map<PluralResourceKey, ResourceContainer> = emptyMap(),
-    override val drawable: Map<DrawableResourceKey, ResourceContainer> = emptyMap(),
-    override val binary: Map<BinaryResourceKey, ResourceContainer> = emptyMap(),
+    override val string: Strings = Strings,
+    override val plural: Plurals = Plurals,
+    override val files: FileReferences = FileReferences,
 ) : KostraResources

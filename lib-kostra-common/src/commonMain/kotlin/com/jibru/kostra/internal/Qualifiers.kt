@@ -9,6 +9,12 @@ value class Qualifiers(val key: Int) {
     val locale get() = Locale(key shr Dpi.Bits)
     val dpi get() = Dpi.fromBits(key and Dpi.BitMask)
 
+    fun withNoLocaleLanguage() = Qualifiers(locale.language, dpi)
+
+    fun withNoLocale() = Qualifiers(Locale.Undefined, dpi)
+
+    fun withNoDpi() = Qualifiers(locale, dpi = Dpi.Undefined)
+
     override fun toString(): String {
         return if (this == Undefined) "Qualifiers.Undefined" else "Qualifiers(locale=$locale, dpi=$dpi)"
     }
