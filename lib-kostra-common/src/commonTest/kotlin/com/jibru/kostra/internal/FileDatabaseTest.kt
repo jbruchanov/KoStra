@@ -9,7 +9,7 @@ import kotlin.test.assertFailsWith
 
 class FileDatabaseTest {
 
-    private val db = Fixtures.Resources.drawableResources.files
+    private val db = Fixtures.Resources.drawableResources.binary
 
     @Test
     fun get() {

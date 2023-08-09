@@ -1,22 +1,16 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.database.BinaryDatabase
-import com.jibru.kostra.internal.ext.takeIfNotEmpty
-import org.junit.jupiter.api.Disabled
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
+import test.RealProjectRef
+import test.minify
 import test.testResources
-import java.io.File
-import java.io.FileOutputStream
-import java.util.Properties
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 
 class ResourcesKtGeneratorResourcesTest {
 
     //currently no way to go
     @Test
-    @Disabled
     fun allResourceFiles() = testResources {
         addStrings(
             "values/strings.xml",
@@ -44,69 +38,93 @@ class ResourcesKtGeneratorResourcesTest {
         val result = buildString {
             val files = listOf(
                 gen.generateKClass(),
-                gen.generateSupportResources(),
-                gen.generateCreateAppResources(),
-                gen.generateResourceProviders(),
-            ) + gen.generateResourceClasses()
+                gen.generateResources(),
+            )
 
             val div = "-".repeat(16)
             files
                 .filterNotNull()
                 .forEach {
                     appendLine("$div ${it.packageName}.${it.name} $div")
-                    appendLine(it.toString())
+                    appendLine(it.minify())
                 }
         }
+
+        assertThat(result.trim()).isEqualTo(
+            """
+            ---------------- com.sample.app.K ----------------
+            package com.sample.app
+            import com.jibru.kostra.BinaryResourceKey as B
+            import com.jibru.kostra.DrawableResourceKey as D
+            import com.jibru.kostra.PluralResourceKey as P
+            import com.jibru.kostra.StringResourceKey as S
+            object K {
+              object string {
+                val item1: S = S(0)
+                val item2: S = S(1)
+              }
+              object plural {
+                val dog: P = P(0)
+              }
+              object audio {
+                val sound: B = B(1)
+              }
+              object drawable {
+                val image: D = D(2)
+              }
+            }
+            ---------------- com.sample.app.Resources ----------------
+            package com.sample.app
+            import com.jibru.kostra.`internal`.AppResources
+            import com.jibru.kostra.`internal`.FileDatabase
+            import com.jibru.kostra.`internal`.Locale
+            import com.jibru.kostra.`internal`.Locale.Undefined
+            import com.jibru.kostra.`internal`.PluralDatabase
+            import com.jibru.kostra.`internal`.StringDatabase
+            val Resources: AppResources = AppResources(
+              string = StringDatabase(
+                mapOf(
+                  Locale.Undefined to "__kostra/string-default.db",
+                  Locale(4_05_00_00) to "__kostra/string-de.db",
+                  Locale(5_14_00_00) to "__kostra/string-en.db",
+                )
+              ),
+              plural = PluralDatabase(
+                mapOf(
+                  Locale.Undefined to "__kostra/plural-default.db",
+                )
+              ),
+              binary = FileDatabase("__kostra/binary.db"),
+            )
+            """.trimIndent(),
+        )
     }
 
     @Test
     @EnabledIf("hasRealProjectLocation")
     fun test() {
-        val sources = File(realProjectResources()!!).listFiles()!!.filter { it.name.startsWith("res") }
-        val items = FileResolver().resolve(sources)
-        val keysWithQualifiers = items.filter { it is ResItem.StringRes }
-            .groupBy { it.key }
-            .toSortedMap()
-            .mapValues { it.value.associateBy { it.qualifiers.locale.languageRegion } }
+        val items = FileResolver().resolve(RealProjectRef.resources()!!)
+        val gen = ResourcesKtGenerator(
+            "com.sample.app",
+            "K",
+            items,
+        )
 
-        val locales = keysWithQualifiers.map { it.value.values.map { it.qualifiers.locale.languageRegion } }
-            .flatten()
-            .distinct()
+        val result = buildString {
+            val files = listOf(
+                gen.generateKClass(),
+                gen.generateResources(),
+            )
 
-        val valuesPerLocale = locales.map {
-            it to keysWithQualifiers.mapValues { locale -> (locale.value[it] as? StringValueResItem)?.value }
-        }
-
-        val compress = true
-        val db = BinaryDatabase()
-        valuesPerLocale.forEach { (locale, items) ->
-            val values = items.values
-            db.setList(values)
-            val l = locale.takeIfNotEmpty() ?: "default"
-            val data = db.save()
-            File("build/$l.db").writeBytes(data)
-            if (compress) {
-                ZipOutputStream(FileOutputStream(File("build/$l.db.zip"))).apply {
-                    putNextEntry(ZipEntry("$l.db"))
-                    write(data)
-                    closeEntry()
-                    close()
+            val div = "-".repeat(16)
+            files
+                .forEach {
+                    appendLine("$div ${it.packageName}.${it.name} $div")
+                    appendLine(it.minify())
                 }
-            }
         }
+        println(result)
     }
 
-    private fun BinaryDatabase.getAll() = buildList<String?> {
-        val db = this@getAll
-        for (i in 0 until db.count()) {
-            add(db.getListValue(i))
-        }
-    }
-
-    private fun hasRealProjectLocation() = realProjectResources() != null
-    private fun realProjectResources() = File("../local.properties")
-        .takeIf { it.exists() }
-        ?.let {
-            Properties().apply { load(it.bufferedReader()) }["realProjectResources"]?.toString()
-        }
+    private fun hasRealProjectLocation() = RealProjectRef.resources() != null
 }

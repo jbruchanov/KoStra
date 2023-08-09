@@ -7,15 +7,11 @@ import com.jibru.kostra.Strings
 interface KostraResources {
     val string: Strings
     val plural: Plurals
-    val files: FileReferences
-}
-
-interface KostraResourceHider {
-    companion object : KostraResourceHider
+    val binary: FileReferences
 }
 
 class AppResources(
     override val string: Strings = Strings,
     override val plural: Plurals = Plurals,
-    override val files: FileReferences = FileReferences,
+    override val binary: FileReferences = FileReferences,
 ) : KostraResources
