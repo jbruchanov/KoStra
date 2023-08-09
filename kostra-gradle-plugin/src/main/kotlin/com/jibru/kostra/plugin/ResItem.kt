@@ -25,6 +25,7 @@ sealed class ResItem {
     abstract val resourceKeyType: TypeName
 
     val distinctKey by lazy(LazyThreadSafetyMode.NONE) { Triple(key, qualifiers, group) }
+    open val isStringOrPlural = this is StringRes || this is Plurals
     open val resourcesGroup get() = group
 
     data class StringRes(
@@ -53,6 +54,10 @@ sealed class ResItem {
     ) : ResItem() {
         override val group: String = Plural
         override val resourceKeyType: TypeName = typeNameOf<PluralResourceKey>()
+
+        companion object {
+            val EmptyItems = List<String?>(com.jibru.kostra.internal.Plural.size) { null }
+        }
     }
 
     data class FileRes(
