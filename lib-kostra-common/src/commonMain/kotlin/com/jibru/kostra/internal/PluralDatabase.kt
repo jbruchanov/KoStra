@@ -40,7 +40,7 @@ open class PluralDatabase(localeDatabases: Map<Locale, String>) : Plurals {
             languageLocale == Locale("cs") -> when {
                 quantity == 1f -> Plural.One
                 quantity == 2f || quantity == 3f || quantity == 4f -> Plural.Few
-                quantity in 0f..1.5f -> Plural.Many
+                quantity != 0f && quantity in 0f..1.5f -> Plural.Many
                 else -> Plural.Other
             }
 

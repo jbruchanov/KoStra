@@ -19,7 +19,7 @@ open class FileDatabase(database: String) : FileReferences {
         //langRegion[+dpi]
         return qualifiers.locale.takeIf { it.hasRegion() }
             ?.let { getValue(key, qualifiers) ?: getValue(key, qualifiers.withNoDpi()) }
-        //lang[+dpi]
+            //lang[+dpi]
             ?: qualifiers.locale.takeIf { it != Locale.Undefined }
                 ?.let { qualifiers.withNoLocaleLanguage() }
                 ?.let { localeLang -> getValue(key, localeLang) ?: getValue(key, localeLang.withNoDpi()) }

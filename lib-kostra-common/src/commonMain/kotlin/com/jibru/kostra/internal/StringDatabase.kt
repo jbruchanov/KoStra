@@ -24,7 +24,4 @@ open class StringDatabase(localeDatabases: Map<Locale, String>) : Strings {
             ?: getValue(key, Locale.Undefined)
             ?: throw MissingResourceException(key, qualifiers, "string")
     }
-
-    override fun get(key: StringResourceKey, qualifiers: Qualifiers, vararg formatArgs: Any): String =
-        get(key, qualifiers).format(formatArgs)
 }
