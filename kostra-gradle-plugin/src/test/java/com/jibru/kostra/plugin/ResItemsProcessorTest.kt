@@ -85,8 +85,6 @@ class ResItemsProcessorTest {
 
         with(ResItemsProcessor(items)) {
             val testItems = stringsForDbs
-                ?.mapValues { it.value.map { (key, item) -> item?.value } }
-
             assertThat(testItems).isEqualTo(
                 mapOf(
                     Locale.Undefined to listOf("s1", "s2", null, null),
