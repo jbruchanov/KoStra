@@ -7,7 +7,7 @@ import com.jibru.kostra.database.BinaryDatabase
 
 open class PluralDatabase(localeDatabases: Map<Locale, String>) : Plurals {
     private val dbs = localeDatabases.mapValues { (locale, file) ->
-        lazy { BinaryDatabase(loadResource(file)) }
+        lazy { BinaryDatabase(loadResource(file).readBytes()) }
     }
 
     private val stride = Plural.size

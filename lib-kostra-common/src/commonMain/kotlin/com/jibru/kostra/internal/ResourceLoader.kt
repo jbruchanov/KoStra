@@ -1,3 +1,5 @@
 package com.jibru.kostra.internal
 
-internal expect fun loadResource(key: String): ByteArray
+import java.io.InputStream
+
+internal expect fun loadResource(key: String): InputStream
