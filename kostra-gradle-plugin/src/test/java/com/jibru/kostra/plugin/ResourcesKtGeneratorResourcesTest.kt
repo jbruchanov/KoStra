@@ -78,7 +78,6 @@ class ResourcesKtGeneratorResourcesTest {
             import com.jibru.kostra.`internal`.AppResources
             import com.jibru.kostra.`internal`.FileDatabase
             import com.jibru.kostra.`internal`.Locale
-            import com.jibru.kostra.`internal`.Locale.Undefined
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
             val Resources: AppResources = AppResources(

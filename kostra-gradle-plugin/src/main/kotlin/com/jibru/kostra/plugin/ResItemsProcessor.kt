@@ -6,7 +6,7 @@ import com.jibru.kostra.plugin.ext.setOf
 
 data class ResItemKeyDbKey(
     val resItemKey: String,
-    val dbKey: Int,
+    val dbRootKey: Int,
 )
 
 open class ResItemsProcessor(private val items: List<ResItem>) {
@@ -56,15 +56,14 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
             }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    val stringsForDbs by lazy {
-        stringsAndPluralsForDb[ResItem.String]
-            ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
-    }
-
     //TODO: test
     val stringsDistinctKeys by lazy {
-        stringsForDbs?.values?.firstOrNull()?.map { it.first }
+        stringsAndPluralsForDb[ResItem.String]
+            ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
+            ?.values?.firstOrNull()?.map { it.first }
+        /*stringsAndPluralsForDb[ResItem.String]
+            ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
+            ?.values?.map { items -> items.map { item -> item.first } }*/
     }
 
     val pluralsPerLocale by lazy {
@@ -78,6 +77,35 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    val pluralsForDbs = pluralsPerLocale
-        ?.mapValues { it.value.map { (key, item) -> item }.flatten() }
+    val stringsForDbs by lazy {
+        stringsAndPluralsForDb[ResItem.String]
+            ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
+            ?.mapValues { it.value.map { it.second?.value } }
+            ?: emptyMap()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    val pluralsForDbs by lazy {
+        pluralsPerLocale
+            ?.mapValues { it.value.map { (key, item) -> item }.flatten() }
+            ?: emptyMap()
+    }
+
+    val otherForDbs by lazy {
+        otherItemsPerGroupPerKey.values
+            .map {
+                it
+                    .mapValues { (baseDbKey, items) ->
+                        val dbKey1 = (baseDbKey.dbRootKey.toLong() shl Int.SIZE_BITS)
+                        items.map { resItem ->
+                            val item = resItem as ResItem.FileRes
+                            val dbKey = dbKey1 or item.qualifiers.key.toLong()
+                            dbKey to item.value
+                        }
+                    }
+                    .values
+                    .flatten()
+            }
+            .flatten()
+    }
 }

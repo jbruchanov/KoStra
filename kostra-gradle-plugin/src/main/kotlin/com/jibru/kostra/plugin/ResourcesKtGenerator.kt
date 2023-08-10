@@ -12,10 +12,8 @@ import com.jibru.kostra.internal.StringDatabase
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
@@ -26,7 +24,6 @@ class ResourcesKtGenerator(
 
     private val resourcePropertyName = "Resources"
     private val innerDbsPath = "__kostra"
-    private val memberLocaleUndefined = MemberName(Locale::class.asTypeName().packageName, "Locale.Undefined")
 
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)
@@ -120,7 +117,7 @@ class ResourcesKtGenerator(
         indent()
         locales.onEach {
             if (it == Locale.Undefined) {
-                add("%M", memberLocaleUndefined)
+                add("%T.Undefined", Locale::class)
             } else {
                 add("%T(%L)", Locale::class, it.formattedDbKey())
             }
@@ -184,10 +181,10 @@ private fun TypeSpec.Builder.addLongKeyObjectWithProperties(
         TypeSpec
             .objectBuilder(objectName)
             .apply {
-                items.forEach { (resItemKey, dbKey) ->
+                items.forEach { (resItemKey, dbRootKey) ->
                     addProperty(
                         PropertySpec.builder(resItemKey, type, KModifier.PUBLIC)
-                            .initializer("%T(%L)", type, dbKey)
+                            .initializer("%T(%L)", type, dbRootKey)
                             .build(),
                     )
                 }
