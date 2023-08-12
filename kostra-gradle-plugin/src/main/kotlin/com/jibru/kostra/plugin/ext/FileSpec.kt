@@ -1,4 +1,4 @@
-package test
+package com.jibru.kostra.plugin.ext
 
 import com.squareup.kotlinpoet.FileSpec
 
