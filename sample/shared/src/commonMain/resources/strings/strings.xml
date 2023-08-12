@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">Add</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+
+    <plurals name="bug_x">
+        <item quantity="one">%s bug</item>
+        <item quantity="other">%s bugs</item>
+    </plurals>
+
+</resources>

@@ -45,7 +45,10 @@ class KostraPlugin : Plugin<Project> {
         //KMP
 
         target.afterEvaluate {
+            //TODO proper way of doing this
             target.tasks.findByName("compileKotlinJvm")?.dependsOn(generateCodeTaskProvider)
+            target.tasks.findByName("compileDebugKotlinAndroid")?.dependsOn(generateCodeTaskProvider)
+            target.tasks.findByName("compileReleaseKotlinAndroid")?.dependsOn(generateCodeTaskProvider)
             target.tasks.findByName("generateProjectStructureMetadata")?.dependsOn(generateDatabasesTaskTaskProvider)
             target.tasks.findByName("jvmProcessResources")?.dependsOn(generateDatabasesTaskTaskProvider)
         }

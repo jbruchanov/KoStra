@@ -20,3 +20,32 @@ plugins {
     //can't be present here
     //alias(libs.plugins.gradle.plugin).apply(false)
 }
+
+//workaround for jvm
+//https://youtrack.jetbrains.com/issue/KTIJ-16582/Consumer-Kotlin-JVM-library-cannot-access-a-Kotlin-Multiplatform-JVM-target-resources-in-multi-module-Gradle-project
+allprojects {
+    afterEvaluate {
+        if (plugins.any { it.getClass().getName() == "org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper" }) {
+            logger.info("Patching multiplatform resource tasks for $name")
+            tasks.all { task ->
+                if (task instanceof org.gradle.language.jvm.tasks.ProcessResources) {
+                    def jvmProcessResources = task
+                    def namespace = task.name.split("ProcessResources")[0]
+                    def jvmJar = tasks.findByName("${namespace}Jar") as  Jar
+                    if (jvmJar) {
+                        logger.info("Patching $task.name")
+                        print("Patching $task.name")
+                        def fixMissingResources = tasks.create("${namespace}FixMissingResources", Copy) {
+                            dependsOn jvmProcessResources
+                            from "$buildDir/processedResources/$namespace/main"
+                            into "$buildDir/classes/kotlin/$namespace/main"
+                            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+                        }
+                        jvmJar.dependsOn fixMissingResources
+                        jvmJar.duplicatesStrategy = DuplicatesStrategy.INCLUDE
+                    }
+                }
+            }
+        }
+    }
+}

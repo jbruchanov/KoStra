@@ -27,8 +27,10 @@ kotlin {
 
     sourceSets {
         commonMain {
+            kotlin.srcDir(file("build/kostra/src"))
+            resources.srcDir(file("build/kostra/resources"))
             dependencies {
-                implementation("com.jibru:kostra-common")
+                implementation("com.jibru:kostra-common:${libs.versions.project.version}")
             }
         }
 
@@ -78,7 +80,7 @@ kotlin {
 
 if (plugins.findPlugin("kostra") != null) {
     kostra {
-        message = "test"
+        packageName = "com.sample.app"
     }
 }
 
