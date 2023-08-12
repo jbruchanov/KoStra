@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">Přidat</string>
+    <string name="action_remove">Odebrat</string>
+    <string name="action_cancel">Zrušit</string>
+    <string name="action_delete">Smazat</string>
+
+    <plurals name="bug_x">
+        <item quantity="one">%s brouk</item>
+        <item quantity="few">%s brouci</item>
+        <item quantity="many">%s brouku</item>
+        <item quantity="other">%s brouků</item>
+    </plurals>
+</resources>

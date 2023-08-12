@@ -1,24 +1,19 @@
 package com.test.kostra.appsample
 
-import com.jibru.kostra.AssetResourceKey
-import com.jibru.kostra.BinaryResourceKey
-import com.jibru.kostra.DrawableResourceKey
-import com.jibru.kostra.PluralResourceKey
-import com.jibru.kostra.ResourceContainer
-import com.jibru.kostra.StringResourceKey
-import com.jibru.kostra.internal.KostraResources
+import com.jibru.kostra.plural
+import com.jibru.kostra.string
+import com.sample.app.K
+import com.sample.app.Resources
 
 class Greeting {
     private val platform: Platform = getPlatform()
 
-    val res = object : KostraResources {
-        override val string: Map<StringResourceKey, ResourceContainer> = emptyMap()
-        override val plural: Map<PluralResourceKey, ResourceContainer> = emptyMap()
-        override val drawable: Map<DrawableResourceKey, ResourceContainer> = emptyMap()
-        override val binary: Map<BinaryResourceKey, ResourceContainer> = emptyMap()
-    }
-
     fun greet(): String {
+        println(Resources.string(K.string.action_add))
+        println(Resources.plural(K.plural.bug_x, 0f, 0f))
+        println(Resources.plural(K.plural.bug_x, 0.5f, 0.5f))
+        println(Resources.plural(K.plural.bug_x, 1, 1))
+        println(Resources.plural(K.plural.bug_x, 10, 10))
         return "Hello, ${platform.name}!"
     }
 }

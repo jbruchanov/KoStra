@@ -2,7 +2,6 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.FileResolver
 import com.jibru.kostra.plugin.FileResolverConfig
-import com.jibru.kostra.plugin.KostraPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
