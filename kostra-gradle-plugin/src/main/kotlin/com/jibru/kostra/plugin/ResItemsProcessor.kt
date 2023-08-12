@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_DESTRUCTURED_PARAMETER_ENTRY")
+
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.internal.Locale
@@ -57,6 +59,7 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
     }
 
     //TODO: test
+    @Suppress("UNCHECKED_CAST")
     val stringsDistinctKeys by lazy {
         stringsAndPluralsForDb[ResItem.String]
             ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
@@ -66,6 +69,7 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
             ?.values?.map { items -> items.map { item -> item.first } }*/
     }
 
+    @Suppress("UNCHECKED_CAST")
     val pluralsPerLocale by lazy {
         stringsAndPluralsForDb[ResItem.Plural]
             ?.let { it as? Map<Locale, List<Pair<String, ResItem.Plurals?>>> }

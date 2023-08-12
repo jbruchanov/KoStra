@@ -14,15 +14,3 @@ fun File.relativeTo(to: File, ignoreCase: Boolean = true): String = buildString 
         append(path.pathNormalise())
     }
 }
-
-/*
-return absolutePath.replace(to.absolutePath, "")
-.let {
-    if (path.length < absolutePath.length && path.startsWith(File.separator)) {
-        path.substring(1)
-    } else {
-        path
-    }
-}.pathNormalise()
-}
-*/

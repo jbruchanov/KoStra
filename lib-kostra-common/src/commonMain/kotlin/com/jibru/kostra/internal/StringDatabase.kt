@@ -7,7 +7,7 @@ import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.database.Database
 
 open class StringDatabase(localeDatabases: Map<Locale, String>) : Strings {
-    private val dbs: Map<Locale, Lazy<Database>> = localeDatabases.mapValues { (locale, file) ->
+    private val dbs: Map<Locale, Lazy<Database>> = localeDatabases.mapValues { (_, file) ->
         lazy { BinaryDatabase(loadResource(file).readBytes()) }
     }
 

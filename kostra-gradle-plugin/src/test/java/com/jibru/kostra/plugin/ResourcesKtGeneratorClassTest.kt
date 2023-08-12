@@ -5,10 +5,10 @@ import com.jibru.kostra.internal.Locale
 import com.jibru.kostra.internal.Plural
 import com.jibru.kostra.internal.Plural.Companion.toPluralList
 import com.jibru.kostra.internal.Qualifiers
+import com.jibru.kostra.plugin.ext.minify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
 import test.RealProjectRef
-import test.minify
 import java.io.File
 
 class ResourcesKtGeneratorClassTest {

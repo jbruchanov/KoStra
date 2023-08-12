@@ -69,7 +69,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         var headerIndex = headerSize
         var dataIndex = 0
 
-        items.forEachIndexed { index, item ->
+        items.forEachIndexed { _, item ->
             val string = item.value
             val strData = string?.encodeToByteArray()
             when (item) {
@@ -165,7 +165,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
     fun save() = data.copyOf()
 
     fun toList() = buildList(count()) {
-        this@BinaryDatabase.forEach { key, s -> add(s) }
+        this@BinaryDatabase.forEach { _, s -> add(s) }
     }
 
     fun toMap() = buildMap(count()) {

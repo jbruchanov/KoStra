@@ -1,10 +1,10 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
+import com.jibru.kostra.plugin.ext.minify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
 import test.RealProjectRef
-import test.minify
 import test.testResources
 
 class ResourcesKtGeneratorResourcesTest {
