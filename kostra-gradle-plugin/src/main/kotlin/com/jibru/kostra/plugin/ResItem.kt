@@ -9,6 +9,7 @@ import com.jibru.kostra.plugin.ext.relativeTo
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.typeNameOf
 import java.io.File
+import java.io.Serializable
 
 interface StringValueResItem {
     val key: String
@@ -17,7 +18,7 @@ interface StringValueResItem {
     val group: String
 }
 
-sealed class ResItem {
+sealed class ResItem : Serializable {
     abstract val key: String
     abstract val qualifiers: Qualifiers
     abstract val group: String
@@ -32,18 +33,18 @@ sealed class ResItem {
         override val key: String,
         override val value: String,
         override val qualifiers: Qualifiers,
-    ) : ResItem(), StringValueResItem {
-        override val group: String = String
-        override val resourceKeyType: TypeName = typeNameOf<StringResourceKey>()
+    ) : ResItem(), StringValueResItem, Serializable {
+        override val group: String get() = String
+        override val resourceKeyType: TypeName get() = typeNameOf<StringResourceKey>()
     }
 
     data class StringArray(
         override val key: String,
         val items: List<String>,
         override val qualifiers: Qualifiers,
-    ) : ResItem() {
-        override val group: String = StringArray
-        override val resourceKeyType: TypeName = throw UnsupportedOperationException("StringArray arrays not supported!")
+    ) : ResItem(), Serializable {
+        override val group: String get() = StringArray
+        override val resourceKeyType: TypeName get() = throw UnsupportedOperationException("StringArray arrays not supported!")
     }
 
     data class Plurals(
@@ -51,9 +52,10 @@ sealed class ResItem {
         //indexes matching [Plural]
         val items: List<String?>,
         override val qualifiers: Qualifiers,
-    ) : ResItem() {
-        override val group: String = Plural
-        override val resourceKeyType: TypeName = typeNameOf<PluralResourceKey>()
+    ) : ResItem(), Serializable {
+        override val group: String get() = Plural
+
+        override val resourceKeyType: TypeName get() = typeNameOf<PluralResourceKey>()
 
         companion object {
             val EmptyItems = List<String?>(com.jibru.kostra.internal.Plural.size) { null }
@@ -66,11 +68,11 @@ sealed class ResItem {
         override val qualifiers: Qualifiers,
         override val group: String,
         val root: File, /* = file.parentFile.parentFile*/
-    ) : ResItem(), StringValueResItem {
-        val drawable = group == Drawable
-        override val value by lazy { file.relativeTo(root, ignoreCase = true) }
-        override val resourcesGroup: String = if (drawable) Drawable else Binary
-        override val resourceKeyType: TypeName = if (drawable) typeNameOf<DrawableResourceKey>() else typeNameOf<BinaryResourceKey>()
+    ) : ResItem(), StringValueResItem, Serializable {
+        val drawable get() = group == Drawable
+        override val value get() = file.relativeTo(root, ignoreCase = true)
+        override val resourcesGroup: String get() = if (drawable) Drawable else Binary
+        override val resourceKeyType: TypeName get() = if (drawable) typeNameOf<DrawableResourceKey>() else typeNameOf<BinaryResourceKey>()
     }
 
     companion object {
