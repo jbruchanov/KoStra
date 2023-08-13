@@ -14,6 +14,7 @@ abstract class KostraPluginExtension {
     abstract val kClassName: Property<String>
     abstract val resourceDirs: ListProperty<File>
     abstract val output: Property<File>
+    abstract val autoConfig: Property<Boolean>
 
     @get:Nested
     abstract val androidResources: AndroidResourcesExtension
@@ -24,6 +25,10 @@ abstract class KostraPluginExtension {
 }
 
 abstract class AndroidResourcesExtension {
+    //TODO: is there a way to have keyMapper working from kt/groovy ?
+    @get:Optional
+    abstract val keyMapperKt: Property<(String, File) -> String>
+
     @get:Optional
     abstract val keyMapper: Property<Closure<String>>
 
