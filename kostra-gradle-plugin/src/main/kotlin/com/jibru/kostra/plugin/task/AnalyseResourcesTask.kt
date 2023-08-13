@@ -31,7 +31,9 @@ abstract class AnalyseResourcesTask : DefaultTask() {
         val config = project.extensions.findByType(KostraPluginExtension::class.java)?.let {
             val android = it.androidResources
             FileResolverConfig(
-                keyMapper = android.keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } } ?: defaults.keyMapper,
+                keyMapper = android.keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } }
+                    ?: android.keyMapperKt.orNull
+                    ?: defaults.keyMapper,
                 stringFiles = android.stringFiles.orNull?.setOf { v -> v.toRegex() } ?: defaults.stringFiles,
                 drawableGroups = android.drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.drawableGroups,
                 drawableExtensions = android.drawableExtensions.orNull?.toSet() ?: defaults.drawableExtensions,

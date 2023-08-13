@@ -31,4 +31,5 @@ includeBuild("../") {
     }
 }
 include("shared")
+include("appSharedJvm")
 include("appJvm")

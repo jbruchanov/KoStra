@@ -8,6 +8,8 @@ import com.jibru.kostra.plugin.task.GenerateCodeTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.time.ExperimentalTime
@@ -53,12 +55,60 @@ class KostraPlugin : Plugin<Project> {
             target.tasks.findByName("jvmProcessResources")?.dependsOn(generateDatabasesTaskTaskProvider)
         }
 
+        target.defaultTasks(generateCodeTaskProvider.name)
+
         extension.apply {
+            autoConfig.set(true)
             packageName.set("com.jibru.kostra")
             kClassName.set("K")
-            //TODO if KMP this else java maybe ?
-            resourceDirs.set(listOf(target.file("src/commonMain/resources")))
             output.set(File(target.buildDir, "kostra"))
+        }
+
+        target.afterEvaluate { project ->
+            if (extension.autoConfig.get()) {
+                tryUpdateSourceSets(target, project, extension)
+            }
+        }
+    }
+
+    private fun tryUpdateSourceSets(target: Project, project: Project, extension: KostraPluginExtension) {
+        val sourceDir = File(target.buildDir, "kostra/src")
+        val resourcesDir = File(target.buildDir, "kostra/resources")
+
+        run JavaPlugin@{
+            project.extensions.findByType(JavaPluginExtension::class.java)
+                ?.sourceSets
+                ?.findByName("main")
+                ?.let { mainSourceSet ->
+                    logger.info("Java added sourceSet:${sourceDir.absolutePath}")
+                    //let java know about kostra sourceDir
+                    mainSourceSet.java.srcDir(sourceDir)
+
+                    //put into kostra extension the resource folders
+                    extension.resourceDirs.set(extension.resourceDirs.get() + mainSourceSet.resources.srcDirs)
+
+                    //let java know about kostra resource dir
+                    mainSourceSet.resources.srcDir(resourcesDir)
+                    logger.info("Java added resources:${mainSourceSet.resources.srcDirs.joinToString()}")
+                }
+        }
+
+        run KotlinMultiplatform@{
+            project.extensions.findByType(KotlinMultiplatformExtension::class.java)
+                ?.sourceSets
+                ?.findByName("commonMain")
+                ?.let { commonMainSourceSet ->
+                    logger.info("KMP added sourceSet:${sourceDir.absolutePath}")
+                    //let java know about kostra sourceDir
+                    commonMainSourceSet.kotlin.srcDir(sourceDir)
+
+                    //put into kostra extension the resource folders
+                    extension.resourceDirs.set(extension.resourceDirs.get() + commonMainSourceSet.resources.srcDirs)
+
+                    //let java know about kostra resource dir
+                    commonMainSourceSet.resources.srcDir(resourcesDir)
+                    logger.info("KMP added resources:${commonMainSourceSet.resources.srcDirs.joinToString()}")
+                }
         }
     }
 }
