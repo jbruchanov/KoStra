@@ -11,7 +11,11 @@ data class FileResolverConfig(
     val drawableExtensions: Set<String> = setOf("jpeg", "jpeg", "png", "webp", "bmp", "xml"),
     val useOnlyFilesWithSize: Boolean = true,
     val parallelism: Boolean = false,
-)
+) {
+    companion object {
+        val Defaults = FileResolverConfig()
+    }
+}
 
 class FileResolver(
     private val config: FileResolverConfig = FileResolverConfig(),
