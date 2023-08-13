@@ -2,6 +2,8 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.FileResolver
 import com.jibru.kostra.plugin.FileResolverConfig
+import com.jibru.kostra.plugin.KostraPluginExtension
+import com.jibru.kostra.plugin.ext.setOf
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
@@ -25,9 +27,16 @@ abstract class AnalyseResourcesTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val config = FileResolverConfig(
-            /*keyMapper = ext.keyTransform.get()*/
-        )
+        val defaults = FileResolverConfig.Defaults
+        val config = project.extensions.findByType(KostraPluginExtension::class.java)?.let {
+            val android = it.androidResources
+            FileResolverConfig(
+                keyMapper = android.keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } } ?: defaults.keyMapper,
+                stringFiles = android.stringFiles.orNull?.setOf { v -> v.toRegex() } ?: defaults.stringFiles,
+                drawableGroups = android.drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.drawableGroups,
+                drawableExtensions = android.drawableExtensions.orNull?.toSet() ?: defaults.drawableExtensions,
+            )
+        } ?: FileResolverConfig()
         val result = FileResolver(config).resolve(resourceDirs.get())
         val outputFile = outputFile.get().asFile
         outputFile.parentFile.mkdirs()
