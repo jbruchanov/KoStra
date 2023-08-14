@@ -20,6 +20,7 @@ class ResourcesKtGenerator(
     private val packageName: String,
     private val className: String = "K",
     items: List<ResItem>,
+    private val useAliasImports: Boolean = true,
 ) : ResItemsProcessor(items) {
 
     private val resourcePropertyName = "Resources"
@@ -28,17 +29,19 @@ class ResourcesKtGenerator(
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)
             .apply {
-                if (hasStrings) {
-                    addAliasedImport(StringResourceKey::class, "S")
-                }
-                if (hasPlurals) {
-                    addAliasedImport(PluralResourceKey::class, "P")
-                }
-                if (hasDrawables) {
-                    addAliasedImport(DrawableResourceKey::class, "D")
-                }
-                if (hasOthers) {
-                    addAliasedImport(BinaryResourceKey::class, "B")
+                if (useAliasImports) {
+                    if (hasStrings) {
+                        addAliasedImport(StringResourceKey::class, "S")
+                    }
+                    if (hasPlurals) {
+                        addAliasedImport(PluralResourceKey::class, "P")
+                    }
+                    if (hasDrawables) {
+                        addAliasedImport(DrawableResourceKey::class, "D")
+                    }
+                    if (hasOthers) {
+                        addAliasedImport(BinaryResourceKey::class, "B")
+                    }
                 }
             }
             .addType(

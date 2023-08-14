@@ -27,6 +27,7 @@ object TaskDelegate {
             packageName = packageName,
             className = kClassName,
             items = items,
+            useAliasImports = false,
         ).let {
             listOf(it.generateKClass(), it.generateResources())
         }

@@ -2,7 +2,6 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version(libs.versions.kotlin)
     id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'org.jlleitschuh.gradle.ktlint' version(libs.versions.ktlintplugin)
 }
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
 
@@ -33,28 +32,17 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmtarget.get()))
     }
-
 }
 
 test {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.jibru'
-            artifactId = 'kostra.gradle.plugin'
-            from components.java
-        }
-    }
-}
-
 gradlePlugin {
     plugins {
         ktPlugin {
-            id = "kostra"
-            displayName = "KoStra"
+            id = "com.jibru.kostra"
+            displayName = "kostra"
             tags.set(["kotlin", "multiplatform", "i18n"])
             implementationClass = "com.jibru.kostra.plugin.KostraPlugin"
         }

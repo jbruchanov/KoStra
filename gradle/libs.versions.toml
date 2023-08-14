@@ -26,10 +26,10 @@ jetbrains-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.re
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose-ui" }
 jetbrains-serialisation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintplugin" }
+kostra = { id = "com.jibru.kostra", version.ref = "project-version" }
 refreshversions = { id = "de.fayard.refreshVersions", version.ref = "refreshversions" }
 xcode = { id = "org.openbakery.xcode-plugin", version.ref = "xcode-plugin" }
 
-kostra = { id = "com.jibru:kostra.gradle.plugin", version.ref = "project-version" }
 
 [versions]
 project-version = "0.0.1-SNAPSHOT"
@@ -103,6 +103,7 @@ desuger = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desuge
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebase-crashlytics-sdk" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+kostra-common = { module = "com.jibru.kostra:kostra-common", version.ref = "project-version" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin"}
 kotlin-poet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-reflection = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -124,5 +125,3 @@ threetenbp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref =
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
-
-kostra-common = { module = "com.jibru:kostra-common", version.ref = "project-version" }

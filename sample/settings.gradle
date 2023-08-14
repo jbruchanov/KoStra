@@ -26,8 +26,8 @@ rootProject.name = "kostra-sample-app"
 includeBuild("../") {
     dependencySubstitution {
         //libs ^ doesn't exist here yet
-        substitute module('com.jibru:kostra-common') using project(':lib-kostra-common')
-        substitute module('com.jibru:kostra.gradle.plugin') using project(':kostra-gradle-plugin')
+        substitute module('com.jibru.kostra:kostra-common') using project(':lib-kostra-common')
+        substitute module('com.jibru.kostra:kostra-gradle-plugin') using project(':kostra-gradle-plugin')
     }
 }
 include("shared")

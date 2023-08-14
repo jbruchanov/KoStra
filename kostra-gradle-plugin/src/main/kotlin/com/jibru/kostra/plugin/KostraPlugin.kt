@@ -1,5 +1,5 @@
 @file:Suppress("unused")
-@file:OptIn(ExperimentalTime::class, DelicateCoroutinesApi::class, FlowPreview::class)
+@file:OptIn(FlowPreview::class)
 
 package com.jibru.kostra.plugin
 
@@ -7,7 +7,6 @@ import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.GenerateCodeTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
 import com.jibru.kostra.plugin.task.TaskDelegate
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -21,7 +20,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
-import kotlin.time.ExperimentalTime
 
 class KostraPlugin : Plugin<Project> {
 
@@ -53,15 +51,17 @@ class KostraPlugin : Plugin<Project> {
             finalizedBy(generateCodeTaskProvider)
         }
 
-        //KMP
-
         target.afterEvaluate {
             //TODO proper way of doing this
+            //KMP
             target.tasks.findByName("compileKotlinJvm")?.dependsOn(generateCodeTaskProvider)
             target.tasks.findByName("compileDebugKotlinAndroid")?.dependsOn(generateCodeTaskProvider)
             target.tasks.findByName("compileReleaseKotlinAndroid")?.dependsOn(generateCodeTaskProvider)
             target.tasks.findByName("generateProjectStructureMetadata")?.dependsOn(generateDatabasesTaskTaskProvider)
             target.tasks.findByName("jvmProcessResources")?.dependsOn(generateDatabasesTaskTaskProvider)
+            //JVM
+            target.tasks.findByName("compileKotlin")?.dependsOn(generateCodeTaskProvider)
+            target.tasks.findByName("processResources")?.dependsOn(generateDatabasesTaskTaskProvider)
         }
 
         target.defaultTasks(generateCodeTaskProvider.name)
