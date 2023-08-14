@@ -10,9 +10,12 @@ project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
 
 dependencies {
+    implementation(project(":lib-kostra-common"))
+
     implementation(libs.kotlin.poet)
     implementation(libs.kotlin.gradle.plugin)
-    implementation(project(":lib-kostra-common"))
+    implementation(libs.kotlinx.coroutines.jdk)
+
     testImplementation(libs.bundles.unittest.jvm)
     testImplementation(libs.truth)
 }
