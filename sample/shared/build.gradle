@@ -1,7 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    id("kostra")
+    id("com.jibru.kostra")
 }
 
 apply from: "$rootProject.projectDir/../build-ktlint.gradle"
@@ -28,7 +28,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("com.jibru:kostra-common:${libs.versions.project.version}")
+                implementation(libs.kostra.common)
             }
         }
 
@@ -76,7 +76,7 @@ kotlin {
     }
 }
 
-if (plugins.findPlugin("kostra") != null) {
+if (plugins.findPlugin("com.jibru.kostra") != null) {
     kostra {
         packageName = "com.sample.app"
         androidResources {

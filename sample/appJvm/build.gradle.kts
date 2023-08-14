@@ -1,7 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.jvm").version(libs.versions.kotlin)
     id("application")
-    id("kostra")
+    id("com.jibru.kostra")
 }
 
 java {
@@ -18,7 +18,7 @@ application {
 }
 
 dependencies {
-    implementation("com.jibru:kostra-common:${libs.versions.project.version}")
+    implementation(libs.kostra.common)
 }
 
 tasks.test {
