@@ -1,8 +1,6 @@
 package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.ResItem
-import com.jibru.kostra.plugin.ResourcesKtGenerator
-import com.jibru.kostra.plugin.ext.minify
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -34,21 +32,16 @@ abstract class GenerateCodeTask : DefaultTask() {
 
     @Suppress("UNCHECKED_CAST")
     @TaskAction
-    fun run() {
+    fun run() = with(TaskDelegate) {
         val items = ObjectInputStream(FileInputStream(resources.get().asFile)).readObject() as List<ResItem>
-        val result = ResourcesKtGenerator(
-            packageName = packageName.get(),
-            className = kClassName.get(),
-            items = items,
-        ).let {
-            listOf(it.generateKClass(), it.generateResources())
-        }
         val output = output.get()
         output.deleteRecursively()
-        result.onEach {
-            val file = File(output, "${it.name}.kt")
-            file.parentFile.mkdirs()
-            file.writeText(it.minify())
-        }
+
+        generateCode(
+            packageName = packageName.get(),
+            kClassName = kClassName.get(),
+            items = items,
+            output = output,
+        )
     }
 }
