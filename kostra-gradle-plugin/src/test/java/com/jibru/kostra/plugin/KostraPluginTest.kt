@@ -11,7 +11,7 @@ internal class KostraPluginTest {
     @Disabled
     fun test() {
         val project: Project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("kostra")
+        project.pluginManager.apply("com.jibru.kostra")
         assertThat(project.tasks.findByName("testKostra")).isNotNull()
     }
 }

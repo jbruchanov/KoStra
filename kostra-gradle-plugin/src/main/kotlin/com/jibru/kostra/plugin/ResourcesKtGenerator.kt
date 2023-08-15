@@ -17,14 +17,15 @@ import com.squareup.kotlinpoet.TypeSpec
 import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
-    private val packageName: String,
-    private val className: String = "K",
+    className: String = KostraPluginConfig.KClassName,
     items: List<ResItem>,
     private val useAliasImports: Boolean = true,
 ) : ResItemsProcessor(items) {
 
-    private val resourcePropertyName = "Resources"
-    private val innerDbsPath = "__kostra"
+    private val packageName = className.substringBeforeLast(".", "")
+    private val className = className.substringAfterLast(".")
+    private val resourcePropertyName = KostraPluginConfig.ResourcePropertyName
+    private val innerDbsPath = KostraPluginConfig.ResourceDbFolderName
 
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)

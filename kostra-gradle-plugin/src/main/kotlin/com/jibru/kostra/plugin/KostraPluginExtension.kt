@@ -11,8 +11,7 @@ import java.io.File
 import java.util.regex.Pattern
 
 abstract class KostraPluginExtension {
-    abstract val packageName: Property<String>
-    abstract val kClassName: Property<String>
+    abstract val className: Property<String>
     abstract val resourceDirs: ListProperty<File>
     abstract val outputDir: Property<File>
     abstract val autoConfig: Property<Boolean>

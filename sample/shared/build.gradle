@@ -78,7 +78,7 @@ kotlin {
 
 if (plugins.findPlugin("com.jibru.kostra") != null) {
     kostra {
-        packageName = "com.sample.app"
+        className = "com.sample.app.K"
         androidResources {
             keyMapper = { key, file -> key }
         }

@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin.task
 
+import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.KostraPluginExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
@@ -19,7 +20,7 @@ abstract class AnalyseResourcesTask : DefaultTask() {
     abstract val outputFile: RegularFileProperty
 
     init {
-        group = "kostra"
+        group = KostraPluginConfig.Tasks.Group
     }
 
     @TaskAction

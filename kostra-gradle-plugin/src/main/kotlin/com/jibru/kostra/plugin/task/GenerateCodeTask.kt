@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin.task
 
+import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
@@ -18,16 +19,13 @@ abstract class GenerateCodeTask : DefaultTask() {
     abstract val resources: RegularFileProperty
 
     @get:Input
-    abstract val packageName: Property<String>
-
-    @get:Input
     abstract val kClassName: Property<String>
 
     @get:OutputDirectory
     abstract val output: Property<File>
 
     init {
-        group = "kostra"
+        group = KostraPluginConfig.Tasks.Group
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -38,7 +36,6 @@ abstract class GenerateCodeTask : DefaultTask() {
         output.deleteRecursively()
 
         generateCode(
-            packageName = packageName.get(),
             kClassName = kClassName.get(),
             items = items,
             output = output,

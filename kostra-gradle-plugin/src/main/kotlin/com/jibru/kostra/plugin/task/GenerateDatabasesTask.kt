@@ -2,6 +2,7 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResItemsProcessor
 import org.gradle.api.DefaultTask
@@ -23,7 +24,7 @@ abstract class GenerateDatabasesTask : DefaultTask() {
     abstract val output: Property<File>
 
     init {
-        group = "kostra"
+        group = KostraPluginConfig.Tasks.Group
     }
 
     @TaskAction
@@ -41,7 +42,6 @@ abstract class GenerateDatabasesTask : DefaultTask() {
             val db = File(root, "${ResItem.Binary}.db")
             val data = BinaryDatabase().apply { setPairs(processor.otherForDbs) }.save()
             db.writeBytes(data)
-            println(db.absolutePath)
         }
     }
 
