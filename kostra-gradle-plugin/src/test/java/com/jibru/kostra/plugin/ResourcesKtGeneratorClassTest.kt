@@ -16,8 +16,7 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun generateKClass() {
         val result = ResourcesKtGenerator(
-            packageName = "com.sample.app",
-            className = "K",
+            className = "com.sample.app.K",
             listOf(
                 string("str1"),
                 string("2str"),
@@ -64,7 +63,7 @@ class ResourcesKtGeneratorClassTest {
 
     @Test
     fun `generateKClass no package`() {
-        val gen = ResourcesKtGenerator(packageName = "", className = "ResQ", items = listOf(string("str1")))
+        val gen = ResourcesKtGenerator(className = "ResQ", items = listOf(string("str1")))
         val result = gen.generateKClass().minify()
         assertThat(result).isEqualTo(
             """
@@ -81,7 +80,7 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun `generateKClass WHEN drawable with unexpected extension`() {
         val gen = ResourcesKtGenerator(
-            packageName = "",
+            className = "K",
             items = listOf(
                 ResItem.FileRes("imagePng", File("drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
                 ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
@@ -113,7 +112,7 @@ class ResourcesKtGeneratorClassTest {
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = Locale("cs"))),
         )
 
-        val result = ResourcesKtGenerator(packageName = "", items = items).generateKClass().minify()
+        val result = ResourcesKtGenerator(className = "K", items = items).generateKClass().minify()
         assertThat(result).isEqualTo(
             """
             import com.jibru.kostra.PluralResourceKey as P
@@ -147,7 +146,7 @@ class ResourcesKtGeneratorClassTest {
             ResItem.FileRes("sound", File("s.mp3"), Qualifiers.Undefined, "sound", File("x")),
         )
 
-        val result = ResourcesKtGenerator(packageName = "", items = items).generateResources().minify()
+        val result = ResourcesKtGenerator(className = "K", items = items).generateResources().minify()
         assertThat(result).isEqualTo(
             """
         import com.jibru.kostra.`internal`.AppResources
@@ -180,7 +179,7 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun `generateKClassX`() {
         val items = FileResolver().resolve(RealProjectRef.resources()!!)
-        val x = ResourcesKtGenerator(packageName = "", items = items)
+        val x = ResourcesKtGenerator(className = "K", items = items)
             .generateKClass().minify()
         println(x)
     }

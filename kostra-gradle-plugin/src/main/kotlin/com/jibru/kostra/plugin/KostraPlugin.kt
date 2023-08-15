@@ -3,6 +3,9 @@
 
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
+import com.jibru.kostra.plugin.KostraPluginConfig.outputResourcesDir
+import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.GenerateCodeTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
@@ -25,25 +28,24 @@ class KostraPlugin : Plugin<Project> {
 
     private val logger = LoggerFactory.getLogger(KostraPlugin::class.java)
 
-    override fun apply(target: Project) {
-        val extension = target.extensions.create("kostra", KostraPluginExtension::class.java)
+    override fun apply(target: Project) = with(KostraPluginConfig) {
+        val extension = target.extensions.create(DslObjectName, KostraPluginExtension::class.java)
 
-        val analyseResources = target.tasks.register("analyseResources", AnalyseResourcesTask::class.java) {
-            it.outputFile.set(File(extension.outputDir.get(), "resources.obj"))
+        val analyseResources = target.tasks.register(KostraPluginConfig.Tasks.AnalyseResources, AnalyseResourcesTask::class.java) {
+            it.outputFile.set(extension.analysisFile())
             it.resourceDirs.set(extension.resourceDirs)
         }
 
-        val generateCodeTaskProvider = target.tasks.register("generateCode", GenerateCodeTask::class.java) { task ->
-            task.packageName.set(extension.packageName)
-            task.kClassName.set(extension.kClassName)
+        val generateCodeTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateCode, GenerateCodeTask::class.java) { task ->
+            task.kClassName.set(extension.className)
             task.resources.set(analyseResources.flatMap { it.outputFile })
-            task.output.set(extension.outputDir.map { File(it, "src") })
+            task.output.set(extension.outputSourceDir())
             task.dependsOn(analyseResources)
         }
 
-        val generateDatabasesTaskTaskProvider = target.tasks.register("generateDatabases", GenerateDatabasesTask::class.java) {
+        val generateDatabasesTaskTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateDatabases, GenerateDatabasesTask::class.java) {
             it.resources.set(analyseResources.flatMap { it.outputFile })
-            it.output.set(extension.outputDir.map { File(it, "resources/__kostra") })
+            it.output.set(extension.outputDatabasesDir())
             it.dependsOn(analyseResources)
         }
 
@@ -60,8 +62,10 @@ class KostraPlugin : Plugin<Project> {
             target.tasks.findByName("generateProjectStructureMetadata")?.dependsOn(generateDatabasesTaskTaskProvider)
             target.tasks.findByName("jvmProcessResources")?.dependsOn(generateDatabasesTaskTaskProvider)
             //JVM
-            target.tasks.findByName("compileKotlin")?.dependsOn(generateCodeTaskProvider)
-            target.tasks.findByName("processResources")?.dependsOn(generateDatabasesTaskTaskProvider)
+            if (target.extensions.findByType(JavaPluginExtension::class.java) != null) {
+                target.tasks.findByName("compileKotlin")?.dependsOn(generateCodeTaskProvider)
+                target.tasks.findByName("processResources")?.dependsOn(generateDatabasesTaskTaskProvider)
+            }
         }
 
         target.defaultTasks(generateCodeTaskProvider.name)
@@ -69,9 +73,8 @@ class KostraPlugin : Plugin<Project> {
         extension.apply {
             autoConfig.set(true)
             useFileWatcher.set(false)
-            packageName.set("com.jibru.kostra")
-            kClassName.set("K")
-            outputDir.set(File(target.buildDir, "kostra"))
+            className.set(KClassName)
+            outputDir.set(target.defaultOutputDir())
         }
 
         target.afterEvaluate { project ->
@@ -83,8 +86,8 @@ class KostraPlugin : Plugin<Project> {
     }
 
     private fun tryUpdateSourceSets(target: Project, project: Project, extension: KostraPluginExtension) {
-        val sourceDir = File(target.buildDir, "kostra/src")
-        val resourcesDir = File(target.buildDir, "kostra/resources")
+        val sourceDir = extension.outputSourceDir().get()
+        val resourcesDir = extension.outputResourcesDir().get()
 
         run JavaPlugin@{
             project.extensions.findByType(JavaPluginExtension::class.java)
@@ -133,11 +136,10 @@ class KostraPlugin : Plugin<Project> {
             val taskDelegateConfig = TaskDelegate.Config(
                 resourceDirs = extension.resourceDirs.get(),
                 fileResolverConfig = extension.androidResources.toFileResolverConfig(),
-                packageName = extension.packageName.get(),
-                kClassName = extension.kClassName.get(),
+                kClassName = extension.className.get(),
                 output = File(extension.outputDir.get(), "src"),
             )
-            val log = File(target.buildDir, "kostra/filewatcher.log")
+            val log = target.fileWatcherLog()
             fileWatcherJob = GlobalScope.launch(Dispatchers.IO) {
                 fileWatcher.flowChanges(folders)
                     .debounce(1000L)
@@ -159,7 +161,6 @@ class KostraPlugin : Plugin<Project> {
                 fileResolverConfig = taskDelegateConfig.fileResolverConfig,
             )
             generateCode(
-                packageName = taskDelegateConfig.packageName,
                 kClassName = taskDelegateConfig.kClassName,
                 items = items,
                 output = taskDelegateConfig.output,

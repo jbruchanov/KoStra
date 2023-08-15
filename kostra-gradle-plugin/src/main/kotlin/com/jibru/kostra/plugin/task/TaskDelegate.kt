@@ -12,7 +12,6 @@ object TaskDelegate {
     class Config(
         val resourceDirs: List<File>,
         val fileResolverConfig: FileResolverConfig,
-        val packageName: String,
         val kClassName: String,
         val output: File,
     )
@@ -22,9 +21,8 @@ object TaskDelegate {
         fileResolverConfig: FileResolverConfig,
     ): List<ResItem> = FileResolver(fileResolverConfig).resolve(resourceDirs)
 
-    fun generateCode(items: List<ResItem>, packageName: String, kClassName: String, output: File, minify: Boolean = true) {
+    fun generateCode(items: List<ResItem>, kClassName: String, output: File, minify: Boolean = true) {
         val result = ResourcesKtGenerator(
-            packageName = packageName,
             className = kClassName,
             items = items,
             useAliasImports = false,

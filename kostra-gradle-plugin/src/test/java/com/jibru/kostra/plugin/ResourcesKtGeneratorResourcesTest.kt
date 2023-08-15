@@ -29,11 +29,7 @@ class ResourcesKtGeneratorResourcesTest {
         buildResources()
 
         val items = FileResolver().resolve(resourcesRoot)
-        val gen = ResourcesKtGenerator(
-            "com.sample.app",
-            "K",
-            items,
-        )
+        val gen = ResourcesKtGenerator("com.sample.app.K", items)
 
         val result = buildString {
             val files = listOf(
@@ -103,11 +99,7 @@ class ResourcesKtGeneratorResourcesTest {
     @EnabledIf("hasRealProjectLocation")
     fun test() {
         val items = FileResolver().resolve(RealProjectRef.resources()!!)
-        val gen = ResourcesKtGenerator(
-            "com.sample.app",
-            "K",
-            items,
-        )
+        val gen = ResourcesKtGenerator("com.sample.app.K", items)
 
         val result = buildString {
             val files = listOf(
