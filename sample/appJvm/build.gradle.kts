@@ -1,7 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.jvm").version(libs.versions.kotlin)
     id("application")
-    id("com.jibru.kostra")
+    id("com.jibru.kostra.resources")
 }
 
 java {

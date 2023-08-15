@@ -26,7 +26,7 @@ jetbrains-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.re
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose-ui" }
 jetbrains-serialisation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintplugin" }
-kostra = { id = "com.jibru.kostra", version.ref = "project-version" }
+kostra = { id = "com.jibru.kostra.resources", version.ref = "project-version" }
 refreshversions = { id = "de.fayard.refreshVersions", version.ref = "refreshversions" }
 xcode = { id = "org.openbakery.xcode-plugin", version.ref = "xcode-plugin" }
 
