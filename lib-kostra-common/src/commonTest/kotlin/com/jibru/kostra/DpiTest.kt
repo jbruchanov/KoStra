@@ -1,7 +1,7 @@
-package com.jibru.kostra.internal
+package com.jibru.kostra
 
-import com.jibru.kostra.internal.Dpi.Companion.next
-import com.jibru.kostra.internal.Dpi.Companion.prev
+import com.jibru.kostra.Dpi.Companion.next
+import com.jibru.kostra.Dpi.Companion.prev
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

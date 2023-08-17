@@ -1,7 +1,5 @@
 package com.jibru.kostra
 
-import com.jibru.kostra.internal.Qualifiers
-
 interface Strings {
     fun get(key: StringResourceKey, qualifiers: Qualifiers): String
     fun get(key: StringResourceKey, qualifiers: Qualifiers, vararg formatArgs: Any): String =

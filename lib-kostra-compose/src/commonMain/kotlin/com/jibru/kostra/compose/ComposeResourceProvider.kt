@@ -5,12 +5,12 @@ package com.jibru.kostra.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import com.jibru.kostra.AssetResourceKey
+import com.jibru.kostra.KostraResources
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
+import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.assetPath
-import com.jibru.kostra.internal.KostraResources
-import com.jibru.kostra.internal.Qualifiers
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
 

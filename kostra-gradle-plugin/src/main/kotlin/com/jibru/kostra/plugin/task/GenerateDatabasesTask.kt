@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.database.BinaryDatabase
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Locale
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResItemsProcessor

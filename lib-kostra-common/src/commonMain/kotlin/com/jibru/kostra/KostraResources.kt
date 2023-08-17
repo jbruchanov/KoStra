@@ -1,8 +1,4 @@
-package com.jibru.kostra.internal
-
-import com.jibru.kostra.FileReferences
-import com.jibru.kostra.Plurals
-import com.jibru.kostra.Strings
+package com.jibru.kostra
 
 interface KostraResources {
     val string: Strings

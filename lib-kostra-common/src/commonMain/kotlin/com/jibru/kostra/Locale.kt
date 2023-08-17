@@ -1,8 +1,8 @@
 @file:Suppress("ReplaceManualRangeWithIndicesCalls")
 
-package com.jibru.kostra.internal
+package com.jibru.kostra
 
-import com.jibru.kostra.internal.ext.takeIfNotEmpty
+import com.jibru.kostra.ext.takeIfNotEmpty
 import java.io.Serializable
 
 private const val LetterCodeMin = 'a'.code

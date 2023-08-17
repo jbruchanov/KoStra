@@ -6,9 +6,9 @@ import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
-import com.jibru.kostra.internal.AppResources
+import com.jibru.kostra.AppResources
 import com.jibru.kostra.internal.FileDatabase
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Locale
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
 import com.squareup.kotlinpoet.AnnotationSpec

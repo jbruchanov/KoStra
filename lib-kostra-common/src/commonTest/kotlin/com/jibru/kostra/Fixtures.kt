@@ -1,10 +1,6 @@
 package com.jibru.kostra
 
-import com.jibru.kostra.internal.AppResources
-import com.jibru.kostra.internal.Dpi
-import com.jibru.kostra.internal.Locale
 import com.jibru.kostra.internal.Plural
-import com.jibru.kostra.internal.Qualifiers
 import test.FileMemoryReferences
 import test.PluralMemoryDatabase
 import test.StringMemoryDatabase

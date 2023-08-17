@@ -4,7 +4,7 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.internal.Plural
 import com.jibru.kostra.internal.Plural.Companion.toPluralList
-import com.jibru.kostra.internal.Qualifiers
+import com.jibru.kostra.Qualifiers
 import java.io.Reader
 import java.io.StringReader
 import javax.xml.stream.XMLInputFactory

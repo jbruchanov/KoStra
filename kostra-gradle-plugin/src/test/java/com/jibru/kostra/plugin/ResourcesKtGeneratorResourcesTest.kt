@@ -50,7 +50,7 @@ class ResourcesKtGeneratorResourcesTest {
             ---------------- com.sample.app.K ----------------
             package com.sample.app
             import com.jibru.kostra.BinaryResourceKey as B
-            import com.jibru.kostra.DrawableResourceKey as D
+            import com.jibru.kostra.PainterResourceKey as D
             import com.jibru.kostra.PluralResourceKey as P
             import com.jibru.kostra.StringResourceKey as S
             object K {
@@ -70,9 +70,9 @@ class ResourcesKtGeneratorResourcesTest {
             }
             ---------------- com.sample.app.Resources ----------------
             package com.sample.app
-            import com.jibru.kostra.`internal`.AppResources
+            import com.jibru.kostra.AppResources
+            import com.jibru.kostra.Locale
             import com.jibru.kostra.`internal`.FileDatabase
-            import com.jibru.kostra.`internal`.Locale
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
             val Resources: AppResources = AppResources(

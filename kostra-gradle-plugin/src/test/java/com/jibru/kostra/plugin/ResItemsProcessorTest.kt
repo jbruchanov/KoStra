@@ -1,11 +1,11 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
-import com.jibru.kostra.internal.Dpi
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Dpi
+import com.jibru.kostra.Locale
 import com.jibru.kostra.internal.Plural
 import com.jibru.kostra.internal.Plural.Companion.toPluralList
-import com.jibru.kostra.internal.Qualifiers
+import com.jibru.kostra.Qualifiers
 import org.junit.jupiter.api.Test
 import java.io.File
 

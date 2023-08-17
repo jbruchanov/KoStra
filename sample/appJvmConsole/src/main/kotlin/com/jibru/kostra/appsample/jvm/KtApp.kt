@@ -5,7 +5,7 @@ import com.jibru.kostra.Resources
 import com.jibru.kostra.assetPath
 import com.jibru.kostra.binaryInputStream
 import com.jibru.kostra.defaultQualifiers
-import com.jibru.kostra.internal.Dpi
+import com.jibru.kostra.Dpi
 import com.jibru.kostra.plural
 import com.jibru.kostra.string
 import java.util.Locale

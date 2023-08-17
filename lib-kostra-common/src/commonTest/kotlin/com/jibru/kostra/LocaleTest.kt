@@ -1,4 +1,4 @@
-package com.jibru.kostra.internal
+package com.jibru.kostra
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test

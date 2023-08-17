@@ -1,4 +1,4 @@
-package com.jibru.kostra.internal
+package com.jibru.kostra
 
 import java.io.Serializable
 

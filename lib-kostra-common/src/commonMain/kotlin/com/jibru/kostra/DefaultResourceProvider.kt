@@ -1,7 +1,5 @@
 package com.jibru.kostra
 
-import com.jibru.kostra.internal.KostraResources
-import com.jibru.kostra.internal.Qualifiers
 import com.jibru.kostra.internal.loadResource
 
 fun KostraResources.string(key: StringResourceKey): String =

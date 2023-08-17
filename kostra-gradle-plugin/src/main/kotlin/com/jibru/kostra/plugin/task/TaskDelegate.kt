@@ -32,7 +32,7 @@ object TaskDelegate {
         val result = ResourcesKtGenerator(
             className = kClassName,
             items = items,
-            useAliasImports = true,
+            useAliasImports = false,
         ).let {
             buildList {
                 add(it.generateKClass())
