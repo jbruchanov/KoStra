@@ -1,19 +1,26 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.DrawableResourceKey
 import com.jibru.kostra.PluralResourceKey
+import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.internal.AppResources
 import com.jibru.kostra.internal.FileDatabase
 import com.jibru.kostra.internal.Locale
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asClassName
 import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
@@ -25,7 +32,9 @@ class ResourcesKtGenerator(
     private val packageName = className.substringBeforeLast(".", "")
     private val className = className.substringAfterLast(".")
     private val resourcePropertyName = KostraPluginConfig.ResourcePropertyName
+    private val resourceMemberName = MemberName(packageName, resourcePropertyName)
     private val innerDbsPath = KostraPluginConfig.ResourceDbFolderName
+    private val composeDefaults = KostraPluginConfig.ComposeDefaultResourceProvider
 
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)
@@ -136,6 +145,79 @@ class ResourcesKtGenerator(
 
     private fun Locale.formattedDbKey() =
         key.toString().padStart(8, '0').windowed(2, 2).joinToString("_").trimStart('0')
+
+    fun generateComposeDefaults(): FileSpec {
+        val stringExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "string")
+        val pluralExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "plural")
+        val painterExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "painter")
+        val assetExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "assetPath")
+        val keyArgName = "key"
+        val quantityArgName = "quantity"
+        val formatArgName = "formatArgs"
+
+        return FileSpec.builder(packageName, composeDefaults)
+            .addAnnotation(
+                AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S", "NOTHING_TO_INLINE")
+                    .build(),
+            )
+            .addComposeDefaultFunc("stringResource", StringResourceKey::class) {
+                addCode("return %M.%M(%L)", resourceMemberName, stringExtMember, keyArgName)
+            }
+            .addComposeDefaultFunc("stringResource", StringResourceKey::class) {
+                addParameter(formatArgName, Any::class, KModifier.VARARG)
+                addCode("return %M.%M(%L, *%L)", resourceMemberName, stringExtMember, keyArgName, formatArgName)
+            }
+            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
+                addParameter(quantityArgName, Float::class)
+                addCode("return %M.%M(%L, %L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName)
+            }
+            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
+                addParameter(quantityArgName, Int::class)
+                addCode("return %M.%M(%L, %L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName)
+            }
+            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
+                addParameter(quantityArgName, Float::class)
+                addParameter(formatArgName, Any::class, KModifier.VARARG)
+                addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName, formatArgName)
+            }
+            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
+                addParameter(quantityArgName, Int::class)
+                addParameter(formatArgName, Any::class, KModifier.VARARG)
+                addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName, formatArgName)
+            }
+            .addComposeDefaultFunc("painterResource", DrawableResourceKey::class) {
+                addCode("return %M.%M(%L)", resourceMemberName, painterExtMember, keyArgName)
+            }
+            .addComposeDefaultFunc("assetPath", AssetResourceKey::class) {
+                addCode("return %M.%M(%L)", resourceMemberName, assetExtMember, keyArgName)
+            }
+            .build()
+    }
+
+    private fun FileSpec.Builder.addComposeDefaultFunc(
+        name: String,
+        keyType: KClass<out ResourceKey>,
+        builder: FunSpec.Builder.() -> Unit,
+    ): FileSpec.Builder {
+        val composableType = ClassName("androidx.compose.runtime", "Composable")
+
+        val returnType = when (keyType) {
+            DrawableResourceKey::class -> ClassName("androidx.compose.ui.graphics.painter", "Painter")
+            else -> String::class.asClassName()
+        }
+
+        addFunction(
+            FunSpec.builder(name)
+                .addModifiers(KModifier.INLINE)
+                .addAnnotation(composableType)
+                .addParameter("key", keyType)
+                .apply(builder)
+                .returns(returnType)
+                .build(),
+        )
+        return this
+    }
 }
 
 /**

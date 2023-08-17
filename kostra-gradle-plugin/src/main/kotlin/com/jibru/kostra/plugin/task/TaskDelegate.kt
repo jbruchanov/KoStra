@@ -13,6 +13,7 @@ object TaskDelegate {
         val resourceDirs: List<File>,
         val fileResolverConfig: FileResolverConfig,
         val kClassName: String,
+        val composeDefaults: Boolean,
         val output: File,
     )
 
@@ -21,17 +22,29 @@ object TaskDelegate {
         fileResolverConfig: FileResolverConfig,
     ): List<ResItem> = FileResolver(fileResolverConfig).resolve(resourceDirs)
 
-    fun generateCode(items: List<ResItem>, kClassName: String, output: File, minify: Boolean = true) {
+    fun generateCode(
+        items: List<ResItem>,
+        kClassName: String,
+        composeDefaults: Boolean,
+        outputDir: File,
+        minify: Boolean = true,
+    ) {
         val result = ResourcesKtGenerator(
             className = kClassName,
             items = items,
             useAliasImports = false,
         ).let {
-            listOf(it.generateKClass(), it.generateResources())
+            buildList {
+                add(it.generateKClass())
+                add(it.generateResources())
+                if (composeDefaults) {
+                    add(it.generateComposeDefaults())
+                }
+            }
         }
-        output.deleteRecursively()
+        outputDir.deleteRecursively()
         result.onEach {
-            val file = File(output, "${it.name}.kt")
+            val file = File(outputDir, "${it.name}.kt")
             file.parentFile.mkdirs()
             if (minify) {
                 file.writeText(it.minify())

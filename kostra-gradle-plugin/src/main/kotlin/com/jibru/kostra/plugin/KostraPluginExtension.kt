@@ -16,6 +16,7 @@ abstract class KostraPluginExtension {
     abstract val outputDir: Property<File>
     abstract val autoConfig: Property<Boolean>
     abstract val useFileWatcher: Property<Boolean>
+    abstract val composeDefaults: Property<Boolean>
 
     @get:Nested
     abstract val androidResources: AndroidResourcesExtension

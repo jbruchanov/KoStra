@@ -21,8 +21,11 @@ abstract class GenerateCodeTask : DefaultTask() {
     @get:Input
     abstract val kClassName: Property<String>
 
+    @get:Input
+    abstract val composeDefaults: Property<Boolean>
+
     @get:OutputDirectory
-    abstract val output: Property<File>
+    abstract val outputDir: Property<File>
 
     init {
         group = KostraPluginConfig.Tasks.Group
@@ -32,13 +35,14 @@ abstract class GenerateCodeTask : DefaultTask() {
     @TaskAction
     fun run() = with(TaskDelegate) {
         val items = ObjectInputStream(FileInputStream(resources.get().asFile)).readObject() as List<ResItem>
-        val output = output.get()
-        output.deleteRecursively()
+        val outputDir = outputDir.get()
+        outputDir.deleteRecursively()
 
         generateCode(
             kClassName = kClassName.get(),
             items = items,
-            output = output,
+            composeDefaults = composeDefaults.get(),
+            outputDir = outputDir,
         )
     }
 }
