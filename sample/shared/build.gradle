@@ -1,6 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
+    id("org.jetbrains.compose")
     id("com.jibru.kostra.resources")
 }
 
@@ -29,6 +30,9 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kostra.common)
+                implementation(libs.kostra.compose)
+                implementation(compose.desktop.currentOs)
+                implementation(libs.bundles.jetbrains.compose.app)
             }
         }
 

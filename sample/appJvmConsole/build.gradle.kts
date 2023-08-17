@@ -9,6 +9,15 @@ java {
     targetCompatibility = JavaVersion.toVersion(libs.versions.jvmtarget.get())
 }
 
+sourceSets {
+    main {
+        resources {
+            //just to reuse same resources
+            srcDir("../shared/src/commonMain/resources")
+        }
+    }
+}
+
 kotlin {
     jvmToolchain(libs.versions.jvmtarget.get().toInt())
 }

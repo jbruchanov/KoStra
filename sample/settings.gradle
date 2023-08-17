@@ -31,8 +31,10 @@ includeBuild("../") {
     dependencySubstitution {
         //libs ^ doesn't exist here yet
         substitute module('com.jibru.kostra:kostra-common') using project(':lib-kostra-common')
+        substitute module('com.jibru.kostra:kostra-compose') using project(':lib-kostra-compose')
+        substitute module('com.jibru.kostra.resources:com.jibru.kostra.resources.gradle.plugin') using project(':kostra-gradle-plugin')
     }
 }
 include("shared")
-include("appSharedJvm")
-include("appJvm")
+include("appJvmConsole")
+include("appJvmDesktop")
