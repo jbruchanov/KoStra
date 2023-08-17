@@ -14,7 +14,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("com.jibru.kostra.appsample.jvm.AppKt")
+    mainClass.set("com.jibru.kostra.appsample.jvm.KtAppKt")
 }
 
 dependencies {

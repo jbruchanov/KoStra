@@ -7,8 +7,8 @@ import kotlin.streams.asStream
 data class FileResolverConfig(
     val keyMapper: (String, File) -> String = { key, _ -> key },
     val stringFiles: Set<Regex> = setOf("string.*\\.xml".toRegex()),
-    val drawableGroups: Set<Regex> = setOf("drawables?.*".toRegex(), "mipmap?.*".toRegex()),
-    val drawableExtensions: Set<String> = setOf("jpeg", "jpeg", "png", "webp", "bmp", "xml"),
+    val drawableGroups: Set<Regex> = setOf("drawables?.*".toRegex(), "mipmap?.*".toRegex(), "image?.*".toRegex()),
+    val drawableExtensions: Set<String> = setOf("jpg", "jpeg", "png", "webp", "bmp", "xml"),
     val useOnlyFilesWithSize: Boolean = true,
     val parallelism: Boolean = false,
 ) {
