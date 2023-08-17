@@ -11,7 +11,7 @@ value class Qualifiers(val key: Int) : Serializable {
     val locale get() = Locale(key shr Dpi.Bits)
     val dpi get() = Dpi.fromBits(key and Dpi.BitMask)
 
-    fun withNoLocaleLanguage() = Qualifiers(locale.language, dpi)
+    fun withNoLocaleRegion() = Qualifiers(locale.language, dpi)
 
     fun withNoLocale() = Qualifiers(Locale.Undefined, dpi)
 

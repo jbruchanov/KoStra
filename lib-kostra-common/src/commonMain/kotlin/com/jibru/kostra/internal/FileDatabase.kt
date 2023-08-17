@@ -21,7 +21,7 @@ open class FileDatabase(database: String) : FileReferences {
             ?.let { getValue(key, qualifiers) ?: getValue(key, qualifiers.withNoDpi()) }
             //lang[+dpi]
             ?: qualifiers.locale.takeIf { it != Locale.Undefined }
-                ?.let { qualifiers.withNoLocaleLanguage() }
+                ?.let { qualifiers.withNoLocaleRegion() }
                 ?.let { localeLang -> getValue(key, localeLang) ?: getValue(key, localeLang.withNoDpi()) }
             //just dpi
             ?: qualifiers.dpi.takeIf { it != Dpi.Undefined }?.let { getValue(key, Qualifiers(dpi = it)) }
