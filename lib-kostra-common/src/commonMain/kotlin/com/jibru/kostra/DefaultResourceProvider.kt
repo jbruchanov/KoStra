@@ -3,7 +3,6 @@ package com.jibru.kostra
 import com.jibru.kostra.internal.KostraResources
 import com.jibru.kostra.internal.Qualifiers
 import com.jibru.kostra.internal.loadResource
-import java.io.InputStream
 
 fun KostraResources.string(key: StringResourceKey): String =
     string.get(key, defaultQualifiers())
@@ -23,11 +22,8 @@ fun KostraResources.plural(key: PluralResourceKey, quantity: Int, vararg formatA
 fun KostraResources.plural(key: PluralResourceKey, quantity: Float, vararg formatArgs: Any): String =
     this.plural.get(key, defaultQualifiers(), quantity, *formatArgs)
 
-fun KostraResources.binary(key: AssetResourceKey, qualifiers: Qualifiers = defaultQualifiers()): String =
+fun KostraResources.assetPath(key: AssetResourceKey, qualifiers: Qualifiers = defaultQualifiers()): String =
     this.binary.get(key, qualifiers)
 
 fun KostraResources.binaryByteArray(key: AssetResourceKey, qualifiers: Qualifiers = defaultQualifiers()): ByteArray =
-    loadResource(binary.get(key, qualifiers)).readBytes()
-
-fun KostraResources.binaryInputStream(key: AssetResourceKey, qualifiers: Qualifiers = defaultQualifiers()): InputStream =
     loadResource(binary.get(key, qualifiers))
