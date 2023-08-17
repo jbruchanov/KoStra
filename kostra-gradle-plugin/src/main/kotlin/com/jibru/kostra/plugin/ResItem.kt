@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.BinaryResourceKey
-import com.jibru.kostra.DrawableResourceKey
+import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.internal.Qualifiers
@@ -72,7 +72,7 @@ sealed class ResItem : Serializable {
         val drawable get() = group == Drawable
         override val value get() = file.relativeTo(root, ignoreCase = true)
         override val resourcesGroup: String get() = if (drawable) Drawable else Binary
-        override val resourceKeyType: TypeName get() = if (drawable) typeNameOf<DrawableResourceKey>() else typeNameOf<BinaryResourceKey>()
+        override val resourceKeyType: TypeName get() = if (drawable) typeNameOf<PainterResourceKey>() else typeNameOf<BinaryResourceKey>()
     }
 
     companion object {

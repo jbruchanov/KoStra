@@ -30,10 +30,10 @@ object Fixtures {
             }
 
             object drawable {
-                val undefinedDpi = DrawableResourceKey(1)
-                val xxHdpiOnly = DrawableResourceKey(2)
-                val multipleDpi = DrawableResourceKey(3)
-                val multipleDpiLocale = DrawableResourceKey(4)
+                val undefinedDpi = PainterResourceKey(1)
+                val xxHdpiOnly = PainterResourceKey(2)
+                val multipleDpi = PainterResourceKey(3)
+                val multipleDpiLocale = PainterResourceKey(4)
             }
         }
 
