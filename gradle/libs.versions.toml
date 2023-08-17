@@ -4,7 +4,7 @@
 
 android-core = ["androidx-core-ktx"]
 android-compose = ["androidx-activity-compose", "androidx-app-compat"]
-android-compose-app = ["jetbrains-compose-ui", "androidx-compose-ui-tooling", "jetbrains-compose-foundation", "jetbrains-compose-material"]
+jetbrains-compose-app = ["jetbrains-compose-ui", "jetbrains-compose-foundation", "jetbrains-compose-material"]
 ktor-client = ["ktor-client-core", "ktor-client-cio", "ktor-client-logging"]
 unittest-jvm = ["jetbrains-coroutines-test", "junit-jupiter-api", "junit-jupiter-engine", "junit-jupiter-params", "kotlin-reflection", "logback", "mockk", "truth", "turbine"]
 unittest-android = ["androidx-arch-core-testing"]
@@ -60,7 +60,7 @@ kotlinpoet = "1.14.2"
 kotlinx-dateTime = "0.4.0"
 kotlinx-coroutines = "1.7.2"
 kotlinx-atomicfu = "0.21.0"
-jetbrains-compose-ui = "1.5.0-dev1114"
+jetbrains-compose-ui = "1.5.0-beta02"
 compose-mp-flow = "0.30.1"
 desuger = "2.0.3"
 junit = "5.10.0"
@@ -89,8 +89,8 @@ androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", versi
 androidx-collection = { module = "androidx.collection:collection-ktx", version.ref = "androidx-collection" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "jetbrains-compose-ui" }
-jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains-compose-ui" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "jetbrains-compose-ui" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-components-resources = { module = " org.jetbrains.compose.components:components-resources", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-material = { module = " org.jetbrains.compose.material:material", version.ref = "jetbrains-compose-ui" }
@@ -104,6 +104,7 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", ve
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebase-crashlytics-sdk" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 kostra-common = { module = "com.jibru.kostra:kostra-common", version.ref = "project-version" }
+kostra-compose = { module = "com.jibru.kostra:kostra-compose", version.ref = "project-version" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin"}
 kotlin-poet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-reflection = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
