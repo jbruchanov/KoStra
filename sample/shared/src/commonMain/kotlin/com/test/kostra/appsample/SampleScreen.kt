@@ -30,10 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.jibru.kostra.Dpi
+import com.jibru.kostra.Locale
+import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.compose.LocalQualifiers
-import com.jibru.kostra.internal.Dpi
-import com.jibru.kostra.internal.Locale
-import com.jibru.kostra.internal.Qualifiers
 import com.sample.app.K
 import com.sample.app.assetPath
 import com.sample.app.painterResource
@@ -126,6 +126,7 @@ fun SampleScreen() = with(SampleScreenDefaults) {
 
 @Composable
 private fun TextCheckBox(onCheckedChange: (Boolean) -> Unit, checked: Boolean, text: String, modifier: Modifier = Modifier) = with(SampleScreenDefaults) {
+    @Suppress("NAME_SHADOWING")
     val checked by rememberUpdatedState(checked)
     Row(
         horizontalArrangement = Arrangement.spacedBy(spacing),

@@ -1,8 +1,10 @@
 package com.jibru.kostra.internal
 
+import com.jibru.kostra.Locale
 import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
+import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.database.BinaryDatabase
 
 open class PluralDatabase(localeDatabases: Map<Locale, String>) : Plurals {

@@ -2,7 +2,7 @@
 
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Locale
 import com.jibru.kostra.plugin.ext.distinctByLast
 import com.jibru.kostra.plugin.ext.setOf
 

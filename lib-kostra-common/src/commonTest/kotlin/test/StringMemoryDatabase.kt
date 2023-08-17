@@ -1,7 +1,7 @@
 package test
 
 import com.jibru.kostra.StringResourceKey
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Locale
 import com.jibru.kostra.internal.StringDatabase
 
 class StringMemoryDatabase(private val data: Map<Locale, Map<StringResourceKey, String>>) : StringDatabase(emptyMap()) {

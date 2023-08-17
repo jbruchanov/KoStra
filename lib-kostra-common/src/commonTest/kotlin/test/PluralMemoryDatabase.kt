@@ -1,7 +1,7 @@
 package test
 
 import com.jibru.kostra.PluralResourceKey
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Locale
 import com.jibru.kostra.internal.Plural
 import com.jibru.kostra.internal.PluralDatabase
 

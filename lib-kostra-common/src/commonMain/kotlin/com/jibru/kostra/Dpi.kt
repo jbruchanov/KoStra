@@ -1,4 +1,4 @@
-package com.jibru.kostra.internal
+package com.jibru.kostra
 
 @Suppress("ktlint:standard:no-semi")
 enum class Dpi(val key: Int, val density: Float, val qualifier: String) {

@@ -1,9 +1,9 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.internal.Dpi
-import com.jibru.kostra.internal.Locale
-import com.jibru.kostra.internal.Qualifiers
-import com.jibru.kostra.internal.ext.takeIfNotEmpty
+import com.jibru.kostra.Dpi
+import com.jibru.kostra.Locale
+import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.ext.takeIfNotEmpty
 import java.io.File
 
 private val locales = java.util.Locale.getAvailableLocales().map { it.toLanguageTag().lowercase() }.toSortedSet()

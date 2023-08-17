@@ -1,10 +1,10 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
-import com.jibru.kostra.internal.Locale
+import com.jibru.kostra.Locale
+import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.internal.Plural
 import com.jibru.kostra.internal.Plural.Companion.toPluralList
-import com.jibru.kostra.internal.Qualifiers
 import com.jibru.kostra.plugin.ext.minify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
@@ -34,7 +34,7 @@ class ResourcesKtGeneratorClassTest {
             """
             package com.sample.app
             import com.jibru.kostra.BinaryResourceKey as B
-            import com.jibru.kostra.DrawableResourceKey as D
+            import com.jibru.kostra.PainterResourceKey as D
             import com.jibru.kostra.PluralResourceKey as P
             import com.jibru.kostra.StringResourceKey as S
             object K {
@@ -89,7 +89,7 @@ class ResourcesKtGeneratorClassTest {
         val result = gen.generateKClass().minify()
         assertThat(result).isEqualTo(
             """
-            import com.jibru.kostra.DrawableResourceKey as D
+            import com.jibru.kostra.PainterResourceKey as D
             object K {
               object drawable {
                 val imageBin: D = D(1)
@@ -149,9 +149,9 @@ class ResourcesKtGeneratorClassTest {
         val result = ResourcesKtGenerator(className = "K", items = items).generateResources().minify()
         assertThat(result).isEqualTo(
             """
-        import com.jibru.kostra.`internal`.AppResources
+        import com.jibru.kostra.AppResources
+        import com.jibru.kostra.Locale
         import com.jibru.kostra.`internal`.FileDatabase
-        import com.jibru.kostra.`internal`.Locale
         import com.jibru.kostra.`internal`.PluralDatabase
         import com.jibru.kostra.`internal`.StringDatabase
         val Resources: AppResources = AppResources(

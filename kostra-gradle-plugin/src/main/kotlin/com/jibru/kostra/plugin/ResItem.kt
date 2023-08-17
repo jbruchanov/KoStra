@@ -4,7 +4,7 @@ import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.StringResourceKey
-import com.jibru.kostra.internal.Qualifiers
+import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.plugin.ext.relativeTo
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.typeNameOf

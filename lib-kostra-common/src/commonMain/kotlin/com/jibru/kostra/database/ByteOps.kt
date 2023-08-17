@@ -1,6 +1,6 @@
 package com.jibru.kostra.database
 
-interface ByteOps {
+internal interface ByteOps {
 
     val bytesPerInt: Int
     fun ByteArray.readInt(offset: Int): Int

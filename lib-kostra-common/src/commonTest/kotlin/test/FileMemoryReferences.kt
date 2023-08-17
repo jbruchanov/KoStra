@@ -1,8 +1,8 @@
 package test
 
 import com.jibru.kostra.AssetResourceKey
+import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.internal.FileDatabase
-import com.jibru.kostra.internal.Qualifiers
 
 class FileMemoryReferences(
     private val data: Map<Qualifiers, Map<AssetResourceKey, String>>,

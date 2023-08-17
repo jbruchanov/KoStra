@@ -18,7 +18,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
             import androidx.compose.runtime.Composable
             import androidx.compose.ui.graphics.painter.Painter
             import com.jibru.kostra.AssetResourceKey
-            import com.jibru.kostra.DrawableResourceKey
+            import com.jibru.kostra.PainterResourceKey
             import com.jibru.kostra.PluralResourceKey
             import com.jibru.kostra.StringResourceKey
             import com.jibru.kostra.compose.assetPath
@@ -54,7 +54,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
               vararg formatArgs: Any,
             ): String = Resources.plural(key, quantity, *formatArgs)
             @Composable
-            inline fun painterResource(key: DrawableResourceKey): Painter = Resources.painter(key)
+            inline fun painterResource(key: PainterResourceKey): Painter = Resources.painter(key)
             @Composable
             inline fun assetPath(key: AssetResourceKey): String = Resources.assetPath(key)
             """.trimIndent(),

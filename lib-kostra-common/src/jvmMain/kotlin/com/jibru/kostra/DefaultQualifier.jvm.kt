@@ -1,8 +1,5 @@
 package com.jibru.kostra
 
-import com.jibru.kostra.internal.Dpi
-import com.jibru.kostra.internal.Locale
-import com.jibru.kostra.internal.Qualifiers
 import java.awt.GraphicsEnvironment
 import java.util.Locale as JvmLocale
 
