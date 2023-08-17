@@ -39,7 +39,8 @@ class KostraPlugin : Plugin<Project> {
         val generateCodeTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateCode, GenerateCodeTask::class.java) { task ->
             task.kClassName.set(extension.className)
             task.resources.set(analyseResources.flatMap { it.outputFile })
-            task.output.set(extension.outputSourceDir())
+            task.composeDefaults.set(extension.composeDefaults)
+            task.outputDir.set(extension.outputSourceDir())
             task.dependsOn(analyseResources)
         }
 
@@ -75,6 +76,7 @@ class KostraPlugin : Plugin<Project> {
             useFileWatcher.set(false)
             className.set(KClassName)
             outputDir.set(target.defaultOutputDir())
+            composeDefaults.set(target.plugins.any { it.javaClass.packageName.startsWith("org.jetbrains.compose") })
         }
 
         target.afterEvaluate { project ->
@@ -137,6 +139,7 @@ class KostraPlugin : Plugin<Project> {
                 resourceDirs = extension.resourceDirs.get(),
                 fileResolverConfig = extension.androidResources.toFileResolverConfig(),
                 kClassName = extension.className.get(),
+                composeDefaults = extension.composeDefaults.get(),
                 output = File(extension.outputDir.get(), "src"),
             )
             val log = target.fileWatcherLog()
@@ -163,7 +166,8 @@ class KostraPlugin : Plugin<Project> {
             generateCode(
                 kClassName = taskDelegateConfig.kClassName,
                 items = items,
-                output = taskDelegateConfig.output,
+                composeDefaults = taskDelegateConfig.composeDefaults,
+                outputDir = taskDelegateConfig.output,
             )
         }.exceptionOrNull()?.also {
             log?.let { log ->

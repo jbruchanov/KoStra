@@ -9,7 +9,6 @@ import test.testResources
 
 class ResourcesKtGeneratorResourcesTest {
 
-    //currently no way to go
     @Test
     fun allResourceFiles() = testResources {
         addStrings(
