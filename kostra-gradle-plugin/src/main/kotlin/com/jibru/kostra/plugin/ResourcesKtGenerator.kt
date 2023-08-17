@@ -2,7 +2,7 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
-import com.jibru.kostra.DrawableResourceKey
+import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
@@ -47,7 +47,7 @@ class ResourcesKtGenerator(
                         addAliasedImport(PluralResourceKey::class, "P")
                     }
                     if (hasDrawables) {
-                        addAliasedImport(DrawableResourceKey::class, "D")
+                        addAliasedImport(PainterResourceKey::class, "D")
                     }
                     if (hasOthers) {
                         addAliasedImport(BinaryResourceKey::class, "B")
@@ -186,7 +186,7 @@ class ResourcesKtGenerator(
                 addParameter(formatArgName, Any::class, KModifier.VARARG)
                 addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName, formatArgName)
             }
-            .addComposeDefaultFunc("painterResource", DrawableResourceKey::class) {
+            .addComposeDefaultFunc("painterResource", PainterResourceKey::class) {
                 addCode("return %M.%M(%L)", resourceMemberName, painterExtMember, keyArgName)
             }
             .addComposeDefaultFunc("assetPath", AssetResourceKey::class) {
@@ -203,7 +203,7 @@ class ResourcesKtGenerator(
         val composableType = ClassName("androidx.compose.runtime", "Composable")
 
         val returnType = when (keyType) {
-            DrawableResourceKey::class -> ClassName("androidx.compose.ui.graphics.painter", "Painter")
+            PainterResourceKey::class -> ClassName("androidx.compose.ui.graphics.painter", "Painter")
             else -> String::class.asClassName()
         }
 
@@ -262,7 +262,7 @@ private fun TypeSpec.Builder.addLongKeyObjectWithProperties(
     items: Set<ResItemKeyDbKey>,
     objectName: String,
 ) {
-    val type = if (objectName == ResItem.Drawable) DrawableResourceKey::class else BinaryResourceKey::class
+    val type = if (objectName == ResItem.Drawable) PainterResourceKey::class else BinaryResourceKey::class
     addType(
         TypeSpec
             .objectBuilder(objectName)

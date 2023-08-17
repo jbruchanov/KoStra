@@ -5,7 +5,7 @@ package com.jibru.kostra.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import com.jibru.kostra.AssetResourceKey
-import com.jibru.kostra.DrawableResourceKey
+import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.assetPath
@@ -39,7 +39,7 @@ fun KostraResources.plural(key: PluralResourceKey, quantity: Float, vararg forma
     plural.get(key, LocalQualifiers.current, quantity, *formatArgs)
 
 @Composable
-fun KostraResources.painter(key: DrawableResourceKey): Painter =
+fun KostraResources.painter(key: PainterResourceKey): Painter =
     androidx.compose.ui.res.painterResource(assetPath(key, LocalQualifiers.current))
 
 @Composable

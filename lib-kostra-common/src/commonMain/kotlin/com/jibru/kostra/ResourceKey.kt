@@ -13,7 +13,7 @@ value class StringResourceKey(override val key: Int) : ResourceKey
 value class PluralResourceKey(override val key: Int) : ResourceKey
 
 @JvmInline
-value class DrawableResourceKey(override val key: Int) : AssetResourceKey
+value class PainterResourceKey(override val key: Int) : AssetResourceKey
 
 @JvmInline
 value class BinaryResourceKey(override val key: Int) : AssetResourceKey
