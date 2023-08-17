@@ -1,0 +1,9 @@
+apply plugin: "maven-publish"
+
+publishing {
+    publications {
+        withType(MavenPublication).configureEach {
+            artifactId = artifactId.replace("lib-", "")
+        }
+    }
+}
