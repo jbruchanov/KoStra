@@ -32,14 +32,14 @@ class QualifiersTest {
     }
 
     @Test
-    fun withNoLocaleLanguage() {
-        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoLocaleLanguage())
-        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en", dpi = Dpi.XXHDPI).withNoLocaleLanguage())
-        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI), Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI).withNoLocaleLanguage())
+    fun withNoLocaleRegion() {
+        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoLocaleRegion())
+        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en", dpi = Dpi.XXHDPI).withNoLocaleRegion())
+        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI), Qualifiers(Locale.Undefined, dpi = Dpi.XXHDPI).withNoLocaleRegion())
 
-        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoLocaleLanguage())
-        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoLocaleLanguage())
-        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.Undefined), Qualifiers(Locale.Undefined, dpi = Dpi.Undefined).withNoLocaleLanguage())
+        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoLocaleRegion())
+        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoLocaleRegion())
+        assertEquals(Qualifiers(Locale.Undefined, dpi = Dpi.Undefined), Qualifiers(Locale.Undefined, dpi = Dpi.Undefined).withNoLocaleRegion())
     }
 
     @Test
