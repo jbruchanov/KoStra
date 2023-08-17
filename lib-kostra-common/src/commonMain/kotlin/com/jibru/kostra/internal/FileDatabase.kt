@@ -7,7 +7,7 @@ import com.jibru.kostra.database.BinaryDatabase
 
 open class FileDatabase(database: String) : FileReferences {
     private val data by lazy {
-        BinaryDatabase(loadResource(database).readBytes()).toLongSparseArray()
+        BinaryDatabase(loadResource(database)).toLongSparseArray()
     }
 
     protected open fun getValue(key: AssetResourceKey, qualifiers: Qualifiers): String? {
