@@ -17,6 +17,8 @@ value class Qualifiers(val key: Int) : Serializable {
 
     fun withNoDpi() = Qualifiers(locale, dpi = Dpi.Undefined)
 
+    fun copy(locale: Locale = this.locale, dpi: Dpi = this.dpi) = Qualifiers(locale, dpi)
+
     override fun toString(): String {
         return if (this == Undefined) "Qualifiers.Undefined" else "Qualifiers(locale=$locale, dpi=$dpi)"
     }

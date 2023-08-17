@@ -1,7 +1,8 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-
+    id("org.jetbrains.compose")
 }
+
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
 apply from: "$rootProject.projectDir/build-publish.gradle"
 
@@ -16,7 +17,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.androidx.collection)
+                implementation(libs.jetbrains.compose.ui)
+                implementation(libs.jetbrains.compose.runtime)
+                implementation(compose.components.resources)
+                implementation(project(":lib-kostra-common"))
             }
         }
         commonTest {
@@ -24,13 +28,5 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-    }
-}
-
-tasks.jvmTest {
-    useJUnitPlatform()
-    testLogging {
-        showExceptions = true
-        showStandardStreams = true
     }
 }
