@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalResourceApi::class)
+@file:Suppress("unused")
 
 package com.jibru.kostra.compose
 
@@ -58,7 +59,7 @@ fun KostraResources.ordinal(key: PluralResourceKey, quantity: IFixedDecimal, var
 
 @Composable
 fun KostraResources.painter(key: PainterResourceKey): Painter =
-    androidx.compose.ui.res.painterResource(assetPath(key, LocalQualifiers.current))
+    org.jetbrains.compose.resources.painterResource(assetPath(key, LocalQualifiers.current))
 
 @Composable
 fun KostraResources.assetPath(key: AssetResourceKey, qualifiers: Qualifiers = LocalQualifiers.current): String =
