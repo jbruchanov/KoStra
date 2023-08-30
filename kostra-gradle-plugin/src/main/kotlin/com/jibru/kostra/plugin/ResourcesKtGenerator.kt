@@ -148,11 +148,34 @@ class ResourcesKtGenerator(
     fun generateComposeDefaults(): FileSpec {
         val stringExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "string")
         val pluralExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "plural")
+        val ordinalExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "ordinal")
         val painterExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "painter")
         val assetExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "assetPath")
         val keyArgName = "key"
         val quantityArgName = "quantity"
         val formatArgName = "formatArgs"
+
+        fun FileSpec.Builder.addPlurals(funName: String, extMember: MemberName): FileSpec.Builder {
+            return this
+                .addComposeDefaultFunc(funName, PluralResourceKey::class) {
+                    addParameter(quantityArgName, IFixedDecimal::class)
+                    addCode("return %M.%M(%L, %L)", resourceMemberName, extMember, keyArgName, quantityArgName)
+                }
+                .addComposeDefaultFunc(funName, PluralResourceKey::class) {
+                    addParameter(quantityArgName, Int::class)
+                    addCode("return %M.%M(%L, %L)", resourceMemberName, extMember, keyArgName, quantityArgName)
+                }
+                .addComposeDefaultFunc(funName, PluralResourceKey::class) {
+                    addParameter(quantityArgName, IFixedDecimal::class)
+                    addParameter(formatArgName, Any::class, KModifier.VARARG)
+                    addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, extMember, keyArgName, quantityArgName, formatArgName)
+                }
+                .addComposeDefaultFunc(funName, PluralResourceKey::class) {
+                    addParameter(quantityArgName, Int::class)
+                    addParameter(formatArgName, Any::class, KModifier.VARARG)
+                    addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, extMember, keyArgName, quantityArgName, formatArgName)
+                }
+        }
 
         return FileSpec.builder(packageName, composeDefaults)
             .addAnnotation(
@@ -167,24 +190,8 @@ class ResourcesKtGenerator(
                 addParameter(formatArgName, Any::class, KModifier.VARARG)
                 addCode("return %M.%M(%L, *%L)", resourceMemberName, stringExtMember, keyArgName, formatArgName)
             }
-            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
-                addParameter(quantityArgName, IFixedDecimal::class)
-                addCode("return %M.%M(%L, %L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName)
-            }
-            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
-                addParameter(quantityArgName, Int::class)
-                addCode("return %M.%M(%L, %L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName)
-            }
-            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
-                addParameter(quantityArgName, IFixedDecimal::class)
-                addParameter(formatArgName, Any::class, KModifier.VARARG)
-                addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName, formatArgName)
-            }
-            .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
-                addParameter(quantityArgName, Int::class)
-                addParameter(formatArgName, Any::class, KModifier.VARARG)
-                addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName, formatArgName)
-            }
+            .addPlurals("pluralStringResource", pluralExtMember)
+            .addPlurals("ordinalStringResource", ordinalExtMember)
             .addComposeDefaultFunc("painterResource", PainterResourceKey::class) {
                 addCode("return %M.%M(%L)", resourceMemberName, painterExtMember, keyArgName)
             }

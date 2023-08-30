@@ -1,11 +1,13 @@
 package com.jibru.kostra.appsample.jvm
 
+import com.jibru.kostra.Dpi
 import com.jibru.kostra.K
 import com.jibru.kostra.Resources
 import com.jibru.kostra.assetPath
 import com.jibru.kostra.binaryInputStream
 import com.jibru.kostra.defaultQualifiers
-import com.jibru.kostra.Dpi
+import com.jibru.kostra.icu.FixedDecimal
+import com.jibru.kostra.ordinal
 import com.jibru.kostra.plural
 import com.jibru.kostra.string
 import java.util.Locale
@@ -16,10 +18,16 @@ fun main() {
         println("-".repeat(32))
         println("Locale:${Locale.getDefault().toLanguageTag()}")
         println(Resources.string(K.string.action_add))
-        println(Resources.plural(K.plural.bug_x, 0f, 0f))
-        println(Resources.plural(K.plural.bug_x, 0.5f, 0.5f))
+        println("Plurals")
+        println(Resources.plural(K.plural.bug_x, 0, 0f))
+        println(Resources.plural(K.plural.bug_x, FixedDecimal(0.5), 0.5f))
         println(Resources.plural(K.plural.bug_x, 1, 1))
         println(Resources.plural(K.plural.bug_x, 10, 10))
+
+        println("Ordinals")
+        (0..5).forEach {
+            println(Resources.ordinal(K.plural.day_x, it, it))
+        }
 
         ImageIO.read(Resources.binaryInputStream(K.drawable.capital_city)).also {
             val assetPath = Resources.assetPath(K.drawable.capital_city)

@@ -15,19 +15,22 @@ interface Strings {
 }
 
 interface Plurals {
-    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal): String
-    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal, vararg formatArgs: Any): String =
-        get(key, qualifiers, quantity).format(*formatArgs)
 
-    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: Int): String =
-        get(key, qualifiers, FixedDecimal(quantity.toLong()))
+    enum class Type { Plurals, Ordinals }
 
-    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: Int, vararg formatArgs: Any): String =
-        get(key, qualifiers, FixedDecimal(quantity.toLong())).format(*formatArgs)
+    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal, type: Type): String
+    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal, type: Type, vararg formatArgs: Any): String =
+        get(key, qualifiers, quantity, type).format(*formatArgs)
+
+    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: Int, type: Type): String =
+        get(key, qualifiers, FixedDecimal(quantity.toLong()), type)
+
+    fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: Int, type: Type, vararg formatArgs: Any): String =
+        get(key, qualifiers, FixedDecimal(quantity.toLong()), type).format(*formatArgs)
 
     companion object : Plurals {
-        override fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal): String =
-            throw MissingResourceException(key, qualifiers, "plural")
+        override fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal, type: Type): String =
+            throw MissingResourceException(key, qualifiers, "plural:$type")
     }
 }
 

@@ -70,7 +70,7 @@ gradlePlugin {
 tasks.register("generateRuleSpecsForKostraCommonLib", JavaExec) {
     setDescription("Generate code from CLDR data files")
     setGroup("kostra")
-    mainClass.set("com.jibru.kostra.plugin.PluralRulesGeneratorKt")
+    mainClass.set("com.jibru.kostra.plugin.IcuRulesGeneratorKt")
     classpath = sourceSets["main"].runtimeClasspath
     setArgs([
             project.rootProject.file("lib-kostra-common/src/commonMain/kotlin/com/jibru/kostra/icu").absolutePath

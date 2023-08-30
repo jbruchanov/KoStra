@@ -3,6 +3,8 @@
     <string name="action_add">Přidat</string>
     <string name="action_remove">Odebrat</string>
     <string name="color">Barva</string>
+    <string name="plurals">Množné číslo</string>
+    <string name="ordinals">Pořadové číslo</string>
     <string name="type_quantity">Semhle množství</string>
 
     <plurals name="bug_x">
@@ -10,5 +12,9 @@
         <item quantity="few">%s brouci</item>
         <item quantity="many">%s brouku</item>
         <item quantity="other">%s brouků</item>
+    </plurals>
+
+    <plurals name="day_x">
+        <item quantity="other">%s. den</item>
     </plurals>
 </resources>
