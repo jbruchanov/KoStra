@@ -33,6 +33,14 @@ class LocaleTest {
     }
 
     @Test
+    fun packAny() {
+        assertEquals(0, Locale.Undefined.key)
+        assertNotEquals(0, Locale("ab").key)
+        assertNotEquals(0, Locale("abc").key)
+        assertNotEquals(0, Locale("abcd").key)
+    }
+
+    @Test
     fun languageRegion() {
         assertEquals("", Locale.Undefined.language)
         assertEquals("cs", Locale("CS").language)
