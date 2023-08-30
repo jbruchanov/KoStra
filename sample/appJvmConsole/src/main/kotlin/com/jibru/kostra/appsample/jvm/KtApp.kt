@@ -33,9 +33,9 @@ fun main() {
             val assetPath = Resources.assetPath(K.drawable.capital_city)
             println("$assetPath imageRes:${it.width}x${it.height}")
         }
-        val xxxHdpiQualifiers = defaultQualifiers().copy(dpi = Dpi.XXXHDPI)
-        ImageIO.read(Resources.binaryInputStream(K.drawable.capital_city, qualifiers = xxxHdpiQualifiers)).also {
-            val assetPath = Resources.assetPath(K.drawable.capital_city, xxxHdpiQualifiers)
+        val xxHdpiQualifiers = defaultQualifiers().copy(dpi = Dpi.XXHDPI)
+        ImageIO.read(Resources.binaryInputStream(K.drawable.capital_city, qualifiers = xxHdpiQualifiers)).also {
+            val assetPath = Resources.assetPath(K.drawable.capital_city, xxHdpiQualifiers)
             if (it != null) {
                 println("$assetPath imageRes:${it.width}x${it.height}")
             } else {
