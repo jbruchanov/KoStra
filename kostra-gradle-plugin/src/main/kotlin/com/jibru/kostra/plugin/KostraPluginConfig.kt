@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
-import org.gradle.api.Project
 import java.io.File
+import org.gradle.api.Project
 
 object KostraPluginConfig {
     const val DslObjectName = "kostra"
@@ -10,7 +10,8 @@ object KostraPluginConfig {
     const val PackageNameIcu = "$PackageName.icu"
     const val KClassName = "$PackageName.K"
     const val ResourcePropertyName = "Resources"
-    const val ResourceDbFolderName = "__kostra"
+    //looks like _kostra is ignored
+    const val ResourceDbFolderName = "\$kostra"
     const val ComposeDefaultResourceProvider = "ComposeDefaultResourceProvider"
 
     fun KostraPluginExtension.analysisFile() = File(outputDir.get(), "resources.obj")
@@ -26,6 +27,5 @@ object KostraPluginConfig {
         const val AnalyseResources = "analyseResources"
         const val GenerateCode = "generateCode"
         const val GenerateDatabases = "generateDatabases"
-        const val GeneratePluralRules = "generatePluralRules"
     }
 }

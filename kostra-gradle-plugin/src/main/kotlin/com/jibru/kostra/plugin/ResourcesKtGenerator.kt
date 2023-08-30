@@ -12,8 +12,8 @@ import com.jibru.kostra.icu.IFixedDecimal
 import com.jibru.kostra.internal.FileDatabase
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
+import com.jibru.kostra.plugin.ext.addDefaultSurpressAnnotation
 import com.jibru.kostra.plugin.ext.formattedDbKey
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -40,6 +40,7 @@ class ResourcesKtGenerator(
 
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)
+            .addDefaultSurpressAnnotation()
             .apply {
                 if (useAliasImports) {
                     if (hasStrings) {
@@ -75,6 +76,7 @@ class ResourcesKtGenerator(
         val typeAppResources = AppResources::class
 
         return FileSpec.builder(packageName, resourcePropertyName)
+            .addDefaultSurpressAnnotation()
             .addProperty(
                 PropertySpec.builder(resourcePropertyName, typeAppResources)
                     .initializer(
@@ -178,11 +180,7 @@ class ResourcesKtGenerator(
         }
 
         return FileSpec.builder(packageName, composeDefaults)
-            .addAnnotation(
-                AnnotationSpec.builder(Suppress::class)
-                    .addMember("%S", "NOTHING_TO_INLINE")
-                    .build(),
-            )
+            .addDefaultSurpressAnnotation("NOTHING_TO_INLINE")
             .addComposeDefaultFunc("stringResource", StringResourceKey::class) {
                 addCode("return %M.%M(%L)", resourceMemberName, stringExtMember, keyArgName)
             }

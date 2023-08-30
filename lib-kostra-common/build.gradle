@@ -1,9 +1,11 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-
+    id("com.android.library")
 }
+
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
 apply from: "$rootProject.projectDir/build-publish.gradle"
+apply from: "$rootProject.projectDir/build-android-lib.gradle"
 
 project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
@@ -33,4 +35,8 @@ tasks.jvmTest {
         showExceptions = true
         showStandardStreams = true
     }
+}
+
+android {
+    namespace = "com.jibru.kostra"
 }

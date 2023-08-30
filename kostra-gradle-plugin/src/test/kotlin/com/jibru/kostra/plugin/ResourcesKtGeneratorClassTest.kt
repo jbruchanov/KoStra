@@ -6,10 +6,10 @@ import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.plugin.ext.minify
+import java.io.File
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
 import test.RealProjectRef
-import java.io.File
 
 class ResourcesKtGeneratorClassTest {
 
@@ -32,7 +32,9 @@ class ResourcesKtGeneratorClassTest {
 
         assertThat(result).isEqualTo(
             """
+            @file:Suppress("ktlint")
             package com.sample.app
+            import kotlin.Suppress
             import com.jibru.kostra.BinaryResourceKey as B
             import com.jibru.kostra.PainterResourceKey as D
             import com.jibru.kostra.PluralResourceKey as P
@@ -67,6 +69,8 @@ class ResourcesKtGeneratorClassTest {
         val result = gen.generateKClass().minify()
         assertThat(result).isEqualTo(
             """
+            @file:Suppress("ktlint")
+            import kotlin.Suppress
             import com.jibru.kostra.StringResourceKey as S
             object ResQ {
               object string {
@@ -89,6 +93,8 @@ class ResourcesKtGeneratorClassTest {
         val result = gen.generateKClass().minify()
         assertThat(result).isEqualTo(
             """
+            @file:Suppress("ktlint")
+            import kotlin.Suppress
             import com.jibru.kostra.PainterResourceKey as D
             object K {
               object drawable {
@@ -115,6 +121,8 @@ class ResourcesKtGeneratorClassTest {
         val result = ResourcesKtGenerator(className = "K", items = items).generateKClass().minify()
         assertThat(result).isEqualTo(
             """
+            @file:Suppress("ktlint")
+            import kotlin.Suppress
             import com.jibru.kostra.PluralResourceKey as P
             import com.jibru.kostra.StringResourceKey as S
             object K {
@@ -149,29 +157,30 @@ class ResourcesKtGeneratorClassTest {
         val result = ResourcesKtGenerator(className = "K", items = items).generateResources().minify()
         assertThat(result).isEqualTo(
             """
-        import com.jibru.kostra.AppResources
-        import com.jibru.kostra.Locale
-        import com.jibru.kostra.`internal`.FileDatabase
-        import com.jibru.kostra.`internal`.PluralDatabase
-        import com.jibru.kostra.`internal`.StringDatabase
-        val Resources: AppResources = AppResources(
-          string = StringDatabase(
-            mapOf(
-              Locale.Undefined to "__kostra/string-default.db",
-              Locale(3_19_00_00) to "__kostra/string-cs.db",
-              Locale(5_14_00_00) to "__kostra/string-en.db",
-              Locale(5_14_07_02) to "__kostra/string-engb.db",
-            )
-          ),
-          plural = PluralDatabase(
-            mapOf(
-              Locale.Undefined to "__kostra/plural-default.db",
-              Locale(3_19_00_00) to "__kostra/plural-cs.db",
-            )
-          ),
-          binary = FileDatabase("__kostra/binary.db"),
-        )
-            """.trimIndent(),
+            @file:Suppress("ktlint")
+            import com.jibru.kostra.AppResources
+            import com.jibru.kostra.Locale
+            import com.jibru.kostra.`internal`.FileDatabase
+            import com.jibru.kostra.`internal`.PluralDatabase
+            import com.jibru.kostra.`internal`.StringDatabase
+            import kotlin.Suppress
+            val Resources: AppResources = AppResources(
+              string = StringDatabase(
+                mapOf(
+                  Locale.Undefined to "__kostra/string-default.db",
+                  Locale(3_19_00_00) to "__kostra/string-cs.db",
+                  Locale(5_14_00_00) to "__kostra/string-en.db",
+                  Locale(5_14_07_02) to "__kostra/string-engb.db",
+                )
+              ),
+              plural = PluralDatabase(
+                mapOf(
+                  Locale.Undefined to "__kostra/plural-default.db",
+                  Locale(3_19_00_00) to "__kostra/plural-cs.db",
+                )
+              ),
+              binary = FileDatabase("__kostra/binary.db"),
+            )""".trimIndent().replace("__", "\${'$'}")
         )
     }
 

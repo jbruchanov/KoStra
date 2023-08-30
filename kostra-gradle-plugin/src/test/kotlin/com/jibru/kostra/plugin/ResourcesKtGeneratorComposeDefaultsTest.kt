@@ -13,7 +13,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
 
         assertThat(result.trim()).isEqualTo(
             """
-            @file:Suppress("NOTHING_TO_INLINE")
+            @file:Suppress("NOTHING_TO_INLINE", "ktlint")
             package com.sample.app
             import androidx.compose.runtime.Composable
             import androidx.compose.ui.graphics.painter.Painter
