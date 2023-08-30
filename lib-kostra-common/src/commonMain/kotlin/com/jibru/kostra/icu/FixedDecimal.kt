@@ -182,6 +182,7 @@ class FixedDecimal : Number, Comparable<FixedDecimal>, IFixedDecimal {
         }
 
         private fun getFractionalDigits(n: Double, v: Int): Int {
+            @Suppress("NAME_SHADOWING")
             var n = n
             return if (v == 0) {
                 0
@@ -204,6 +205,7 @@ class FixedDecimal : Number, Comparable<FixedDecimal>, IFixedDecimal {
          */
         private fun decimals(n: Double): Int {
             // Ugly...
+            @Suppress("NAME_SHADOWING")
             var n = n
             if (n.isInfinite() || n.isNaN()) {
                 return 0

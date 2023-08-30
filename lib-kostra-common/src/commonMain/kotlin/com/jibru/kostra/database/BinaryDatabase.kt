@@ -126,7 +126,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         val dataLen = data.readInt(recordAbsoluteOffset)
         if (dataLen == 0) return ""
 
-        val start = recordAbsoluteOffset + bytesPerRef/*dataLen*/
+        val start = recordAbsoluteOffset + bytesPerRef /*dataLen*/
         val end = start + dataLen
         val value = data.decodeToString(startIndex = start, endIndex = end)
         return value
@@ -186,7 +186,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
     }
 
     companion object {
-        private const val HeaderBytes = 1/*version*/ + 1/*type*/
+        private const val HeaderBytes = 1 /*version*/ + 1 /*type*/
         private const val BytesPerLong = Long.SIZE_BYTES
     }
 }

@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.jibru.kostra.plugin.icu
 
 import com.jibru.kostra.Locale
