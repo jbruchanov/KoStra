@@ -1,0 +1,37 @@
+plugins {
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.application")
+    id("org.jetbrains.compose")
+}
+
+apply from: "$rootProject.projectDir/../build-ktlint.gradle"
+apply from: "$rootProject.projectDir/../build-android-lib.gradle"
+
+kotlin {
+    androidTarget {}
+    sourceSets {
+        androidMain {
+            dependencies {
+                implementation(project(":shared"))
+                implementation(libs.kostra.common)
+                implementation(libs.kostra.compose)
+
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.bundles.android.compose)
+                implementation(libs.bundles.jetbrains.compose.app)
+            }
+        }
+    }
+}
+
+
+android {
+    namespace = "com.jibru.kostra.android.app"
+    defaultConfig {
+        versionCode = 1
+        versionName "1.0.0"
+    }
+}

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
@@ -29,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.jibru.kostra.Dpi
 import com.jibru.kostra.Locale
@@ -52,21 +55,21 @@ fun SampleScreen() = with(SampleScreenDefaults) {
         modifier = Modifier
             .padding(spacing)
             .verticalScroll(rememberScrollState())
-            .horizontalScroll(rememberScrollState())
+            .horizontalScroll(rememberScrollState()),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(spacing),
             modifier = Modifier
                 .padding(spacing)
                 .animateContentSize()
-                .wrapContentSize()
+                .wrapContentSize(),
         ) {
             val locales = remember { listOf(java.util.Locale.getDefault(), java.util.Locale.ENGLISH, java.util.Locale("cs")) }
             var localeIndex by remember { mutableStateOf(0) }
             val locale by derivedStateOf { Locale(locales[localeIndex].toLanguageTag()) }
 
             val defaultQualifiers = LocalQualifiers.current
-            val dpis = remember { listOf(null, Dpi.Undefined, Dpi.XXXHDPI) }
+            val dpis = remember { listOf(null, Dpi.Undefined, Dpi.XXHDPI) }
             var dpiIndex by remember { mutableStateOf(0) }
             val dpi by derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi }
 
@@ -76,27 +79,28 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                 Text("Locale")
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(spacing),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
                             checked = index == localeIndex,
-                            text = locale.toLanguageTag()
+                            text = locale.toLanguageTag(),
                         )
                     }
                 }
 
-                Text("DPI")
+                Text("DPI: ${defaultQualifiers.dpi}")
+                Text("Density:${LocalDensity.current}")
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(spacing),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     dpis.forEachIndexed { index, dpi ->
                         TextCheckBox(
                             onCheckedChange = { if (it) dpiIndex = index else Unit },
                             checked = index == dpiIndex,
-                            text = (dpi ?: defaultQualifiers.dpi).name
+                            text = dpi?.name ?: "Device:${defaultQualifiers.dpi.name}",
                         )
                     }
                 }
@@ -116,7 +120,8 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                     value = quantity,
                     label = { Text(stringResource(K.string.plurals)) },
                     placeholder = { Text(stringResource(K.string.type_quantity)) },
-                    onValueChange = { quantity = it.takeIf { it.isEmpty() || it.toFloatOrNull() != null } ?: quantity }
+                    onValueChange = { quantity = it.takeIf { it.isEmpty() || it.toFloatOrNull() != null } ?: quantity },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 )
 
                 Text(stringResource(K.string.plurals) + ": " + (quantity.toDoubleOrNull()?.let { pluralStringResource(K.plural.bug_x, FixedDecimal(it), quantity) } ?: ""))
@@ -137,7 +142,7 @@ private fun TextCheckBox(onCheckedChange: (Boolean) -> Unit, checked: Boolean, t
             .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(spacing))
             .clickable { onCheckedChange(!checked) }
-            .padding(end = spacing)
+            .padding(end = spacing),
     ) {
         Checkbox(checked = checked, onCheckedChange = onCheckedChange)
         Text(text)

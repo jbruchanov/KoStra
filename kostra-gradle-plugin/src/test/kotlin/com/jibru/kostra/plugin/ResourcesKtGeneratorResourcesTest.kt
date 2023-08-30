@@ -5,6 +5,7 @@ import com.jibru.kostra.plugin.ext.minify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
 import test.RealProjectRef
+import test.ext.trimIndentTestResults
 import test.testResources
 
 class ResourcesKtGeneratorResourcesTest {
@@ -82,19 +83,19 @@ class ResourcesKtGeneratorResourcesTest {
             val Resources: AppResources = AppResources(
               string = StringDatabase(
                 mapOf(
-                  Locale.Undefined to "__kostra/string-default.db",
-                  Locale(4_05_00_00) to "__kostra/string-de.db",
-                  Locale(5_14_00_00) to "__kostra/string-en.db",
+                  Locale.Undefined to "${'$'}kostra/string-default.db",
+                  Locale(4_05_00_00) to "${'$'}kostra/string-de.db",
+                  Locale(5_14_00_00) to "${'$'}kostra/string-en.db",
                 )
               ),
               plural = PluralDatabase(
                 mapOf(
-                  Locale.Undefined to "__kostra/plural-default.db",
+                  Locale.Undefined to "${'$'}kostra/plural-default.db",
                 )
               ),
-              binary = FileDatabase("__kostra/binary.db"),
+              binary = FileDatabase("${'$'}kostra/binary.db"),
             )
-            """.trimIndent().replace("__", "\${'$'}"),
+            """.trimIndentTestResults(),
         )
     }
 

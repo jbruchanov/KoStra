@@ -10,6 +10,7 @@ object KostraPluginConfig {
     const val PackageNameIcu = "$PackageName.icu"
     const val KClassName = "$PackageName.K"
     const val ResourcePropertyName = "Resources"
+
     //looks like _kostra is ignored
     const val ResourceDbFolderName = "\$kostra"
     const val ComposeDefaultResourceProvider = "ComposeDefaultResourceProvider"

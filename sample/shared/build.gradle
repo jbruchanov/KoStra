@@ -85,6 +85,9 @@ if (plugins.findPlugin(libs.plugins.kostra.get().pluginId) != null) {
         className = "com.sample.app.K"
         androidResources {
             keyMapper = { key, file -> key }
+            //just to let plugin know about extra resources,
+            //strings are transformed to own DB and don't need to be part of APK as xmls
+            resourceDirs.add(file("src/commonMain/resources_strings"))
         }
     }
 }
