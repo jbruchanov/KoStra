@@ -1,6 +1,6 @@
 package com.jibru.kostra
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class DefaultQualifierTest {
     @Test

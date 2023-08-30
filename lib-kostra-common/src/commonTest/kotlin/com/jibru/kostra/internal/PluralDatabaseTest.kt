@@ -7,9 +7,8 @@ import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.icu.FixedDecimal
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 class PluralDatabaseTest {
@@ -18,8 +17,8 @@ class PluralDatabaseTest {
 
     @Test
     fun get() {
-        assertThrows<IllegalStateException> { db.get(K.plural.dog, Qualifiers.Undefined, 1, type = Plurals.Type.Plurals) }
-        assertThrows<IllegalStateException> { db.get(K.plural.dog, Qualifiers.Undefined, 2, type = Plurals.Type.Plurals) }
+        assertFailsWith<IllegalStateException> { db.get(K.plural.dog, Qualifiers.Undefined, 1, type = Plurals.Type.Plurals) }
+        assertFailsWith<IllegalStateException> { db.get(K.plural.dog, Qualifiers.Undefined, 2, type = Plurals.Type.Plurals) }
         //this doesn't fall back as 2f in cs translates to 'few', but there is no definition in global for it
         assertFailsWith<MissingResourceException> { assertEquals("dogs", db.get(K.plural.dog, Qualifiers("cs-CZ"), 2, type = Plurals.Type.Plurals)) }
         assertEquals("dog-en", db.get(K.plural.dog, Qualifiers("en"), 1, type = Plurals.Type.Plurals))

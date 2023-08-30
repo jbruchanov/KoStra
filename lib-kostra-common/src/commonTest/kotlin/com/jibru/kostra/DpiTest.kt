@@ -2,8 +2,8 @@ package com.jibru.kostra
 
 import com.jibru.kostra.Dpi.Companion.next
 import com.jibru.kostra.Dpi.Companion.prev
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
 class DpiTest {
     @Test

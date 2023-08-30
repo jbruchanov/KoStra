@@ -5,8 +5,8 @@ import com.jibru.kostra.Fixtures.Resources.K
 import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.StringResourceKey
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class StringDatabaseTest {

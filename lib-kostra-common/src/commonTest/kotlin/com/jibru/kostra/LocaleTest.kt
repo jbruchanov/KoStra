@@ -1,11 +1,11 @@
 package com.jibru.kostra
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import kotlin.test.assertFalse
+import kotlin.test.Test
 
 class LocaleTest {
     @Test
