@@ -90,6 +90,7 @@ private fun packLanguageRegion(language: String, region: String?): Int {
 
 private fun packCode(code: String): Int {
     return when {
+        code.isEmpty() -> 0
         code.contains("-") -> packLanguageRegion(code.substringBefore("-"), code.substringAfter("-", "").takeIfNotEmpty())
         code.length in 2..4 ->
             ((code[0].validCode() - LetterOffset) * LocaleOffsets[1]) +
@@ -97,7 +98,7 @@ private fun packCode(code: String): Int {
                 (((code.getOrNull(2)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[3]) +
                 (((code.getOrNull(3)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[4])
 
-        else -> throw IllegalArgumentException("Invalid locale:$code")
+        else -> throw IllegalArgumentException("Invalid locale:'$code'")
     }
 }
 

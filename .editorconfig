@@ -3,6 +3,7 @@
 # by the ruleset identifier.
 [*.{kt,kts,java,xml,gradle,md}]
 ktlint_standard_comment-spacing = disabled
+ktlint_standard_comment-wrapping = disabled
 ktlint_standard_import-ordering = disabled
 max_line_length = 180
 ij_kotlin_packages_to_use_import_on_demand = ""
