@@ -2,8 +2,8 @@
 
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.internal.Plural
-import com.jibru.kostra.internal.Plural.Companion.toPluralList
+import com.jibru.kostra.icu.PluralCategory
+import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.Qualifiers
 import java.io.Reader
 import java.io.StringReader
@@ -78,7 +78,7 @@ class AndroidResourcesXmlParser(
                     level == 2 && androidResourcesFile && part == TagPlurals -> {
                         val key = xmlReader.attrName()
                         if (key != null) {
-                            val items = mutableMapOf<Plural, String>()
+                            val items = mutableMapOf<PluralCategory, String>()
                             xmlReader.parseNestedElements {
                                 val pluralKey = xmlReader.attrQuantity() ?: throw IllegalStateException("Expecting 'quantity' attribute, $xmlReader")
                                 items[pluralKey] = xmlReader.text()
@@ -129,7 +129,7 @@ class AndroidResourcesXmlParser(
     }
 
     private fun XMLStreamReader.attrName() = attr("name")
-    private fun XMLStreamReader.attrQuantity() = attr("quantity")?.let { Plural.Map.get(it) ?: throw IllegalStateException("Invalid key:'$it' for Plurals") }
+    private fun XMLStreamReader.attrQuantity() = attr("quantity")?.let { PluralCategory.of(it) }
     private fun XMLStreamReader.attr(name: String) = (0 until attributeCount)
         .firstOrNull { getAttributeLocalName(it) == name }
         ?.let { getAttributeValue(it) }

@@ -11,6 +11,7 @@ import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.assetPath
+import com.jibru.kostra.icu.IFixedDecimal
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
 
@@ -24,18 +25,18 @@ fun KostraResources.string(key: StringResourceKey, vararg formatArgs: Any): Stri
 
 @Composable
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int): String =
-    plural.get(key, LocalQualifiers.current, quantity.toFloat())
+    plural.get(key, LocalQualifiers.current, quantity)
 
 @Composable
-fun KostraResources.plural(key: PluralResourceKey, quantity: Float): String =
+fun KostraResources.plural(key: PluralResourceKey, quantity: IFixedDecimal): String =
     plural.get(key, LocalQualifiers.current, quantity)
 
 @Composable
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int, vararg formatArgs: Any): String =
-    plural.get(key, LocalQualifiers.current, quantity.toFloat(), *formatArgs)
+    plural.get(key, LocalQualifiers.current, quantity, *formatArgs)
 
 @Composable
-fun KostraResources.plural(key: PluralResourceKey, quantity: Float, vararg formatArgs: Any): String =
+fun KostraResources.plural(key: PluralResourceKey, quantity: IFixedDecimal, vararg formatArgs: Any): String =
     plural.get(key, LocalQualifiers.current, quantity, *formatArgs)
 
 @Composable

@@ -1,6 +1,6 @@
 package com.jibru.kostra
 
-import com.jibru.kostra.internal.Plural
+import com.jibru.kostra.icu.PluralCategory
 import test.FileMemoryReferences
 import test.PluralMemoryDatabase
 import test.StringMemoryDatabase
@@ -59,29 +59,29 @@ object Fixtures {
             plurals = PluralMemoryDatabase(
                 mapOf(
                     Locale.Undefined to mapOf(
-                        K.plural.dog to mapOf(Plural.Other to "dogs", Plural.One to "dog"),
+                        K.plural.dog to mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog"),
                     ),
                     Locale("en") to mapOf(
-                        K.plural.dog to mapOf(Plural.Other to "dogs-en", Plural.One to "dog-en"),
-                        K.plural.bug to mapOf(Plural.Other to "bugs-en", Plural.One to "bug-en"),
-                        K.plural.bugFormat to mapOf(Plural.Other to "%s bugs-en", Plural.One to "%s bug-en"),
+                        K.plural.dog to mapOf(PluralCategory.Other to "dogs-en", PluralCategory.One to "dog-en"),
+                        K.plural.bug to mapOf(PluralCategory.Other to "bugs-en", PluralCategory.One to "bug-en"),
+                        K.plural.bugFormat to mapOf(PluralCategory.Other to "%s bugs-en", PluralCategory.One to "%s bug-en"),
                     ),
                     Locale("en-GB") to mapOf(
-                        K.plural.dog to mapOf(Plural.Other to "dogs-en-gb", Plural.One to "dog-en-gb"),
+                        K.plural.dog to mapOf(PluralCategory.Other to "dogs-en-gb", PluralCategory.One to "dog-en-gb"),
                     ),
 
                     Locale("cs") to mapOf(
                         K.plural.bug to mapOf(
-                            Plural.One to "brouk",
-                            Plural.Few to "brouci",
-                            Plural.Many to "brouku", //1.5
-                            Plural.Other to "brouků", //100
+                            PluralCategory.One to "brouk",
+                            PluralCategory.Few to "brouci",
+                            PluralCategory.Many to "brouku", //1.5
+                            PluralCategory.Other to "brouků", //100
                         ),
                         K.plural.bugFormat to mapOf(
-                            Plural.One to "%s brouk",
-                            Plural.Few to "%s brouci",
-                            Plural.Many to "%s brouku", //1.5
-                            Plural.Other to "%s brouků", //100
+                            PluralCategory.One to "%s brouk",
+                            PluralCategory.Few to "%s brouci",
+                            PluralCategory.Many to "%s brouku", //1.5
+                            PluralCategory.Other to "%s brouků", //100
                         ),
                     ),
                 ),

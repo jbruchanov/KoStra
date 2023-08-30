@@ -3,8 +3,8 @@ package com.jibru.kostra.plugin
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.Dpi
 import com.jibru.kostra.Locale
-import com.jibru.kostra.internal.Plural
-import com.jibru.kostra.internal.Plural.Companion.toPluralList
+import com.jibru.kostra.icu.PluralCategory
+import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.ext.takeIfNotEmpty
 import org.junit.jupiter.api.Test
@@ -282,10 +282,10 @@ class FileResolverTest {
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
             ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
 
-            ResItem.Plurals("dog", mapOf(Plural.Other to "dogs", Plural.One to "dog").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("dog", mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog").toPluralList(), Qualifiers.Undefined),
             ResItem.Plurals(
                 "dog",
-                mapOf(Plural.Other to "psů", Plural.One to "pes", Plural.Few to "psy", Plural.Many to "psiska!").toPluralList(),
+                mapOf(PluralCategory.Other to "psů", PluralCategory.One to "pes", PluralCategory.Few to "psy", PluralCategory.Many to "psiska!").toPluralList(),
                 Qualifiers(locale = Locale("cs")),
             ),
         )

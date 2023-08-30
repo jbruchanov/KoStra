@@ -49,3 +49,4 @@ bin/
 .vscode/
 
 ### Mac OS ###
+sample/local.properties

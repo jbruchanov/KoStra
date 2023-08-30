@@ -1,16 +1,18 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.AppResources
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
+import com.jibru.kostra.Locale
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
-import com.jibru.kostra.AppResources
+import com.jibru.kostra.icu.IFixedDecimal
 import com.jibru.kostra.internal.FileDatabase
-import com.jibru.kostra.Locale
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
+import com.jibru.kostra.plugin.ext.formattedDbKey
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -143,9 +145,6 @@ class ResourcesKtGenerator(
         addStatement("),")
     }
 
-    private fun Locale.formattedDbKey() =
-        key.toString().padStart(8, '0').windowed(2, 2).joinToString("_").trimStart('0')
-
     fun generateComposeDefaults(): FileSpec {
         val stringExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "string")
         val pluralExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "plural")
@@ -169,7 +168,7 @@ class ResourcesKtGenerator(
                 addCode("return %M.%M(%L, *%L)", resourceMemberName, stringExtMember, keyArgName, formatArgName)
             }
             .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
-                addParameter(quantityArgName, Float::class)
+                addParameter(quantityArgName, IFixedDecimal::class)
                 addCode("return %M.%M(%L, %L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName)
             }
             .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
@@ -177,7 +176,7 @@ class ResourcesKtGenerator(
                 addCode("return %M.%M(%L, %L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName)
             }
             .addComposeDefaultFunc("pluralStringResource", PluralResourceKey::class) {
-                addParameter(quantityArgName, Float::class)
+                addParameter(quantityArgName, IFixedDecimal::class)
                 addParameter(formatArgName, Any::class, KModifier.VARARG)
                 addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, pluralExtMember, keyArgName, quantityArgName, formatArgName)
             }

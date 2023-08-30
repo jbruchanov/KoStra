@@ -63,6 +63,7 @@ kotlinx-atomicfu = "0.21.0"
 jetbrains-compose-ui = "1.5.0-beta02"
 compose-mp-flow = "0.30.1"
 desuger = "2.0.3"
+icu = "73.2"
 junit = "5.10.0"
 junitbom = "5.9.3"
 mockk = "1.13.5"
@@ -103,9 +104,10 @@ desuger = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desuge
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebase-crashlytics-sdk" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+icu = { module = "com.ibm.icu:icu4j", version.ref = "icu" }
 kostra-common = { module = "com.jibru.kostra:kostra-common", version.ref = "project-version" }
 kostra-compose = { module = "com.jibru.kostra:kostra-compose", version.ref = "project-version" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin"}
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-poet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-reflection = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
