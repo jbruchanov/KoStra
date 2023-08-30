@@ -3,8 +3,8 @@ package com.jibru.kostra.plugin
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.Locale
 import com.jibru.kostra.Qualifiers
-import com.jibru.kostra.internal.Plural
-import com.jibru.kostra.internal.Plural.Companion.toPluralList
+import com.jibru.kostra.icu.PluralCategory
+import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.plugin.ext.minify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
@@ -21,8 +21,8 @@ class ResourcesKtGeneratorClassTest {
                 string("str1"),
                 string("2str"),
                 string("str1"),
-                plurals("p2", mapOf(Plural.Other to "other").toPluralList()),
-                plurals("p1", mapOf(Plural.One to "one").toPluralList()),
+                plurals("p2", mapOf(PluralCategory.Other to "other").toPluralList()),
+                plurals("p1", mapOf(PluralCategory.One to "one").toPluralList()),
                 file("img", group = ResItem.Drawable),
                 file("icon2", group = ResItem.Drawable),
                 file("audio1", group = "raw"),

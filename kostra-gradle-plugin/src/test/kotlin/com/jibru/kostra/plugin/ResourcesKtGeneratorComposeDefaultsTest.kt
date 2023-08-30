@@ -25,8 +25,8 @@ class ResourcesKtGeneratorComposeDefaultsTest {
             import com.jibru.kostra.compose.painter
             import com.jibru.kostra.compose.plural
             import com.jibru.kostra.compose.string
+            import com.jibru.kostra.icu.IFixedDecimal
             import kotlin.Any
-            import kotlin.Float
             import kotlin.Int
             import kotlin.String
             import kotlin.Suppress
@@ -36,7 +36,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
             inline fun stringResource(key: StringResourceKey, vararg formatArgs: Any): String =
                 Resources.string(key, *formatArgs)
             @Composable
-            inline fun pluralStringResource(key: PluralResourceKey, quantity: Float): String =
+            inline fun pluralStringResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
                 Resources.plural(key, quantity)
             @Composable
             inline fun pluralStringResource(key: PluralResourceKey, quantity: Int): String =
@@ -44,7 +44,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
             @Composable
             inline fun pluralStringResource(
               key: PluralResourceKey,
-              quantity: Float,
+              quantity: IFixedDecimal,
               vararg formatArgs: Any,
             ): String = Resources.plural(key, quantity, *formatArgs)
             @Composable

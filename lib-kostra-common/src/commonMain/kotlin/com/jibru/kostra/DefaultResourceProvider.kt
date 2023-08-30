@@ -1,5 +1,6 @@
 package com.jibru.kostra
 
+import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.internal.loadResource
 
 fun KostraResources.string(key: StringResourceKey): String =
@@ -9,15 +10,15 @@ fun KostraResources.string(key: StringResourceKey, vararg formatArgs: Any): Stri
     string.get(key, defaultQualifiers(), *formatArgs)
 
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int): String =
-    this.plural.get(key, defaultQualifiers(), quantity.toFloat())
+    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()))
 
-fun KostraResources.plural(key: PluralResourceKey, quantity: Float): String =
+fun KostraResources.plural(key: PluralResourceKey, quantity: FixedDecimal): String =
     this.plural.get(key, defaultQualifiers(), quantity)
 
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int, vararg formatArgs: Any): String =
-    this.plural.get(key, defaultQualifiers(), quantity.toFloat(), *formatArgs)
+    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()), *formatArgs)
 
-fun KostraResources.plural(key: PluralResourceKey, quantity: Float, vararg formatArgs: Any): String =
+fun KostraResources.plural(key: PluralResourceKey, quantity: FixedDecimal, vararg formatArgs: Any): String =
     this.plural.get(key, defaultQualifiers(), quantity, *formatArgs)
 
 fun KostraResources.assetPath(key: AssetResourceKey, qualifiers: Qualifiers = defaultQualifiers()): String =

@@ -15,6 +15,8 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlinx.coroutines.jdk)
 
+    implementation(libs.icu)
+
     testImplementation(libs.bundles.unittest.jvm)
     testImplementation(libs.truth)
 }
@@ -61,4 +63,16 @@ gradlePlugin {
             implementationClass = "com.jibru.kostra.plugin.KostraPlugin"
         }
     }
+}
+
+// https://docs.gradle.org/current/dsl/org.gradle.api.tasks.JavaExec.html#org.gradle.api.tasks.JavaExec
+// or: task("execute", JavaExec::class) {
+tasks.register("generateRuleSpecsForKostraCommonLib", JavaExec) {
+    setDescription("Generate code from CLDR data files")
+    setGroup("kostra")
+    mainClass.set("com.jibru.kostra.plugin.PluralRulesGeneratorKt")
+    classpath = sourceSets["main"].runtimeClasspath
+    setArgs([
+            project.rootProject.file("lib-kostra-common/src/commonMain/kotlin/com/jibru/kostra/icu").absolutePath
+    ])
 }

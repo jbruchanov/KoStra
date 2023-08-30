@@ -34,6 +34,7 @@ import com.jibru.kostra.Dpi
 import com.jibru.kostra.Locale
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.compose.LocalQualifiers
+import com.jibru.kostra.icu.FixedDecimal
 import com.sample.app.K
 import com.sample.app.assetPath
 import com.sample.app.painterResource
@@ -116,8 +117,8 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                     placeholder = { Text(stringResource(K.string.type_quantity)) },
                     onValueChange = { quantity = it.takeIf { it.isEmpty() || it.toFloatOrNull() != null } ?: quantity }
                 )
-                quantity.toFloatOrNull()?.let {
-                    Text(pluralStringResource(K.plural.bug_x, it, quantity))
+                quantity.toDoubleOrNull()?.let {
+                    Text(pluralStringResource(K.plural.bug_x, FixedDecimal(it), quantity))
                 }
             }
         }

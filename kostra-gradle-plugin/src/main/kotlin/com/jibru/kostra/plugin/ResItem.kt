@@ -58,7 +58,7 @@ sealed class ResItem : Serializable {
         override val resourceKeyType: TypeName get() = typeNameOf<PluralResourceKey>()
 
         companion object {
-            val EmptyItems = List<String?>(com.jibru.kostra.internal.Plural.size) { null }
+            val EmptyItems = List<String?>(com.jibru.kostra.icu.PluralCategory.size) { null }
         }
     }
 

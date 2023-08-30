@@ -7,6 +7,7 @@ object KostraPluginConfig {
     const val DslObjectName = "kostra"
     const val PackageName = "com.jibru.kostra"
     const val PackageNameCompose = "$PackageName.compose"
+    const val PackageNameIcu = "$PackageName.icu"
     const val KClassName = "$PackageName.K"
     const val ResourcePropertyName = "Resources"
     const val ResourceDbFolderName = "__kostra"
@@ -25,5 +26,6 @@ object KostraPluginConfig {
         const val AnalyseResources = "analyseResources"
         const val GenerateCode = "generateCode"
         const val GenerateDatabases = "generateDatabases"
+        const val GeneratePluralRules = "generatePluralRules"
     }
 }

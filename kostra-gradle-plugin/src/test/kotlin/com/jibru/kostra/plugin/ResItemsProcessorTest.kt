@@ -3,8 +3,8 @@ package com.jibru.kostra.plugin
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.Dpi
 import com.jibru.kostra.Locale
-import com.jibru.kostra.internal.Plural
-import com.jibru.kostra.internal.Plural.Companion.toPluralList
+import com.jibru.kostra.icu.PluralCategory
+import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.Qualifiers
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -18,8 +18,8 @@ class ResItemsProcessorTest {
             ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
             ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
             ResItem.StringRes("s1", "s1X", Qualifiers.Undefined),
-            ResItem.Plurals("s1", mapOf(Plural.One to "p1").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("s1", mapOf(Plural.Other to "p2").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("s1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("s1", mapOf(PluralCategory.Other to "p2").toPluralList(), Qualifiers.Undefined),
             ResItem.FileRes("s1", File("X"), Qualifiers.Undefined, group = "group1", File("")),
             ResItem.FileRes("s1", File("X"), Qualifiers.Undefined, group = "group2", File("")),
             ResItem.FileRes("s1", File("X2"), Qualifiers.Undefined, group = "group1", File("")),
@@ -32,7 +32,7 @@ class ResItemsProcessorTest {
                         ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
                         ResItem.StringRes("s1", "s1X", Qualifiers.Undefined),
                         ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
-                        ResItem.Plurals("s1", mapOf(Plural.Other to "p2").toPluralList(), Qualifiers.Undefined),
+                        ResItem.Plurals("s1", mapOf(PluralCategory.Other to "p2").toPluralList(), Qualifiers.Undefined),
                         ResItem.FileRes("s1", File("X2"), Qualifiers.Undefined, group = "group1", File("")),
                         ResItem.FileRes("s1", File("X"), Qualifiers.Undefined, group = "group2", File("")),
                     ),
@@ -46,9 +46,9 @@ class ResItemsProcessorTest {
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
             ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
             ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
-            ResItem.Plurals("p1", mapOf(Plural.One to "p1").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("p2", mapOf(Plural.Other to "p2otherEn").toPluralList(), Qualifiers(Locale("en"))),
-            ResItem.Plurals("p3", mapOf(Plural.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
+            ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn").toPluralList(), Qualifiers(Locale("en"))),
+            ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
             ResItem.FileRes("f3", File("X"), Qualifiers.Undefined, group = "group1", File("")),
         )
 
@@ -61,9 +61,9 @@ class ResItemsProcessorTest {
                         ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
                     ),
                     "plural" to listOf(
-                        ResItem.Plurals("p1", mapOf(Plural.One to "p1").toPluralList(), Qualifiers.Undefined),
-                        ResItem.Plurals("p2", mapOf(Plural.Other to "p2otherEn").toPluralList(), Qualifiers(Locale("en"))),
-                        ResItem.Plurals("p3", mapOf(Plural.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
+                        ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
+                        ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn").toPluralList(), Qualifiers(Locale("en"))),
+                        ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
                     ),
                     "group1" to listOf(
                         ResItem.FileRes("f3", File("X"), Qualifiers.Undefined, group = "group1", File("")),
@@ -80,7 +80,7 @@ class ResItemsProcessorTest {
             ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
             ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
             ResItem.StringRes("s4", "s3enUS", Qualifiers(Locale("en", "US"))),
-            ResItem.Plurals("p1", mapOf(Plural.One to "p1").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
         )
 
         with(ResItemsProcessor(items)) {
@@ -99,9 +99,9 @@ class ResItemsProcessorTest {
     fun pluralsForDb() {
         val items = listOf(
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
-            ResItem.Plurals("p1", mapOf(Plural.One to "p1").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("p2", mapOf(Plural.Other to "p2otherEn", Plural.One to "p2oneEn").toPluralList(), Qualifiers(Locale("en"))),
-            ResItem.Plurals("p3", mapOf(Plural.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
+            ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn", PluralCategory.One to "p2oneEn").toPluralList(), Qualifiers(Locale("en"))),
+            ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
             ResItem.FileRes("f3", File("X"), Qualifiers.Undefined, group = "group1", File("")),
         )
 
@@ -112,11 +112,11 @@ class ResItemsProcessorTest {
                     Locale("en") to listOfNulls(
                         18,
                         mapOf(
-                            Plural.size + (Plural.Other.index) to "p2otherEn",
-                            Plural.size + (Plural.One.index) to "p2oneEn",
+                            PluralCategory.size + (PluralCategory.Other.index) to "p2otherEn",
+                            PluralCategory.size + (PluralCategory.One.index) to "p2oneEn",
                         ),
                     ),
-                    Locale("en", "gb") to listOfNulls(18, mapOf((2 * Plural.size) + (Plural.Zero.index) to "p3zeroEnGb")),
+                    Locale("en", "gb") to listOfNulls(18, mapOf((2 * PluralCategory.size) + (PluralCategory.Zero.index) to "p3zeroEnGb")),
                 ),
             )
         }
@@ -126,7 +126,7 @@ class ResItemsProcessorTest {
     fun otherItemsPerGroup() {
         val items = listOf(
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
-            ResItem.Plurals("p1", mapOf(Plural.One to "p1").toPluralList(), Qualifiers.Undefined),
+            ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
             ResItem.FileRes("f1", File("X"), Qualifiers.Undefined, group = "group", File("")),
             ResItem.FileRes("f1", File("X"), Qualifiers(locale = Locale("en")), group = "group", File("")),
             ResItem.FileRes("f1", File("X"), Qualifiers(dpi = Dpi.HDPI), group = "group", File("")),
