@@ -13,10 +13,10 @@ private const val LetterOffset = LetterCodeMin - 1
 private val LocaleOffsets = intArrayOf(1_00_00_00_00, 1_00_00_00, 1_00_00, 1_00, 1)
 
 @JvmInline
-value class Locale(val key: Int) : Serializable {
+value class Locale(val key: Int) : Serializable, Comparable<Locale> {
 
-    constructor(languageRegion: String) : this(languageRegion.substringBefore("-"), languageRegion.substringAfter("-", "").takeIfNotEmpty())
-    constructor(language: String, region: String?) : this(packLocale(language, region))
+    constructor(languageRegion: String) : this(packCode(languageRegion))
+    constructor(language: String, region: String?) : this(packLanguageRegion(language, region))
 
     fun equalsLanguage(other: Locale): Boolean = this.languageCode == other.languageCode
 
@@ -49,12 +49,17 @@ value class Locale(val key: Int) : Serializable {
     @Suppress("NOTHING_TO_INLINE")
     private inline fun buildString(from: Int, toExclusive: Int): String = buildString {
         for (i in from..<toExclusive) {
-            append((LetterOffset + (key % LocaleOffsets[i] / (LocaleOffsets.getOrNull(i + 1) ?: 1))).toChar())
+            val code = (key % LocaleOffsets[i] / (LocaleOffsets.getOrNull(i + 1) ?: 1))
+            if (code != 0) {
+                append((LetterOffset + code).toChar())
+            }
         }
     }
 
+    override fun compareTo(other: Locale): Int = key.compareTo(other.key)
+
     override fun toString(): String {
-        return if (key == 0) "Locale.Undefined" else "Locale(l='$language', r=$region)"
+        return if (key == 0) "Locale.Undefined" else "Locale($languageRegion)"
     }
 
     fun hasRegion(): Boolean = (key % LocaleOffsets[3]) != 0
@@ -69,7 +74,7 @@ value class Locale(val key: Int) : Serializable {
 }
 
 @Suppress("NAME_SHADOWING")
-private fun packLocale(language: String, region: String?): Int {
+private fun packLanguageRegion(language: String, region: String?): Int {
     val region = if (region?.getOrNull(0) == 'r') region.substring(1) else region
     require(language.isEmpty() || language.length == 2) { "Invalid language:'$language', must be 0 or 2 chars!" }
     require(region.isNullOrEmpty() || region.length == 2) { "Invalid region:'$region', must be null, 0 or 2 chars!" }
@@ -81,6 +86,19 @@ private fun packLocale(language: String, region: String?): Int {
             (((region?.getOrNull(0)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[3]) +
             (((region?.getOrNull(1)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[4])
     return result
+}
+
+private fun packCode(code: String): Int {
+    return when {
+        code.contains("-") -> packLanguageRegion(code.substringBefore("-"), code.substringAfter("-", "").takeIfNotEmpty())
+        code.length in 2..4 ->
+            ((code[0].validCode() - LetterOffset) * LocaleOffsets[1]) +
+                ((code[1].validCode() - LetterOffset) * LocaleOffsets[2]) +
+                (((code.getOrNull(2)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[3]) +
+                (((code.getOrNull(3)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[4])
+
+        else -> throw IllegalArgumentException("Invalid locale:$code")
+    }
 }
 
 @Suppress("ConvertTwoComparisonsToRangeCheck")
