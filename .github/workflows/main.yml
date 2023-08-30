@@ -25,6 +25,6 @@ jobs:
       - name: KtlintCheck
         run: sample/gradlew ktlintCheck
       - name: Build & Test
-        run: ./gradlew allTest build
+        run: ./gradlew allTest test build
       - name: Build & Test
-        run: sample/gradlew clean allTest build
+        run: sample/gradlew clean allTest test build
