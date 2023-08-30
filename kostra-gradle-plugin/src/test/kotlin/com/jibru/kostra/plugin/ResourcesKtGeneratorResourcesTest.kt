@@ -48,7 +48,9 @@ class ResourcesKtGeneratorResourcesTest {
         assertThat(result.trim()).isEqualTo(
             """
             ---------------- com.sample.app.K ----------------
+            @file:Suppress("ktlint")
             package com.sample.app
+            import kotlin.Suppress
             import com.jibru.kostra.BinaryResourceKey as B
             import com.jibru.kostra.PainterResourceKey as D
             import com.jibru.kostra.PluralResourceKey as P
@@ -69,12 +71,14 @@ class ResourcesKtGeneratorResourcesTest {
               }
             }
             ---------------- com.sample.app.Resources ----------------
+            @file:Suppress("ktlint")
             package com.sample.app
             import com.jibru.kostra.AppResources
             import com.jibru.kostra.Locale
             import com.jibru.kostra.`internal`.FileDatabase
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
+            import kotlin.Suppress
             val Resources: AppResources = AppResources(
               string = StringDatabase(
                 mapOf(
@@ -90,7 +94,7 @@ class ResourcesKtGeneratorResourcesTest {
               ),
               binary = FileDatabase("__kostra/binary.db"),
             )
-            """.trimIndent(),
+            """.trimIndent().replace("__", "\${'$'}"),
         )
     }
 

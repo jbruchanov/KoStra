@@ -3,6 +3,8 @@
 
 package com.jibru.kostra.plugin
 
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.LibraryExtension
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
 import com.jibru.kostra.plugin.KostraPluginConfig.outputResourcesDir
 import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
@@ -10,6 +12,8 @@ import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.GenerateCodeTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
 import com.jibru.kostra.plugin.task.TaskDelegate
+import java.io.File
+import java.time.LocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -21,8 +25,6 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.time.LocalDateTime
 
 class KostraPlugin : Plugin<Project> {
 
@@ -33,7 +35,8 @@ class KostraPlugin : Plugin<Project> {
 
         val analyseResources = target.tasks.register(KostraPluginConfig.Tasks.AnalyseResources, AnalyseResourcesTask::class.java) {
             it.outputFile.set(extension.analysisFile())
-            it.resourceDirs.set(extension.resourceDirs)
+            it.resourceDirs.addAll(extension.resourceDirs)
+            it.resourceDirs.addAll(extension.androidResources.resourceDirs)
         }
 
         val generateCodeTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateCode, GenerateCodeTask::class.java) { task ->
@@ -55,17 +58,19 @@ class KostraPlugin : Plugin<Project> {
         }
 
         target.afterEvaluate {
-            //TODO proper way of doing this
-            //KMP
-            target.tasks.findByName("compileKotlinJvm")?.dependsOn(generateCodeTaskProvider)
-            target.tasks.findByName("compileDebugKotlinAndroid")?.dependsOn(generateCodeTaskProvider)
-            target.tasks.findByName("compileReleaseKotlinAndroid")?.dependsOn(generateCodeTaskProvider)
-            target.tasks.findByName("generateProjectStructureMetadata")?.dependsOn(generateDatabasesTaskTaskProvider)
-            target.tasks.findByName("jvmProcessResources")?.dependsOn(generateDatabasesTaskTaskProvider)
-            //JVM
-            if (target.extensions.findByType(JavaPluginExtension::class.java) != null) {
-                target.tasks.findByName("compileKotlin")?.dependsOn(generateCodeTaskProvider)
-                target.tasks.findByName("processResources")?.dependsOn(generateDatabasesTaskTaskProvider)
+            //TODO is there better way ?
+            val deps = mapOf(
+                generateCodeTaskProvider to listOf("compileKotlin.*", "compile.*KotlinAndroid"),
+                generateDatabasesTaskTaskProvider to listOf("jvmProcessResources", "generateProjectStructureMetadata", "processResources", "generate.*Resources"),
+            )
+
+            deps.forEach { (task, taskNames) ->
+                val regexps = taskNames.map { it.toRegex() }
+                val tasks = target.tasks.filter { t -> regexps.any { regex -> t.name.matches(regex) } }
+                tasks.onEach { it.dependsOn(task) }
+                if (tasks.isNotEmpty()) {
+                    logger.info("KostraPlugin update tasks deps tasks:${tasks.joinToString { "'${it.name}'" }} dependsOn '${task.name}'")
+                }
             }
         }
 
@@ -81,31 +86,31 @@ class KostraPlugin : Plugin<Project> {
 
         target.afterEvaluate { project ->
             if (extension.autoConfig.get()) {
-                tryUpdateSourceSets(target, project, extension)
+                tryUpdateSourceSets(project, extension)
             }
             updateFileWatcher(target, extension)
         }
     }
 
-    private fun tryUpdateSourceSets(target: Project, project: Project, extension: KostraPluginExtension) {
-        val sourceDir = extension.outputSourceDir().get()
-        val resourcesDir = extension.outputResourcesDir().get()
+    private fun tryUpdateSourceSets(project: Project, extension: KostraPluginExtension) {
+        val outputSourceDir = extension.outputSourceDir().get()
+        val outputResourcesDir = extension.outputResourcesDir().get()
 
         run JavaPlugin@{
             project.extensions.findByType(JavaPluginExtension::class.java)
                 ?.sourceSets
                 ?.findByName("main")
                 ?.let { mainSourceSet ->
-                    logger.info("Java added sourceSet:${sourceDir.absolutePath}")
+                    logger.info("Java added sourceSet:${outputSourceDir.absolutePath}")
                     //let java know about kostra sourceDir
-                    mainSourceSet.java.srcDir(sourceDir)
+                    mainSourceSet.java.srcDir(outputSourceDir)
 
                     //put into kostra extension the resource folders
                     extension.resourceDirs.set(extension.resourceDirs.get() + mainSourceSet.resources.srcDirs)
 
                     //let java know about kostra resource dir
-                    mainSourceSet.resources.srcDir(resourcesDir)
-                    logger.info("Java added resources:${mainSourceSet.resources.srcDirs.joinToString()}")
+                    mainSourceSet.resources.srcDir(outputResourcesDir)
+                    logger.info("Java updated resourceDirs:${mainSourceSet.resources.srcDirs.joinToString()}")
                 }
         }
 
@@ -114,16 +119,32 @@ class KostraPlugin : Plugin<Project> {
                 ?.sourceSets
                 ?.findByName("commonMain")
                 ?.let { commonMainSourceSet ->
-                    logger.info("KMP added sourceSet:${sourceDir.absolutePath}")
+                    logger.info("KMP added sourceSet:${outputSourceDir.absolutePath}")
                     //let java know about kostra sourceDir
-                    commonMainSourceSet.kotlin.srcDir(sourceDir)
+                    commonMainSourceSet.kotlin.srcDir(outputSourceDir)
 
                     //put into kostra extension the resource folders
                     extension.resourceDirs.set(extension.resourceDirs.get() + commonMainSourceSet.resources.srcDirs)
 
                     //let java know about kostra resource dir
-                    commonMainSourceSet.resources.srcDir(resourcesDir)
-                    logger.info("KMP added resources:${commonMainSourceSet.resources.srcDirs.joinToString()}")
+                    commonMainSourceSet.resources.srcDir(outputResourcesDir)
+                    logger.info("KMP updated resourceDirs:${commonMainSourceSet.resources.srcDirs.joinToString()}")
+                }
+        }
+
+        run Android@{
+            val sourceSets = project.extensions.findByType(LibraryExtension::class.java)?.sourceSets
+                ?: project.extensions.findByType(AppExtension::class.java)?.sourceSets
+
+            sourceSets
+                ?.findByName("main")
+                ?.resources
+                ?.let { resources ->
+                    //add kostra resources part of android resources (not res <- android resources, just "jar" resources)
+                    //we don't want androidResources.resourceDirs here, those are parsed and converted into own db
+                    resources.srcDir(outputResourcesDir)
+                    resources.srcDir(extension.resourceDirs.get())
+                    logger.info("Android updated resourceDirs:\n${resources.srcDirs.joinToString()}")
                 }
         }
     }
@@ -136,7 +157,7 @@ class KostraPlugin : Plugin<Project> {
         val folders = extension.resourceDirs.get().filter { it.isDirectory }
         if (folders.isNotEmpty() && extension.useFileWatcher.get()) {
             val taskDelegateConfig = TaskDelegate.Config(
-                resourceDirs = extension.resourceDirs.get(),
+                resourceDirs = extension.resourceDirs.get() + extension.androidResources.resourceDirs.get(),
                 fileResolverConfig = extension.androidResources.toFileResolverConfig(),
                 kClassName = extension.className.get(),
                 composeDefaults = extension.composeDefaults.get(),

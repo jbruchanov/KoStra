@@ -2,13 +2,14 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.plugin.ext.setOf
 import groovy.lang.Closure
+import java.io.File
+import java.util.regex.Pattern
 import org.gradle.api.Action
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
-import java.io.File
-import java.util.regex.Pattern
 
 abstract class KostraPluginExtension {
     abstract val className: Property<String>
@@ -20,6 +21,9 @@ abstract class KostraPluginExtension {
 
     @get:Nested
     abstract val androidResources: AndroidResourcesExtension
+
+    @Internal
+    fun allResourceDirs(): List<File> = resourceDirs.get() + androidResources.resourceDirs.get()
 
     fun androidResources(action: Action<in AndroidResourcesExtension>) {
         action.execute(androidResources)
@@ -42,6 +46,9 @@ abstract class AndroidResourcesExtension {
 
     @get:Optional
     abstract val drawableExtensions: Property<Collection<String>>
+
+    @get:Optional
+    abstract val resourceDirs: ListProperty<File>
 
     fun toFileResolverConfig(): FileResolverConfig {
         val defaults = FileResolverConfig.Defaults

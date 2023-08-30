@@ -2,15 +2,15 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.KostraPluginExtension
+import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
 
 abstract class AnalyseResourcesTask : DefaultTask() {
     @get:InputFiles
@@ -27,7 +27,7 @@ abstract class AnalyseResourcesTask : DefaultTask() {
     fun run() = with(TaskDelegate) {
         val extension = project.extensions.getByType(KostraPluginExtension::class.java)
         val items = analyseCode(
-            resourceDirs = extension.resourceDirs.get(),
+            resourceDirs = extension.allResourceDirs(),
             fileResolverConfig = extension.androidResources.toFileResolverConfig(),
         )
         val outputFile = outputFile.get().asFile
