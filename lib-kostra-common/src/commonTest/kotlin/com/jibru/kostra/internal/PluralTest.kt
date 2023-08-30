@@ -2,7 +2,7 @@ package com.jibru.kostra.internal
 
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PluralTest {

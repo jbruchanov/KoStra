@@ -1,6 +1,6 @@
 package com.jibru.kostra.database
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import java.io.File
 import kotlin.test.assertEquals
 

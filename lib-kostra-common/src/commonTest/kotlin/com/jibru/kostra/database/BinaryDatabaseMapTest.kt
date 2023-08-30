@@ -1,8 +1,8 @@
 package com.jibru.kostra.database
 
 import androidx.collection.LongSparseArray
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import java.io.File
 
 class BinaryDatabaseMapTest {
