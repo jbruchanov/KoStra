@@ -10,16 +10,28 @@ fun KostraResources.string(key: StringResourceKey, vararg formatArgs: Any): Stri
     string.get(key, defaultQualifiers(), *formatArgs)
 
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int): String =
-    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()))
+    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()), Plurals.Type.Plurals)
 
 fun KostraResources.plural(key: PluralResourceKey, quantity: FixedDecimal): String =
-    this.plural.get(key, defaultQualifiers(), quantity)
+    this.plural.get(key, defaultQualifiers(), quantity, Plurals.Type.Plurals)
 
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int, vararg formatArgs: Any): String =
-    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()), *formatArgs)
+    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()), Plurals.Type.Plurals, *formatArgs)
 
 fun KostraResources.plural(key: PluralResourceKey, quantity: FixedDecimal, vararg formatArgs: Any): String =
-    this.plural.get(key, defaultQualifiers(), quantity, *formatArgs)
+    this.plural.get(key, defaultQualifiers(), quantity, Plurals.Type.Plurals, *formatArgs)
+
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: Int): String =
+    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()), Plurals.Type.Ordinals)
+
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: FixedDecimal): String =
+    this.plural.get(key, defaultQualifiers(), quantity, Plurals.Type.Ordinals)
+
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: Int, vararg formatArgs: Any): String =
+    this.plural.get(key, defaultQualifiers(), FixedDecimal(quantity.toLong()), Plurals.Type.Ordinals, *formatArgs)
+
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: FixedDecimal, vararg formatArgs: Any): String =
+    this.plural.get(key, defaultQualifiers(), quantity, Plurals.Type.Ordinals, *formatArgs)
 
 fun KostraResources.assetPath(key: AssetResourceKey, qualifiers: Qualifiers = defaultQualifiers()): String =
     this.binary.get(key, qualifiers)

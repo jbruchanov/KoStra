@@ -1,3 +1,5 @@
+@file:Suppress("EnumEntryName", "enum-entry-name-case")
+
 package com.jibru.kostra.icu
 
 /**

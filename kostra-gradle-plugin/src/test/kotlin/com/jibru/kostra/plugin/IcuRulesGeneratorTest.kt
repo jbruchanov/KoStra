@@ -7,10 +7,10 @@ import com.jibru.kostra.plugin.ext.minify
 import com.jibru.kostra.plugin.icu.IcuPluralsDownloader
 import org.junit.jupiter.api.Test
 
-class PluralRulesGeneratorTest {
+class IcuRulesGeneratorTest {
     @Test
     fun loadPlurals() {
-        val f = PluralRulesGenerator("com.test.icu", addLocaleComments = false)
+        val f = IcuRulesGenerator("com.test.icu", addLocaleComments = false)
             .generate(
                 IcuPluralsDownloader.Result(
                     unicodeVersion = "test1",
@@ -23,7 +23,7 @@ class PluralRulesGeneratorTest {
                         ),
                     ),
                 ),
-                type = PluralRulesGenerator.Type.Plurals,
+                type = IcuRulesGenerator.Type.Plurals,
             )
         assertThat(f.minify()).isEqualTo(
             """

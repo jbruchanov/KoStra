@@ -22,6 +22,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
             import com.jibru.kostra.PluralResourceKey
             import com.jibru.kostra.StringResourceKey
             import com.jibru.kostra.compose.assetPath
+            import com.jibru.kostra.compose.ordinal
             import com.jibru.kostra.compose.painter
             import com.jibru.kostra.compose.plural
             import com.jibru.kostra.compose.string
@@ -53,6 +54,24 @@ class ResourcesKtGeneratorComposeDefaultsTest {
               quantity: Int,
               vararg formatArgs: Any,
             ): String = Resources.plural(key, quantity, *formatArgs)
+            @Composable
+            inline fun ordinalStringResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
+                Resources.ordinal(key, quantity)
+            @Composable
+            inline fun ordinalStringResource(key: PluralResourceKey, quantity: Int): String =
+                Resources.ordinal(key, quantity)
+            @Composable
+            inline fun ordinalStringResource(
+              key: PluralResourceKey,
+              quantity: IFixedDecimal,
+              vararg formatArgs: Any,
+            ): String = Resources.ordinal(key, quantity, *formatArgs)
+            @Composable
+            inline fun ordinalStringResource(
+              key: PluralResourceKey,
+              quantity: Int,
+              vararg formatArgs: Any,
+            ): String = Resources.ordinal(key, quantity, *formatArgs)
             @Composable
             inline fun painterResource(key: PainterResourceKey): Painter = Resources.painter(key)
             @Composable

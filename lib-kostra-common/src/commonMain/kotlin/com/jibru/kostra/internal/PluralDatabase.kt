@@ -7,6 +7,7 @@ import com.jibru.kostra.Plurals
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.icu.IFixedDecimal
+import com.jibru.kostra.icu.OrdinalRuleSpecs
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralRuleSpecs
 
@@ -22,22 +23,28 @@ open class PluralDatabase(localeDatabases: Map<Locale, String>) : Plurals {
         return dbs[locale]?.value?.getListValue(dbKey)
     }
 
-    override fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal): String {
-        val plural = pluralCategory(quantity, qualifiers.locale)
+    override fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal, type: Plurals.Type): String {
+        val pluralCategory = type.pluralCategory(quantity, qualifiers.locale)
         //try locale+region if exists
-        return qualifiers.locale.takeIf { it.hasRegion() }?.let { getValue(key, qualifiers.locale, plural) }
+        return qualifiers.locale.takeIf { it.hasRegion() }?.let { getValue(key, qualifiers.locale, pluralCategory) }
             //try locale only
-            ?: qualifiers.locale.takeIf { it != Locale.Undefined }?.let { getValue(key, qualifiers.locale.languageLocale(), plural) }
+            ?: qualifiers.locale.takeIf { it != Locale.Undefined }?.let { getValue(key, qualifiers.locale.languageLocale(), pluralCategory) }
             //fallback
-            ?: getValue(key, Locale.Undefined, plural)
-            ?: throw MissingResourceException(key, qualifiers, "plural-${plural.keyword}")
+            ?: getValue(key, Locale.Undefined, pluralCategory)
+            ?: throw MissingResourceException(key, qualifiers, "plural-${pluralCategory.keyword}")
     }
 
-    private fun pluralCategory(quantity: IFixedDecimal, locale: Locale): PluralCategory {
-        val specs = PluralRuleSpecs[locale]
-            ?: PluralRuleSpecs[locale.languageLocale()]
+    private fun Plurals.Type.pluralCategory(quantity: IFixedDecimal, locale: Locale): PluralCategory {
+        val specs = specs[locale]
+            ?: specs[locale.languageLocale()]
             ?: throw IllegalStateException("Unable to find PluralCategory for $locale, quantity:$quantity")
 
         return specs.select(quantity)
     }
+
+    private val Plurals.Type.specs
+        get() = when (this) {
+            Plurals.Type.Plurals -> PluralRuleSpecs
+            Plurals.Type.Ordinals -> OrdinalRuleSpecs
+        }
 }

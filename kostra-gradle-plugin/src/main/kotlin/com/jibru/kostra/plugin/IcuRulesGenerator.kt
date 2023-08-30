@@ -21,14 +21,14 @@ fun main(args: Array<String>) {
     require(args.size == 1) { "Invalid args:${args.joinToString()}, must be size 1" }
 
     val icuPluralsDownloader = IcuPluralsDownloader()
-    generateIcuRules(icuPluralsDownloader.loadPlurals(), File("${args[0]}/PluralRuleSpecs.kt"), PluralRulesGenerator.Type.Plurals)
-    //generateIcuRules(icuPluralsDownloader.loadOrdinals(), File("${args[0]}/OrdinalRuleSpecs.kt"), PluralRulesGenerator.Type.Ordinals)
+    generateIcuRules(icuPluralsDownloader.loadPlurals(), File("${args[0]}/PluralRuleSpecs.kt"), IcuRulesGenerator.Type.Plurals)
+    generateIcuRules(icuPluralsDownloader.loadOrdinals(), File("${args[0]}/OrdinalRuleSpecs.kt"), IcuRulesGenerator.Type.Ordinals)
 }
 
-private fun generateIcuRules(data: IcuPluralsDownloader.Result, outputFile: File, type: PluralRulesGenerator.Type) {
-    val fileSpec = PluralRulesGenerator(
+private fun generateIcuRules(data: IcuPluralsDownloader.Result, outputFile: File, type: IcuRulesGenerator.Type) {
+    val fileSpec = IcuRulesGenerator(
         KostraPluginConfig.PackageNameIcu,
-        addLocaleComments = false,
+        addLocaleComments = true,
     ).generate(data, type)
 
     println(outputFile.absolutePath)
@@ -42,7 +42,7 @@ private fun generateIcuRules(data: IcuPluralsDownloader.Result, outputFile: File
     }
 }
 
-class PluralRulesGenerator(
+class IcuRulesGenerator(
     private val fullPackageName: String,
     private val addLocaleComments: Boolean,
 ) {
@@ -91,7 +91,7 @@ class PluralRulesGenerator(
             fb.addProperty(
                 rules.toProperty(
                     name = privatePropertyTemplateName.format((index).toString().padStart(2, '0')),
-                    comment = if (addLocaleComments) listOfLocales.joinToString { it.languageRegion } else null,
+                    comment = if (addLocaleComments && false/*not needed, another comment below*/) listOfLocales.joinToString { it.languageRegion } else null,
                 ),
             )
         }

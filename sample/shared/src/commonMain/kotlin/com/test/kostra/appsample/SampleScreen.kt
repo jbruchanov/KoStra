@@ -37,6 +37,7 @@ import com.jibru.kostra.compose.LocalQualifiers
 import com.jibru.kostra.icu.FixedDecimal
 import com.sample.app.K
 import com.sample.app.assetPath
+import com.sample.app.ordinalStringResource
 import com.sample.app.painterResource
 import com.sample.app.pluralStringResource
 import com.sample.app.stringResource
@@ -117,9 +118,9 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                     placeholder = { Text(stringResource(K.string.type_quantity)) },
                     onValueChange = { quantity = it.takeIf { it.isEmpty() || it.toFloatOrNull() != null } ?: quantity }
                 )
-                quantity.toDoubleOrNull()?.let {
-                    Text(pluralStringResource(K.plural.bug_x, FixedDecimal(it), quantity))
-                }
+
+                Text(stringResource(K.string.plurals) + ": " + (quantity.toDoubleOrNull()?.let { pluralStringResource(K.plural.bug_x, FixedDecimal(it), quantity) } ?: ""))
+                Text(stringResource(K.string.ordinals) + ": " + (quantity.toDoubleOrNull()?.let { ordinalStringResource(K.plural.day_x, FixedDecimal(it), quantity) } ?: ""))
             }
         }
     }

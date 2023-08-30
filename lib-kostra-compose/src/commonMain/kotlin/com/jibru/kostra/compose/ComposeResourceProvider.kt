@@ -8,6 +8,7 @@ import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.KostraResources
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
+import com.jibru.kostra.Plurals
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.assetPath
@@ -25,19 +26,35 @@ fun KostraResources.string(key: StringResourceKey, vararg formatArgs: Any): Stri
 
 @Composable
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int): String =
-    plural.get(key, LocalQualifiers.current, quantity)
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Plurals)
 
 @Composable
 fun KostraResources.plural(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    plural.get(key, LocalQualifiers.current, quantity)
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Plurals)
 
 @Composable
 fun KostraResources.plural(key: PluralResourceKey, quantity: Int, vararg formatArgs: Any): String =
-    plural.get(key, LocalQualifiers.current, quantity, *formatArgs)
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Plurals, *formatArgs)
 
 @Composable
 fun KostraResources.plural(key: PluralResourceKey, quantity: IFixedDecimal, vararg formatArgs: Any): String =
-    plural.get(key, LocalQualifiers.current, quantity, *formatArgs)
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Plurals, *formatArgs)
+
+@Composable
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: Int): String =
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Ordinals)
+
+@Composable
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: IFixedDecimal): String =
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Ordinals)
+
+@Composable
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: Int, vararg formatArgs: Any): String =
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Ordinals, *formatArgs)
+
+@Composable
+fun KostraResources.ordinal(key: PluralResourceKey, quantity: IFixedDecimal, vararg formatArgs: Any): String =
+    plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Ordinals, *formatArgs)
 
 @Composable
 fun KostraResources.painter(key: PainterResourceKey): Painter =

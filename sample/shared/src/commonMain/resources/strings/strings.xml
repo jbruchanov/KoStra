@@ -4,11 +4,19 @@
     <string name="action_remove">Remove</string>
     <string name="color">Color</string>
     <string name="plurals">Plurals</string>
+    <string name="ordinals">Ordinals</string>
     <string name="type_quantity">Type here a quantity</string>
 
     <plurals name="bug_x">
         <item quantity="one">%s bug</item>
         <item quantity="other">%s bugs</item>
+    </plurals>
+
+    <plurals name="day_x">
+        <item quantity="one">%sst day</item>
+        <item quantity="two">%snd day</item>
+        <item quantity="few">%srd day</item>
+        <item quantity="other">%sth day</item>
     </plurals>
 
 </resources>
