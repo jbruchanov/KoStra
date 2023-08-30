@@ -6,6 +6,7 @@ plugins {
 }
 
 apply from: "$rootProject.projectDir/../build-ktlint.gradle"
+apply from: "$rootProject.projectDir/../build-android-lib.gradle"
 
 kotlin {
     androidTarget {
@@ -31,7 +32,6 @@ kotlin {
             dependencies {
                 implementation(libs.kostra.common)
                 implementation(libs.kostra.compose)
-                implementation(compose.desktop.currentOs)
                 implementation(libs.bundles.jetbrains.compose.app)
             }
         }
@@ -91,17 +91,4 @@ if (plugins.findPlugin(libs.plugins.kostra.get().pluginId) != null) {
 
 android {
     namespace = "com.jibru.kostra.appsample"
-    compileSdk = libs.versions.android.sdk.compile.get().toInteger()
-    defaultConfig {
-        minSdk = libs.versions.android.sdk.min.get().toInteger()
-        targetSdk = libs.versions.android.sdk.target.get().toInteger()
-    }
-
-    compileOptions {
-        sourceCompatibility = libs.versions.jvmtarget.get()
-        targetCompatibility = libs.versions.jvmtarget.get()
-    }
-    kotlin {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
 }

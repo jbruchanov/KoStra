@@ -84,6 +84,7 @@ cocoa-async-socket = "7.6.5"
 
 [libraries]
 
+android-gradle-plugin = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-app-compat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-app-compat" }
 androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core-testing" }
@@ -91,13 +92,13 @@ androidx-collection = { module = "androidx.collection:collection-ktx", version.r
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "jetbrains-compose-ui" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "jetbrains-compose-ui" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle" }
 jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-components-resources = { module = " org.jetbrains.compose.components:components-resources", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-material = { module = " org.jetbrains.compose.material:material", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose-ui" }
 jetbrains-compose-ui-graphics = { module = " org.jetbrains.compose.ui:ui-graphics", version.ref = "jetbrains-compose-ui" }
-androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle" }
 kmp-buffer = { module = "com.ditchoom:buffer", version.ref = "kmp-buffer" }
 compose-mp-flow = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "compose-mp-flow" }
 desuger = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desuger" }
