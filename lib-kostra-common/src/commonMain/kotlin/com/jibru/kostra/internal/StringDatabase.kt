@@ -2,7 +2,7 @@ package com.jibru.kostra.internal
 
 import com.jibru.kostra.KLocale
 import com.jibru.kostra.MissingResourceException
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.Strings
 import com.jibru.kostra.database.BinaryDatabase
@@ -17,7 +17,7 @@ open class StringDatabase(localeDatabases: Map<KLocale, String>) : Strings {
         return dbs[locale]?.value?.getListValue(key.key)
     }
 
-    override fun get(key: StringResourceKey, qualifiers: Qualifiers): String {
+    override fun get(key: StringResourceKey, qualifiers: KQualifiers): String {
         //try locale+region if exists
         return qualifiers.locale.takeIf { it.hasRegion() }?.let { getValue(key, qualifiers.locale) }
             //try locale only

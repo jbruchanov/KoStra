@@ -91,26 +91,26 @@ object Fixtures {
         val drawableResources = create(
             files = FileMemoryReferences(
                 mapOf(
-                    Qualifiers.Undefined to mapOf(
+                    KQualifiers.Undefined to mapOf(
                         K.drawable.undefinedDpi to "undefinedDpiDefault",
                         K.drawable.multipleDpi to "multipleDpiDefault",
                         K.drawable.multipleDpiLocale to "multipleDpiKLocaleDefault",
                     ),
-                    Qualifiers(dpi = Dpi.XXHDPI) to mapOf(
+                    KQualifiers(dpi = KDpi.XXHDPI) to mapOf(
                         K.drawable.xxHdpiOnly to "xxHdpiOnly",
                         K.drawable.multipleDpi to "multipleDpiXXHDPI",
                     ),
-                    Qualifiers(dpi = Dpi.XXXHDPI) to mapOf(
+                    KQualifiers(dpi = KDpi.XXXHDPI) to mapOf(
                         K.drawable.multipleDpi to "multipleDpiXXXHDPI",
                         K.drawable.multipleDpiLocale to "multipleDpiKLocaleXXXHDPI",
                     ),
-                    Qualifiers("en", Dpi.XXHDPI) to mapOf(
+                    KQualifiers("en", KDpi.XXHDPI) to mapOf(
                         K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnXXHDPI",
                     ),
-                    Qualifiers("en-GB", Dpi.Undefined) to mapOf(
+                    KQualifiers("en-GB", KDpi.Undefined) to mapOf(
                         K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnGBUndefined",
                     ),
-                    Qualifiers("en-GB", Dpi.XXXHDPI) to mapOf(
+                    KQualifiers("en-GB", KDpi.XXXHDPI) to mapOf(
                         K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnGBXXXHDPI",
                     ),
                 ),
@@ -121,6 +121,6 @@ object Fixtures {
             strings: Strings = Strings,
             plurals: Plurals = Plurals,
             files: FileReferences = FileReferences,
-        ) = AppResources(strings, plurals, files)
+        ) = KAppResources(strings, plurals, files)
     }
 }

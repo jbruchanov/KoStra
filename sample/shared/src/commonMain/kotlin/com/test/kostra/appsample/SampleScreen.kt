@@ -33,9 +33,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.jibru.kostra.Dpi
+import com.jibru.kostra.KDpi
 import com.jibru.kostra.KLocale
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.compose.LocalQualifiers
 import com.jibru.kostra.icu.FixedDecimal
 import com.sample.app.K
@@ -69,11 +69,11 @@ fun SampleScreen() = with(SampleScreenDefaults) {
             val locale by derivedStateOf { KLocale(locales[localeIndex].toLanguageTag()) }
 
             val defaultQualifiers = LocalQualifiers.current
-            val dpis = remember { listOf(null, Dpi.Undefined, Dpi.XXHDPI) }
+            val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XXHDPI) }
             var dpiIndex by remember { mutableStateOf(0) }
             val dpi by derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi }
 
-            val qualifiers by derivedStateOf { Qualifiers(locale, dpi) }
+            val qualifiers by derivedStateOf { KQualifiers(locale, dpi) }
 
             CompositionLocalProvider(LocalQualifiers provides qualifiers) {
                 Text("KLocale")

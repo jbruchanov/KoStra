@@ -1,18 +1,18 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.Dpi
+import com.jibru.kostra.KDpi
 import com.jibru.kostra.KLocale
-import com.jibru.kostra.Qualifiers
-import com.jibru.kostra.ext.takeIfNotEmpty
+import com.jibru.kostra.KQualifiers
+import com.jibru.kostra.plugin.ext.takeIfNotEmpty
 import java.io.File
 
 private val locales = java.util.Locale.getAvailableLocales().map { it.toLanguageTag().lowercase() }.toSortedSet()
-private val dpiMap = Dpi.values().associateBy { it.qualifier }
+private val dpiMap = KDpi.values().associateBy { it.qualifier }
 private val dpiValues = dpiMap.keys
 
 data class GroupQualifiers(
     val group: String,
-    val qualifiers: Qualifiers,
+    val qualifiers: KQualifiers,
 )
 
 const val QualifierDivider = "-"
@@ -49,9 +49,9 @@ internal fun File.groupQualifiers(): GroupQualifiers {
                 ?.also { otherModifiers.remove(it) }
 
             val locale = strLocale?.let { KLocale(it, strLocaleRegion) } ?: KLocale.Undefined
-            val dpi = strDpi?.let { dpiMap.getValue(it) } ?: Dpi.Undefined
-            Qualifiers(locale = locale, dpi = dpi)
-        } ?: Qualifiers.Undefined
+            val dpi = strDpi?.let { dpiMap.getValue(it) } ?: KDpi.Undefined
+            KQualifiers(locale = locale, dpi = dpi)
+        } ?: KQualifiers.Undefined
 
     return GroupQualifiers(group, qualifiers)
 }

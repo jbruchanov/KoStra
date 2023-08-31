@@ -74,13 +74,13 @@ class ResourcesKtGeneratorResourcesTest {
             ---------------- com.sample.app.Resources ----------------
             @file:Suppress("ktlint")
             package com.sample.app
-            import com.jibru.kostra.AppResources
+            import com.jibru.kostra.KAppResources
             import com.jibru.kostra.KLocale
             import com.jibru.kostra.`internal`.FileDatabase
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
             import kotlin.Suppress
-            val Resources: AppResources = AppResources(
+            val Resources: KAppResources = KAppResources(
               string = StringDatabase(
                 mapOf(
                   KLocale.Undefined to "${'$'}kostra/string-default.db",

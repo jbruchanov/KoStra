@@ -2,7 +2,7 @@ package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.KLocale
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.plugin.ext.minify
@@ -87,8 +87,8 @@ class ResourcesKtGeneratorClassTest {
         val gen = ResourcesKtGenerator(
             className = "K",
             items = listOf(
-                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
-                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), Qualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
+                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
+                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), KQualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
             ),
         )
         val result = gen.generateKClass().minify()
@@ -110,13 +110,13 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun `generateKClass WHEN multiple strings and plurals`() {
         val items = listOf(
-            ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
-            ResItem.StringRes("item2", "item2", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = KLocale("cs"))),
-            ResItem.StringRes("item2", "item2En", Qualifiers(locale = KLocale("en"))),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
+            ResItem.StringRes("item2", "item2", KQualifiers.Undefined),
+            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs"))),
+            ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en"))),
 
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers.Undefined),
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = KLocale("cs"))),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs"))),
         )
 
         val result = ResourcesKtGenerator(className = "K", items = items).generateKClass().minify()
@@ -142,30 +142,30 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun generateResources() {
         val items = listOf(
-            ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
-            ResItem.StringRes("item2", "item2", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = KLocale("cs"))),
-            ResItem.StringRes("item2", "item2En", Qualifiers(locale = KLocale("en"))),
-            ResItem.StringRes("item2", "item2EnGb", Qualifiers(locale = KLocale("en-GB"))),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
+            ResItem.StringRes("item2", "item2", KQualifiers.Undefined),
+            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs"))),
+            ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en"))),
+            ResItem.StringRes("item2", "item2EnGb", KQualifiers(locale = KLocale("en-GB"))),
 
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers.Undefined),
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = KLocale("cs"))),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs"))),
 
-            ResItem.FileRes("image", File("x.png"), Qualifiers.Undefined, ResItem.Drawable, File("x")),
-            ResItem.FileRes("sound", File("s.mp3"), Qualifiers.Undefined, "sound", File("x")),
+            ResItem.FileRes("image", File("x.png"), KQualifiers.Undefined, ResItem.Drawable, File("x")),
+            ResItem.FileRes("sound", File("s.mp3"), KQualifiers.Undefined, "sound", File("x")),
         )
 
         val result = ResourcesKtGenerator(className = "K", items = items).generateResources().minify()
         assertThat(result).isEqualTo(
             """
             @file:Suppress("ktlint")
-            import com.jibru.kostra.AppResources
+            import com.jibru.kostra.KAppResources
             import com.jibru.kostra.KLocale
             import com.jibru.kostra.`internal`.FileDatabase
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
             import kotlin.Suppress
-            val Resources: AppResources = AppResources(
+            val Resources: KAppResources = KAppResources(
               string = StringDatabase(
                 mapOf(
                   KLocale.Undefined to "${'$'}kostra/string-default.db",
@@ -196,7 +196,7 @@ class ResourcesKtGeneratorClassTest {
     }
 
     private fun hasRealProjectRef() = RealProjectRef.isDefined()
-    private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiers = Qualifiers.Undefined)
-    private fun plurals(key: String, items: List<String?>) = ResItem.Plurals(key, items = items, qualifiers = Qualifiers.Undefined)
-    private fun file(key: String, group: String) = ResItem.FileRes(key, File("X"), qualifiers = Qualifiers.Undefined, group = group, root = File("."))
+    private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiers = KQualifiers.Undefined)
+    private fun plurals(key: String, items: List<String?>) = ResItem.Plurals(key, items = items, qualifiers = KQualifiers.Undefined)
+    private fun file(key: String, group: String) = ResItem.FileRes(key, File("X"), qualifiers = KQualifiers.Undefined, group = group, root = File("."))
 }

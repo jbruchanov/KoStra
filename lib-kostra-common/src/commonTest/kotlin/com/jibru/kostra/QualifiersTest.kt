@@ -9,58 +9,58 @@ class QualifiersTest {
 
     @Test
     fun pack() {
-        assertEquals(KLocale("cs"), Qualifiers("cs").locale)
-        assertEquals(KLocale("cs", "cz"), Qualifiers("cs-CZ").locale)
-        assertEquals(KLocale("cs"), Qualifiers("cs", Dpi.XXHDPI).locale)
-        assertEquals(KLocale("cs", "cz"), Qualifiers("cs-CZ", Dpi.NoDpi).locale)
+        assertEquals(KLocale("cs"), KQualifiers("cs").locale)
+        assertEquals(KLocale("cs", "cz"), KQualifiers("cs-CZ").locale)
+        assertEquals(KLocale("cs"), KQualifiers("cs", KDpi.XXHDPI).locale)
+        assertEquals(KLocale("cs", "cz"), KQualifiers("cs-CZ", KDpi.NoDpi).locale)
 
-        assertEquals(Dpi.Undefined, Qualifiers("cs").dpi)
-        assertEquals(Dpi.Undefined, Qualifiers("cs-CZ").dpi)
-        assertEquals(Dpi.XXHDPI, Qualifiers("cs", Dpi.XXHDPI).dpi)
-        assertEquals(Dpi.NoDpi, Qualifiers("cs-CZ", Dpi.NoDpi).dpi)
+        assertEquals(KDpi.Undefined, KQualifiers("cs").dpi)
+        assertEquals(KDpi.Undefined, KQualifiers("cs-CZ").dpi)
+        assertEquals(KDpi.XXHDPI, KQualifiers("cs", KDpi.XXHDPI).dpi)
+        assertEquals(KDpi.NoDpi, KQualifiers("cs-CZ", KDpi.NoDpi).dpi)
     }
 
     @Test
     fun hasOnlyLocale() {
-        assertTrue(Qualifiers("en").hasOnlyLocale)
-        assertTrue(Qualifiers("en-GB").hasOnlyLocale)
-        assertFalse(Qualifiers("en-GB", Dpi.XXHDPI).hasOnlyLocale)
-        Dpi.values().forEach {
-            val expected = it == Dpi.Undefined
-            assertEquals(expected, Qualifiers("en", it).hasOnlyLocale)
+        assertTrue(KQualifiers("en").hasOnlyLocale)
+        assertTrue(KQualifiers("en-GB").hasOnlyLocale)
+        assertFalse(KQualifiers("en-GB", KDpi.XXHDPI).hasOnlyLocale)
+        KDpi.values().forEach {
+            val expected = it == KDpi.Undefined
+            assertEquals(expected, KQualifiers("en", it).hasOnlyLocale)
         }
     }
 
     @Test
     fun withNoLocaleRegion() {
-        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoLocaleRegion())
-        assertEquals(Qualifiers("en", dpi = Dpi.XXHDPI), Qualifiers("en", dpi = Dpi.XXHDPI).withNoLocaleRegion())
-        assertEquals(Qualifiers(KLocale.Undefined, dpi = Dpi.XXHDPI), Qualifiers(KLocale.Undefined, dpi = Dpi.XXHDPI).withNoLocaleRegion())
+        assertEquals(KQualifiers("en", dpi = KDpi.XXHDPI), KQualifiers("en-GB", dpi = KDpi.XXHDPI).withNoLocaleRegion())
+        assertEquals(KQualifiers("en", dpi = KDpi.XXHDPI), KQualifiers("en", dpi = KDpi.XXHDPI).withNoLocaleRegion())
+        assertEquals(KQualifiers(KLocale.Undefined, dpi = KDpi.XXHDPI), KQualifiers(KLocale.Undefined, dpi = KDpi.XXHDPI).withNoLocaleRegion())
 
-        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoLocaleRegion())
-        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoLocaleRegion())
-        assertEquals(Qualifiers(KLocale.Undefined, dpi = Dpi.Undefined), Qualifiers(KLocale.Undefined, dpi = Dpi.Undefined).withNoLocaleRegion())
+        assertEquals(KQualifiers("en", dpi = KDpi.Undefined), KQualifiers("en-GB", dpi = KDpi.Undefined).withNoLocaleRegion())
+        assertEquals(KQualifiers("en", dpi = KDpi.Undefined), KQualifiers("en", dpi = KDpi.Undefined).withNoLocaleRegion())
+        assertEquals(KQualifiers(KLocale.Undefined, dpi = KDpi.Undefined), KQualifiers(KLocale.Undefined, dpi = KDpi.Undefined).withNoLocaleRegion())
     }
 
     @Test
     fun withNoLocale() {
-        assertEquals(Qualifiers(dpi = Dpi.XXHDPI), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoLocale())
-        assertEquals(Qualifiers(dpi = Dpi.XXHDPI), Qualifiers("en", dpi = Dpi.XXHDPI).withNoLocale())
-        assertEquals(Qualifiers(dpi = Dpi.XXHDPI), Qualifiers(KLocale.Undefined, dpi = Dpi.XXHDPI).withNoLocale())
+        assertEquals(KQualifiers(dpi = KDpi.XXHDPI), KQualifiers("en-GB", dpi = KDpi.XXHDPI).withNoLocale())
+        assertEquals(KQualifiers(dpi = KDpi.XXHDPI), KQualifiers("en", dpi = KDpi.XXHDPI).withNoLocale())
+        assertEquals(KQualifiers(dpi = KDpi.XXHDPI), KQualifiers(KLocale.Undefined, dpi = KDpi.XXHDPI).withNoLocale())
 
-        assertEquals(Qualifiers(dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoLocale())
-        assertEquals(Qualifiers(dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoLocale())
-        assertEquals(Qualifiers(dpi = Dpi.Undefined), Qualifiers(KLocale.Undefined, dpi = Dpi.Undefined).withNoLocale())
+        assertEquals(KQualifiers(dpi = KDpi.Undefined), KQualifiers("en-GB", dpi = KDpi.Undefined).withNoLocale())
+        assertEquals(KQualifiers(dpi = KDpi.Undefined), KQualifiers("en", dpi = KDpi.Undefined).withNoLocale())
+        assertEquals(KQualifiers(dpi = KDpi.Undefined), KQualifiers(KLocale.Undefined, dpi = KDpi.Undefined).withNoLocale())
     }
 
     @Test
     fun withNoDpi() {
-        assertEquals(Qualifiers("en-GB", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.XXHDPI).withNoDpi())
-        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.XXHDPI).withNoDpi())
-        assertEquals(Qualifiers(KLocale.Undefined, dpi = Dpi.Undefined), Qualifiers(KLocale.Undefined, dpi = Dpi.XXHDPI).withNoDpi())
+        assertEquals(KQualifiers("en-GB", dpi = KDpi.Undefined), KQualifiers("en-GB", dpi = KDpi.XXHDPI).withNoDpi())
+        assertEquals(KQualifiers("en", dpi = KDpi.Undefined), KQualifiers("en", dpi = KDpi.XXHDPI).withNoDpi())
+        assertEquals(KQualifiers(KLocale.Undefined, dpi = KDpi.Undefined), KQualifiers(KLocale.Undefined, dpi = KDpi.XXHDPI).withNoDpi())
 
-        assertEquals(Qualifiers("en-GB", dpi = Dpi.Undefined), Qualifiers("en-GB", dpi = Dpi.Undefined).withNoDpi())
-        assertEquals(Qualifiers("en", dpi = Dpi.Undefined), Qualifiers("en", dpi = Dpi.Undefined).withNoDpi())
-        assertEquals(Qualifiers(KLocale.Undefined, dpi = Dpi.Undefined), Qualifiers(KLocale.Undefined, dpi = Dpi.Undefined).withNoDpi())
+        assertEquals(KQualifiers("en-GB", dpi = KDpi.Undefined), KQualifiers("en-GB", dpi = KDpi.Undefined).withNoDpi())
+        assertEquals(KQualifiers("en", dpi = KDpi.Undefined), KQualifiers("en", dpi = KDpi.Undefined).withNoDpi())
+        assertEquals(KQualifiers(KLocale.Undefined, dpi = KDpi.Undefined), KQualifiers(KLocale.Undefined, dpi = KDpi.Undefined).withNoDpi())
     }
 }

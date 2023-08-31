@@ -4,7 +4,7 @@ import com.jibru.kostra.KLocale
 import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.icu.IFixedDecimal
 import com.jibru.kostra.icu.OrdinalRuleSpecs
@@ -23,7 +23,7 @@ open class PluralDatabase(localeDatabases: Map<KLocale, String>) : Plurals {
         return dbs[locale]?.value?.getListValue(dbKey)
     }
 
-    override fun get(key: PluralResourceKey, qualifiers: Qualifiers, quantity: IFixedDecimal, type: Plurals.Type): String {
+    override fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: IFixedDecimal, type: Plurals.Type): String {
         val pluralCategory = type.pluralCategory(quantity, qualifiers.locale)
         //try locale+region if exists
         return qualifiers.locale.takeIf { it.hasRegion() }?.let { getValue(key, qualifiers.locale, pluralCategory) }
