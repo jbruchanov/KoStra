@@ -1,3 +1,3 @@
 package com.jibru.kostra
 
-expect fun defaultQualifiers(): Qualifiers
+expect fun defaultQualifiers(): KQualifiers

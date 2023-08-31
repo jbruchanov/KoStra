@@ -1,47 +1,47 @@
 package com.jibru.kostra
 
-import com.jibru.kostra.Dpi.Companion.next
-import com.jibru.kostra.Dpi.Companion.prev
+import com.jibru.kostra.KDpi.Companion.next
+import com.jibru.kostra.KDpi.Companion.prev
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
 class DpiTest {
     @Test
     fun prev() {
-        assertEquals(Dpi.LDPI, Dpi.LDPI.prev())
-        assertEquals(Dpi.LDPI, Dpi.MDPI.prev())
-        assertEquals(Dpi.MDPI, Dpi.HDPI.prev())
-        assertEquals(Dpi.HDPI, Dpi.XHDPI.prev())
-        assertEquals(Dpi.XHDPI, Dpi.XXHDPI.prev())
-        assertEquals(Dpi.XXHDPI, Dpi.XXXHDPI.prev())
+        assertEquals(KDpi.LDPI, KDpi.LDPI.prev())
+        assertEquals(KDpi.LDPI, KDpi.MDPI.prev())
+        assertEquals(KDpi.MDPI, KDpi.HDPI.prev())
+        assertEquals(KDpi.HDPI, KDpi.XHDPI.prev())
+        assertEquals(KDpi.XHDPI, KDpi.XXHDPI.prev())
+        assertEquals(KDpi.XXHDPI, KDpi.XXXHDPI.prev())
     }
 
     @Test
     fun next() {
-        assertEquals(Dpi.MDPI, Dpi.LDPI.next())
-        assertEquals(Dpi.HDPI, Dpi.MDPI.next())
-        assertEquals(Dpi.XHDPI, Dpi.HDPI.next())
-        assertEquals(Dpi.XXHDPI, Dpi.XHDPI.next())
-        assertEquals(Dpi.XXXHDPI, Dpi.XXHDPI.next())
-        assertEquals(Dpi.XXXHDPI, Dpi.XXXHDPI.next())
+        assertEquals(KDpi.MDPI, KDpi.LDPI.next())
+        assertEquals(KDpi.HDPI, KDpi.MDPI.next())
+        assertEquals(KDpi.XHDPI, KDpi.HDPI.next())
+        assertEquals(KDpi.XXHDPI, KDpi.XHDPI.next())
+        assertEquals(KDpi.XXXHDPI, KDpi.XXHDPI.next())
+        assertEquals(KDpi.XXXHDPI, KDpi.XXXHDPI.next())
     }
 
     @Test
     fun getClosest() {
         val data = listOf(
-            0f to Dpi.NoDpi,
-            Float.NaN to Dpi.Undefined,
-            0.5f to Dpi.LDPI,
-            1f to Dpi.MDPI,
-            1.33f to Dpi.TVDPI,
-            1.5f to Dpi.HDPI,
-            2.0f to Dpi.XHDPI,
-            3.0f to Dpi.XXHDPI,
-            4.0f to Dpi.XXXHDPI,
-            5.0f to Dpi.XXXHDPI,
+            0f to KDpi.NoDpi,
+            Float.NaN to KDpi.Undefined,
+            0.5f to KDpi.LDPI,
+            1f to KDpi.MDPI,
+            1.33f to KDpi.TVDPI,
+            1.5f to KDpi.HDPI,
+            2.0f to KDpi.XHDPI,
+            3.0f to KDpi.XXHDPI,
+            4.0f to KDpi.XXXHDPI,
+            5.0f to KDpi.XXXHDPI,
         )
         data.forEach { (density, expectedDpi) ->
-            assertEquals(expectedDpi, Dpi.getClosest(density))
+            assertEquals(expectedDpi, KDpi.getClosest(density))
         }
     }
 }

@@ -1,13 +1,13 @@
 package test
 
 import com.jibru.kostra.AssetResourceKey
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.internal.FileDatabase
 
 class FileMemoryReferences(
-    private val data: Map<Qualifiers, Map<AssetResourceKey, String>>,
+    private val data: Map<KQualifiers, Map<AssetResourceKey, String>>,
 ) : FileDatabase("mem") {
-    override fun getValue(key: AssetResourceKey, qualifiers: Qualifiers): String? {
+    override fun getValue(key: AssetResourceKey, qualifiers: KQualifiers): String? {
         return data[qualifiers]?.get(key).also {
             println("FileMemoryReferences.getValue key:$key, qualifiers:$qualifiers, result:$it")
         }

@@ -3,7 +3,7 @@ package com.jibru.kostra.plugin
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
@@ -34,26 +34,26 @@ internal class AndroidResourcesXmlParserTest {
             </plurals>
         </resources>
         """.trimIndent()
-        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         assertThat(result).hasSize(4)
         assertAll(
             {
                 val item = result[0] as ResItem.StringRes
                 assertThat(item.key).isEqualTo("text1")
                 assertThat(item.value).isEqualTo("Text1")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
             {
                 val item = result[1] as ResItem.StringRes
                 assertThat(item.key).isEqualTo("text2")
                 assertThat(item.value).isEqualTo("text2")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
             {
                 val item = result[2] as ResItem.Plurals
                 assertThat(item.key).isEqualTo("plural_empty")
                 assertThat(item.items).isEqualTo(List<String?>(PluralCategory.size) { null })
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
             {
                 val item = result[3] as ResItem.Plurals
@@ -64,7 +64,7 @@ internal class AndroidResourcesXmlParserTest {
                         PluralCategory.Other to "dogs",
                     ).toPluralList(),
                 )
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
         )
     }
@@ -82,20 +82,20 @@ internal class AndroidResourcesXmlParserTest {
             </string-array>
         </resources>
         """.trimIndent()
-        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         assertThat(result).hasSize(2)
         assertAll(
             {
                 val item = result[0] as ResItem.StringArray
                 assertThat(item.key).isEqualTo("empty")
                 assertThat(item.items).isEmpty()
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
             {
                 val item = result[1] as ResItem.StringArray
                 assertThat(item.key).isEqualTo("colors")
                 assertThat(item.items).isEqualTo(listOf("#FFFF0000", "#FF00FF00"))
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
         )
     }
@@ -120,14 +120,14 @@ internal class AndroidResourcesXmlParserTest {
             <string name="text1">Text1</string>
         </resources>
         """.trimIndent()
-        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         assertThat(result).hasSize(1)
         assertAll(
             {
                 val item = result[0] as ResItem.StringRes
                 assertThat(item.key).isEqualTo("text1")
                 assertThat(item.value).isEqualTo("Text1")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
         )
     }
@@ -146,20 +146,20 @@ internal class AndroidResourcesXmlParserTest {
             <string name="text2">text2</string>
         </resources>
         """.trimIndent()
-        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         assertThat(result).hasSize(2)
         assertAll(
             {
                 val item = result[0] as ResItem.StringRes
                 assertThat(item.key).isEqualTo("text1")
                 assertThat(item.value).isEqualTo("Text1")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
             {
                 val item = result[1] as ResItem.StringRes
                 assertThat(item.key).isEqualTo("text2")
                 assertThat(item.value).isEqualTo("text2")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
             },
         )
     }
@@ -176,7 +176,7 @@ internal class AndroidResourcesXmlParserTest {
             <string name="flag_uk">🇬🇧</string>
         </resources>
         """.trimIndent()
-        val items = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val items = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
             .filterIsInstance<ResItem.StringRes>()
             .associate { it.key to it.value }
         assertThat(items).isEqualTo(
@@ -201,7 +201,7 @@ internal class AndroidResourcesXmlParserTest {
         </resources>
         """.trimIndent()
 
-        assertThrows<XMLStreamException> { xmlParser.findStrings(stringXml, Qualifiers.Undefined) }
+        assertThrows<XMLStreamException> { xmlParser.findStrings(stringXml, KQualifiers.Undefined) }
     }
 
     @Test
@@ -222,25 +222,25 @@ internal class AndroidResourcesXmlParserTest {
             </resources>
         """.trimIndent()
 
-        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         assertThat(result).hasSize(3)
         assertAll(
             {
                 val item = result[0] as ResItem.StringArray
                 assertThat(item.key).isEqualTo("empty")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
                 assertThat(item.items).isEmpty()
             },
             {
                 val item = result[1] as ResItem.StringArray
                 assertThat(item.key).isEqualTo("empty_comment")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
                 assertThat(item.items).isEmpty()
             },
             {
                 val item = result[2] as ResItem.StringArray
                 assertThat(item.key).isEqualTo("colors")
-                assertThat(item.qualifiers).isEqualTo(Qualifiers.Undefined)
+                assertThat(item.qualifiers).isEqualTo(KQualifiers.Undefined)
                 assertThat(item.items).hasSize(2)
                 assertThat(item.items).isEqualTo(listOf("item0", "item1"))
             },
@@ -258,7 +258,7 @@ internal class AndroidResourcesXmlParserTest {
             //empty string fails on parser same as android
         )
 
-        val testAsserts = xmls.map { { assertThat(xmlParser.findStrings("$header\n$it", Qualifiers.Undefined)).isEmpty() } }
+        val testAsserts = xmls.map { { assertThat(xmlParser.findStrings("$header\n$it", KQualifiers.Undefined)).isEmpty() } }
         assertAll(*testAsserts.toTypedArray())
     }
 
@@ -271,7 +271,7 @@ internal class AndroidResourcesXmlParserTest {
         </resources>
         """.trimIndent()
         val xmlParser = AndroidResourcesXmlParser(keyMapper = { key, _ -> key.lowercase() })
-        val result = xmlParser.findStrings(stringXml, Qualifiers.Undefined)
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         val item = result[0] as ResItem.StringRes
         assertThat(item.key).isEqualTo("text1")
     }

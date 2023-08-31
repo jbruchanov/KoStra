@@ -4,7 +4,7 @@ import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.StringResourceKey
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.plugin.ext.relativeTo
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.typeNameOf
@@ -14,13 +14,13 @@ import java.io.Serializable
 interface StringValueResItem {
     val key: String
     val value: String
-    val qualifiers: Qualifiers
+    val qualifiers: KQualifiers
     val group: String
 }
 
 sealed class ResItem : Serializable {
     abstract val key: String
-    abstract val qualifiers: Qualifiers
+    abstract val qualifiers: KQualifiers
     abstract val group: String
 
     abstract val resourceKeyType: TypeName
@@ -32,7 +32,7 @@ sealed class ResItem : Serializable {
     data class StringRes(
         override val key: String,
         override val value: String,
-        override val qualifiers: Qualifiers,
+        override val qualifiers: KQualifiers,
     ) : ResItem(), StringValueResItem, Serializable {
         override val group: String get() = String
         override val resourceKeyType: TypeName get() = typeNameOf<StringResourceKey>()
@@ -41,7 +41,7 @@ sealed class ResItem : Serializable {
     data class StringArray(
         override val key: String,
         val items: List<String>,
-        override val qualifiers: Qualifiers,
+        override val qualifiers: KQualifiers,
     ) : ResItem(), Serializable {
         override val group: String get() = StringArray
         override val resourceKeyType: TypeName get() = throw UnsupportedOperationException("StringArray arrays not supported!")
@@ -51,7 +51,7 @@ sealed class ResItem : Serializable {
         override val key: String,
         //indexes matching [Plural]
         val items: List<String?>,
-        override val qualifiers: Qualifiers,
+        override val qualifiers: KQualifiers,
     ) : ResItem(), Serializable {
         override val group: String get() = Plural
 
@@ -65,7 +65,7 @@ sealed class ResItem : Serializable {
     data class FileRes(
         override val key: String,
         val file: File,
-        override val qualifiers: Qualifiers,
+        override val qualifiers: KQualifiers,
         override val group: String,
         val root: File, /* = file.parentFile.parentFile*/
     ) : ResItem(), StringValueResItem, Serializable {

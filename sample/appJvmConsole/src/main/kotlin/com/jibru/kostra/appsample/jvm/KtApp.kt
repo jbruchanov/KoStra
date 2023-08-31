@@ -1,7 +1,7 @@
 package com.jibru.kostra.appsample.jvm
 
-import com.jibru.kostra.Dpi
 import com.jibru.kostra.K
+import com.jibru.kostra.KDpi
 import com.jibru.kostra.Resources
 import com.jibru.kostra.assetPath
 import com.jibru.kostra.binaryInputStream
@@ -33,7 +33,7 @@ fun main() {
             val assetPath = Resources.assetPath(K.drawable.capital_city)
             println("$assetPath imageRes:${it.width}x${it.height}")
         }
-        val xxHdpiQualifiers = defaultQualifiers().copy(dpi = Dpi.XXHDPI)
+        val xxHdpiQualifiers = defaultQualifiers().copy(dpi = KDpi.XXHDPI)
         ImageIO.read(Resources.binaryInputStream(K.drawable.capital_city, qualifiers = xxHdpiQualifiers)).also {
             val assetPath = Resources.assetPath(K.drawable.capital_city, xxHdpiQualifiers)
             if (it != null) {

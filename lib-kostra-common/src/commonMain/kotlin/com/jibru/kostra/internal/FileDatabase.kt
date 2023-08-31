@@ -1,11 +1,11 @@
 package com.jibru.kostra.internal
 
 import com.jibru.kostra.AssetResourceKey
-import com.jibru.kostra.Dpi
+import com.jibru.kostra.KDpi
 import com.jibru.kostra.FileReferences
 import com.jibru.kostra.KLocale
 import com.jibru.kostra.MissingResourceException
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.database.BinaryDatabase
 
 open class FileDatabase(database: String) : FileReferences {
@@ -13,12 +13,12 @@ open class FileDatabase(database: String) : FileReferences {
         BinaryDatabase(loadResource(database)).toLongSparseArray()
     }
 
-    protected open fun getValue(key: AssetResourceKey, qualifiers: Qualifiers): String? {
+    protected open fun getValue(key: AssetResourceKey, qualifiers: KQualifiers): String? {
         val dbKey = (key.key.toLong() shl Int.SIZE_BITS) or qualifiers.key.toLong()
         return data.get(dbKey)
     }
 
-    override fun get(key: AssetResourceKey, qualifiers: Qualifiers): String {
+    override fun get(key: AssetResourceKey, qualifiers: KQualifiers): String {
         //langRegion[+dpi]
         return qualifiers.locale.takeIf { it.hasRegion() }
             ?.let { getValue(key, qualifiers) ?: getValue(key, qualifiers.withNoDpi()) }
@@ -27,11 +27,11 @@ open class FileDatabase(database: String) : FileReferences {
                 ?.let { qualifiers.withNoLocaleRegion() }
                 ?.let { localeLang -> getValue(key, localeLang) ?: getValue(key, localeLang.withNoDpi()) }
             //just dpi
-            ?: qualifiers.dpi.takeIf { it != Dpi.Undefined }?.let { getValue(key, Qualifiers(dpi = it)) }
+            ?: qualifiers.dpi.takeIf { it != KDpi.Undefined }?.let { getValue(key, KQualifiers(dpi = it)) }
             //just locale
-            ?: qualifiers.locale.takeIf { it != KLocale.Undefined }?.let { getValue(key, Qualifiers(locale = it)) }
+            ?: qualifiers.locale.takeIf { it != KLocale.Undefined }?.let { getValue(key, KQualifiers(locale = it)) }
             //fallback
-            ?: getValue(key, Qualifiers.Undefined)
+            ?: getValue(key, KQualifiers.Undefined)
             ?: throw MissingResourceException(key, qualifiers, "file")
     }
 }

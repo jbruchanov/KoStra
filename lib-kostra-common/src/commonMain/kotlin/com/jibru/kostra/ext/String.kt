@@ -1,3 +1,3 @@
 package com.jibru.kostra.ext
 
-fun String.takeIfNotEmpty() = if (isNotEmpty()) this else null
+internal fun String.takeIfNotEmpty() = ifEmpty { null }

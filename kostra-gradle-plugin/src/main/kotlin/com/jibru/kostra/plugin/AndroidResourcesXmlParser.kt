@@ -4,7 +4,7 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
-import com.jibru.kostra.Qualifiers
+import com.jibru.kostra.KQualifiers
 import java.io.Reader
 import java.io.StringReader
 import javax.xml.stream.XMLInputFactory
@@ -25,13 +25,13 @@ class AndroidResourcesXmlParser(
     private val logger = LoggerFactory.getLogger(AndroidResourcesXmlParser::class.java)
     private val noFile = File("/")
 
-    internal fun findStrings(xml: String, qualifiers: Qualifiers) = findStrings(StringReader(xml), qualifiers, noFile)
-    fun findStrings(file: File, qualifiers: Qualifiers): List<ResItem> {
+    internal fun findStrings(xml: String, qualifiers: KQualifiers) = findStrings(StringReader(xml), qualifiers, noFile)
+    fun findStrings(file: File, qualifiers: KQualifiers): List<ResItem> {
         logger.info(file.absolutePath)
         return findStrings(file.reader(), qualifiers, file)
     }
 
-    fun findStrings(reader: Reader, qualifiers: Qualifiers, file: File = noFile): List<ResItem> {
+    fun findStrings(reader: Reader, qualifiers: KQualifiers, file: File = noFile): List<ResItem> {
         val xmlParser = XMLInputFactory.newInstance()
         val xmlReader = xmlParser.createXMLStreamReader(reader)
         var androidResourcesFile = false

@@ -1,6 +1,6 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.AppResources
+import com.jibru.kostra.KAppResources
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.KLocale
@@ -73,7 +73,7 @@ class ResourcesKtGenerator(
     }
 
     fun generateResources(): FileSpec {
-        val typeAppResources = AppResources::class
+        val typeAppResources = KAppResources::class
 
         return FileSpec.builder(packageName, resourcePropertyName)
             .addDefaultSurpressAnnotation()
