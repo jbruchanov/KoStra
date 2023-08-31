@@ -1,8 +1,8 @@
 package com.jibru.kostra.database
 
-import androidx.collection.LongSparseArray
+import com.jibru.kostra.collection.BinarySearchMap
 
 internal interface Database {
     fun getListValue(index: Int): String?
-    fun toLongSparseArray(): LongSparseArray<String?>
+    fun toLongSparseArray(): BinarySearchMap<String?>
 }

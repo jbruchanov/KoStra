@@ -1,6 +1,6 @@
 package com.jibru.kostra.database
 
-import androidx.collection.LongSparseArray
+import com.jibru.kostra.collection.BinarySearchMap
 import kotlin.math.absoluteValue
 
 private enum class StorageType(val value: UInt) {
@@ -51,7 +51,9 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
     }
 
     fun setPairs(items: Collection<Pair<Long, String?>>) {
-        val converted = items.map { StringItem.LongKey(it.first, it.second) }
+        val converted = items
+            .map { StringItem.LongKey(it.first, it.second) }
+            .sortedBy { it.key }
         setItems(converted, refBytes = BytesPerLong)
         type = StorageType.KeyValue
         data.writeByte(type.value, offset = 1)
@@ -172,7 +174,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         this@BinaryDatabase.forEach { key, s -> put(key, s) }
     }
 
-    override fun toLongSparseArray() = LongSparseArray<String?>(count()).apply {
+    override fun toLongSparseArray() = BinarySearchMap<String?>(count()).apply {
         this@BinaryDatabase.forEach { key, s -> put(key, s) }
     }
 
