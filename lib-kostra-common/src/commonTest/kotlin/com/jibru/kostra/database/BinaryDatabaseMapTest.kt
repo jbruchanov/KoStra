@@ -1,6 +1,6 @@
 package com.jibru.kostra.database
 
-import androidx.collection.LongSparseArray
+import com.jibru.kostra.collection.BinarySearchMap
 import kotlin.test.assertEquals
 import kotlin.test.Test
 import java.io.File
@@ -34,15 +34,16 @@ class BinaryDatabaseMapTest {
 
     @Test
     fun getKeyLong() {
+        val sortedItems = items.sortedBy { it.first }
         for (i in 0..<db.count()) {
-            assertEquals(items[i].first, db.getKeyLong(i))
+            assertEquals(sortedItems[i].first, db.getKeyLong(i))
         }
     }
 
     @Test
     fun toSparseArray() {
-        val expected = LongSparseArray<String?>().apply {
-            items.forEach { (key, value) ->
+        val expected = BinarySearchMap<String?>(items.size).apply {
+            items.sortedBy { it.first }.forEach { (key, value) ->
                 append(key, value)
             }
         }

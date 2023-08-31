@@ -18,7 +18,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.androidx.collection)
             }
         }
         commonTest {
