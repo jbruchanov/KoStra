@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
@@ -112,11 +112,11 @@ class ResourcesKtGeneratorClassTest {
         val items = listOf(
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
             ResItem.StringRes("item2", "item2", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
-            ResItem.StringRes("item2", "item2En", Qualifiers(locale = Locale("en"))),
+            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = KLocale("cs"))),
+            ResItem.StringRes("item2", "item2En", Qualifiers(locale = KLocale("en"))),
 
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers.Undefined),
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = Locale("cs"))),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = KLocale("cs"))),
         )
 
         val result = ResourcesKtGenerator(className = "K", items = items).generateKClass().minify()
@@ -144,12 +144,12 @@ class ResourcesKtGeneratorClassTest {
         val items = listOf(
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
             ResItem.StringRes("item2", "item2", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
-            ResItem.StringRes("item2", "item2En", Qualifiers(locale = Locale("en"))),
-            ResItem.StringRes("item2", "item2EnGb", Qualifiers(locale = Locale("en-GB"))),
+            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = KLocale("cs"))),
+            ResItem.StringRes("item2", "item2En", Qualifiers(locale = KLocale("en"))),
+            ResItem.StringRes("item2", "item2EnGb", Qualifiers(locale = KLocale("en-GB"))),
 
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers.Undefined),
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = Locale("cs"))),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, Qualifiers(locale = KLocale("cs"))),
 
             ResItem.FileRes("image", File("x.png"), Qualifiers.Undefined, ResItem.Drawable, File("x")),
             ResItem.FileRes("sound", File("s.mp3"), Qualifiers.Undefined, "sound", File("x")),
@@ -160,7 +160,7 @@ class ResourcesKtGeneratorClassTest {
             """
             @file:Suppress("ktlint")
             import com.jibru.kostra.AppResources
-            import com.jibru.kostra.Locale
+            import com.jibru.kostra.KLocale
             import com.jibru.kostra.`internal`.FileDatabase
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
@@ -168,16 +168,16 @@ class ResourcesKtGeneratorClassTest {
             val Resources: AppResources = AppResources(
               string = StringDatabase(
                 mapOf(
-                  Locale.Undefined to "${'$'}kostra/string-default.db",
-                  Locale(3_19_00_00) to "${'$'}kostra/string-cs.db",
-                  Locale(5_14_00_00) to "${'$'}kostra/string-en.db",
-                  Locale(5_14_07_02) to "${'$'}kostra/string-engb.db",
+                  KLocale.Undefined to "${'$'}kostra/string-default.db",
+                  KLocale(3_19_00_00) to "${'$'}kostra/string-cs.db",
+                  KLocale(5_14_00_00) to "${'$'}kostra/string-en.db",
+                  KLocale(5_14_07_02) to "${'$'}kostra/string-engb.db",
                 )
               ),
               plural = PluralDatabase(
                 mapOf(
-                  Locale.Undefined to "${'$'}kostra/plural-default.db",
-                  Locale(3_19_00_00) to "${'$'}kostra/plural-cs.db",
+                  KLocale.Undefined to "${'$'}kostra/plural-default.db",
+                  KLocale(3_19_00_00) to "${'$'}kostra/plural-cs.db",
                 )
               ),
               binary = FileDatabase("${'$'}kostra/binary.db"),

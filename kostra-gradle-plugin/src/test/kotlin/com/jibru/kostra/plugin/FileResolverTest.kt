@@ -2,7 +2,7 @@ package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.Dpi
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.Qualifiers
@@ -177,26 +177,26 @@ class FileResolverTest {
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
             ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), Qualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-en/image.png"), Qualifiers(locale = Locale("en")), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-en-rGB/image.png"), Qualifiers(locale = Locale("en", "GB")), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-en/image.png"), Qualifiers(locale = KLocale("en")), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-en-rGB/image.png"), Qualifiers(locale = KLocale("en", "GB")), group = ResItem.Drawable, root = resourcesRoot),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-hdpi-en-rGB/image.png"),
-                Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.HDPI),
+                Qualifiers(locale = KLocale("en", "GB"), dpi = Dpi.HDPI),
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-hdpi-en-rUS/image.png"),
-                Qualifiers(locale = Locale("en", "US"), dpi = Dpi.HDPI),
+                Qualifiers(locale = KLocale("en", "US"), dpi = Dpi.HDPI),
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-en-rGB-xxhdpi/image.png"),
-                Qualifiers(locale = Locale("en", "GB"), dpi = Dpi.XXHDPI),
+                Qualifiers(locale = KLocale("en", "GB"), dpi = Dpi.XXHDPI),
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
@@ -249,14 +249,14 @@ class FileResolverTest {
             ResItem.StringRes("item1", "src1Item1", Qualifiers.Undefined),
             ResItem.StringRes("item2", "src2Item2", Qualifiers.Undefined),
 
-            ResItem.StringRes("item1", "src1Item1En", Qualifiers(locale = Locale("en"))),
-            ResItem.StringRes("item2", "src1Item2En", Qualifiers(locale = Locale("en"))),
+            ResItem.StringRes("item1", "src1Item1En", Qualifiers(locale = KLocale("en"))),
+            ResItem.StringRes("item2", "src1Item2En", Qualifiers(locale = KLocale("en"))),
 
-            ResItem.StringRes("item1", "src2Item1De", Qualifiers(locale = Locale("de"))),
-            ResItem.StringRes("item2", "src2Item2De", Qualifiers(locale = Locale("de"))),
+            ResItem.StringRes("item1", "src2Item1De", Qualifiers(locale = KLocale("de"))),
+            ResItem.StringRes("item2", "src2Item2De", Qualifiers(locale = KLocale("de"))),
 
-            ResItem.StringRes("item1", "src2Item1EnGb", Qualifiers(locale = Locale("en", "GB"))),
-            ResItem.StringRes("item2", "src2Item2EnGb", Qualifiers(locale = Locale("en", "GB"))),
+            ResItem.StringRes("item1", "src2Item1EnGb", Qualifiers(locale = KLocale("en", "GB"))),
+            ResItem.StringRes("item2", "src2Item2EnGb", Qualifiers(locale = KLocale("en", "GB"))),
         )
     }
 
@@ -280,13 +280,13 @@ class FileResolverTest {
 
         assertThat(items).containsExactly(
             ResItem.StringRes("item1", "item1", Qualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = Locale("cs"))),
+            ResItem.StringRes("item1", "item1Cs", Qualifiers(locale = KLocale("cs"))),
 
             ResItem.Plurals("dog", mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog").toPluralList(), Qualifiers.Undefined),
             ResItem.Plurals(
                 "dog",
                 mapOf(PluralCategory.Other to "psů", PluralCategory.One to "pes", PluralCategory.Few to "psy", PluralCategory.Many to "psiska!").toPluralList(),
-                Qualifiers(locale = Locale("cs")),
+                Qualifiers(locale = KLocale("cs")),
             ),
         )
     }

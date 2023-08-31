@@ -34,14 +34,14 @@ class FileDatabaseTest {
         assertEquals("multipleDpiXXHDPI", db.get(K.drawable.multipleDpi, Qualifiers("en", Dpi.XXHDPI)))
         assertEquals("multipleDpiXXXHDPI", db.get(K.drawable.multipleDpi, Qualifiers("en-GB", Dpi.XXXHDPI)))
 
-        assertEquals("multipleDpiLocaleDefault", db.get(K.drawable.multipleDpiLocale, Qualifiers.Undefined))
-        assertEquals("multipleDpiLocaleEnXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en-US", dpi = Dpi.XXHDPI)))
-        assertEquals("multipleDpiLocaleEnGBUndefined", db.get(K.drawable.multipleDpiLocale, Qualifiers("en-GB", dpi = Dpi.XXHDPI)))
-        assertEquals("multipleDpiLocaleEnXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en", dpi = Dpi.XXHDPI)))
-        assertEquals("multipleDpiLocaleXXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en-US", dpi = Dpi.XXXHDPI)))
-        assertEquals("multipleDpiLocaleXXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en", dpi = Dpi.XXXHDPI)))
+        assertEquals("multipleDpiKLocaleDefault", db.get(K.drawable.multipleDpiLocale, Qualifiers.Undefined))
+        assertEquals("multipleDpiKLocaleEnXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en-US", dpi = Dpi.XXHDPI)))
+        assertEquals("multipleDpiKLocaleEnGBUndefined", db.get(K.drawable.multipleDpiLocale, Qualifiers("en-GB", dpi = Dpi.XXHDPI)))
+        assertEquals("multipleDpiKLocaleEnXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en", dpi = Dpi.XXHDPI)))
+        assertEquals("multipleDpiKLocaleXXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en-US", dpi = Dpi.XXXHDPI)))
+        assertEquals("multipleDpiKLocaleXXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("en", dpi = Dpi.XXXHDPI)))
 
-        assertEquals("multipleDpiLocaleDefault", db.get(K.drawable.multipleDpiLocale, Qualifiers("cs-CZ", dpi = Dpi.XXHDPI)))
-        assertEquals("multipleDpiLocaleXXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("cs", dpi = Dpi.XXXHDPI)))
+        assertEquals("multipleDpiKLocaleDefault", db.get(K.drawable.multipleDpiLocale, Qualifiers("cs-CZ", dpi = Dpi.XXHDPI)))
+        assertEquals("multipleDpiKLocaleXXXHDPI", db.get(K.drawable.multipleDpiLocale, Qualifiers("cs", dpi = Dpi.XXXHDPI)))
     }
 }

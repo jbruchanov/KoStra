@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.Dpi
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.Qualifiers
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,15 +15,15 @@ class FileTest {
     fun groupQualifiers() {
         val list = listOf(
             f() to Qualifiers.Undefined,
-            f("en") to Qualifiers(Locale("en")),
-            f("en-rUS") to Qualifiers(Locale("en", "rUS")),
+            f("en") to Qualifiers(KLocale("en")),
+            f("en-rUS") to Qualifiers(KLocale("en", "rUS")),
             f("xxhdpi") to Qualifiers(dpi = Dpi.XXHDPI),
-            f("en", "xhdpi") to Qualifiers(locale = Locale("en"), dpi = Dpi.XHDPI),
-            f("en-rGB", "xxhdpi") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.XXHDPI),
-            f("en-rGB", "xxhdpi", "land") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.XXHDPI),
-            f("land", "en") to Qualifiers(Locale("en")),
-            f("xxhdpi", "en", "xyz") to Qualifiers(locale = Locale("en"), dpi = Dpi.XXHDPI),
-            f("123", "tvdpi", "456", "en-rGB") to Qualifiers(locale = Locale("en", "gb"), dpi = Dpi.TVDPI),
+            f("en", "xhdpi") to Qualifiers(locale = KLocale("en"), dpi = Dpi.XHDPI),
+            f("en-rGB", "xxhdpi") to Qualifiers(locale = KLocale("en", "gb"), dpi = Dpi.XXHDPI),
+            f("en-rGB", "xxhdpi", "land") to Qualifiers(locale = KLocale("en", "gb"), dpi = Dpi.XXHDPI),
+            f("land", "en") to Qualifiers(KLocale("en")),
+            f("xxhdpi", "en", "xyz") to Qualifiers(locale = KLocale("en"), dpi = Dpi.XXHDPI),
+            f("123", "tvdpi", "456", "en-rGB") to Qualifiers(locale = KLocale("en", "gb"), dpi = Dpi.TVDPI),
         )
 
         assertAll(

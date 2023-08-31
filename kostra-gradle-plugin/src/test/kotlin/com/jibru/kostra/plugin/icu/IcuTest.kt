@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin.icu
 
 import com.ibm.icu.text.PluralRules
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.icu.PluralCategory
 import org.junit.jupiter.api.Assertions
@@ -41,7 +41,7 @@ class IcuTest {
         assertAllValues(IcuPluralsDownloader().loadOrdinals().data)
     }
 
-    private fun assertAllValues(data: Map<Locale, Map<PluralCategory, String>>) {
+    private fun assertAllValues(data: Map<KLocale, Map<PluralCategory, String>>) {
         data.toSortedMap()
             .forEach { locale, records ->
                 val icu4jRules = PluralRules.createRules(records.map { "${it.key.keyword}: ${it.value}" }.joinToString(";"))

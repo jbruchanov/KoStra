@@ -36,17 +36,17 @@ object Fixtures {
         val stringResources = create(
             strings = StringMemoryDatabase(
                 mapOf(
-                    Locale.Undefined to mapOf(
+                    KLocale.Undefined to mapOf(
                         K.string.test1 to "test1Default",
                         K.string.test2 to "test2Default",
                         K.string.test2Format to "test2Default %s",
                     ),
-                    Locale("en") to mapOf(
+                    KLocale("en") to mapOf(
                         K.string.test2 to "test2EN",
                         K.string.test2Format to "test2EN %s",
                         K.string.test3 to "test3EN",
                     ),
-                    Locale("en-US") to mapOf(
+                    KLocale("en-US") to mapOf(
                         K.string.test2 to "test2enUS",
                         K.string.test2Format to "test2enUS %s",
                         K.string.test3 to "test3enUS",
@@ -58,19 +58,19 @@ object Fixtures {
         val pluralResources = create(
             plurals = PluralMemoryDatabase(
                 mapOf(
-                    Locale.Undefined to mapOf(
+                    KLocale.Undefined to mapOf(
                         K.plural.dog to mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog"),
                     ),
-                    Locale("en") to mapOf(
+                    KLocale("en") to mapOf(
                         K.plural.dog to mapOf(PluralCategory.Other to "dogs-en", PluralCategory.One to "dog-en"),
                         K.plural.bug to mapOf(PluralCategory.Other to "bugs-en", PluralCategory.One to "bug-en"),
                         K.plural.bugFormat to mapOf(PluralCategory.Other to "%s bugs-en", PluralCategory.One to "%s bug-en"),
                     ),
-                    Locale("en-GB") to mapOf(
+                    KLocale("en-GB") to mapOf(
                         K.plural.dog to mapOf(PluralCategory.Other to "dogs-en-gb", PluralCategory.One to "dog-en-gb"),
                     ),
 
-                    Locale("cs") to mapOf(
+                    KLocale("cs") to mapOf(
                         K.plural.bug to mapOf(
                             PluralCategory.One to "brouk",
                             PluralCategory.Few to "brouci",
@@ -94,7 +94,7 @@ object Fixtures {
                     Qualifiers.Undefined to mapOf(
                         K.drawable.undefinedDpi to "undefinedDpiDefault",
                         K.drawable.multipleDpi to "multipleDpiDefault",
-                        K.drawable.multipleDpiLocale to "multipleDpiLocaleDefault",
+                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleDefault",
                     ),
                     Qualifiers(dpi = Dpi.XXHDPI) to mapOf(
                         K.drawable.xxHdpiOnly to "xxHdpiOnly",
@@ -102,16 +102,16 @@ object Fixtures {
                     ),
                     Qualifiers(dpi = Dpi.XXXHDPI) to mapOf(
                         K.drawable.multipleDpi to "multipleDpiXXXHDPI",
-                        K.drawable.multipleDpiLocale to "multipleDpiLocaleXXXHDPI",
+                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleXXXHDPI",
                     ),
                     Qualifiers("en", Dpi.XXHDPI) to mapOf(
-                        K.drawable.multipleDpiLocale to "multipleDpiLocaleEnXXHDPI",
+                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnXXHDPI",
                     ),
                     Qualifiers("en-GB", Dpi.Undefined) to mapOf(
-                        K.drawable.multipleDpiLocale to "multipleDpiLocaleEnGBUndefined",
+                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnGBUndefined",
                     ),
                     Qualifiers("en-GB", Dpi.XXXHDPI) to mapOf(
-                        K.drawable.multipleDpiLocale to "multipleDpiLocaleEnGBXXXHDPI",
+                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnGBXXXHDPI",
                     ),
                 ),
             ),

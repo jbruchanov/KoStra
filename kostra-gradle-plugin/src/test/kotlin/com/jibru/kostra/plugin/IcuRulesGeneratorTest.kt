@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.plugin.ext.minify
 import com.jibru.kostra.plugin.icu.IcuPluralsDownloader
@@ -16,7 +16,7 @@ class IcuRulesGeneratorTest {
                     unicodeVersion = "test1",
                     cldrVersion = "test2",
                     data = mapOf(
-                        Locale("en") to mapOf(
+                        KLocale("en") to mapOf(
                             PluralCategory.One to "i = 1 and v = 0 @integer 1",
                             PluralCategory.Other to
                                 " @integer 0, 2~16, 100, 1000, 10000, 100000, 1000000, … @decimal 0.0~1.5, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, …",
@@ -34,7 +34,7 @@ class IcuRulesGeneratorTest {
             //
             @file:Suppress("ktlint")
             package com.test.icu
-            import com.jibru.kostra.Locale
+            import com.jibru.kostra.KLocale
             import com.jibru.kostra.icu.Constraint
             import com.jibru.kostra.icu.Operand
             import com.jibru.kostra.icu.PluralCategory
@@ -50,8 +50,8 @@ class IcuRulesGeneratorTest {
               )
             )}
 
-            val PluralRuleSpecs: Map<Locale, PluralRules> = buildMap(1) {
-              put(Locale(5_14_00_00), pluralSpecs_01)
+            val PluralRuleSpecs: Map<KLocale, PluralRules> = buildMap(1) {
+              put(KLocale(5_14_00_00), pluralSpecs_01)
             }
             """.trimIndent(),
         )

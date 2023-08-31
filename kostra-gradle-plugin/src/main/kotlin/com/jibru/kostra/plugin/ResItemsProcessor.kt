@@ -2,7 +2,7 @@
 
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.plugin.ext.distinctByLast
 import com.jibru.kostra.plugin.ext.setOf
 
@@ -62,7 +62,7 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
     @Suppress("UNCHECKED_CAST")
     val stringsDistinctKeys by lazy {
         stringsAndPluralsForDb[ResItem.String]
-            ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
+            ?.let { it as? Map<KLocale, List<Pair<String, ResItem.StringRes?>>> }
             ?.values?.firstOrNull()?.map { it.first }
         /*stringsAndPluralsForDb[ResItem.String]
             ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
@@ -72,7 +72,7 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
     @Suppress("UNCHECKED_CAST")
     val pluralsPerLocale by lazy {
         stringsAndPluralsForDb[ResItem.Plural]
-            ?.let { it as? Map<Locale, List<Pair<String, ResItem.Plurals?>>> }
+            ?.let { it as? Map<KLocale, List<Pair<String, ResItem.Plurals?>>> }
             ?.mapValues { (locale, plurals) -> plurals.map { (k, v) -> k to (v?.items ?: ResItem.Plurals.EmptyItems) } }
     }
 
@@ -83,7 +83,7 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
     @Suppress("UNCHECKED_CAST")
     val stringsForDbs by lazy {
         stringsAndPluralsForDb[ResItem.String]
-            ?.let { it as? Map<Locale, List<Pair<String, ResItem.StringRes?>>> }
+            ?.let { it as? Map<KLocale, List<Pair<String, ResItem.StringRes?>>> }
             ?.mapValues { it.value.map { it.second?.value } }
             ?: emptyMap()
     }
