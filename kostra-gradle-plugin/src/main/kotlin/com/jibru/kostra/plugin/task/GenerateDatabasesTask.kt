@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.database.BinaryDatabase
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResItemsProcessor
@@ -45,9 +45,9 @@ abstract class GenerateDatabasesTask : DefaultTask() {
         }
     }
 
-    private fun saveDataIntoDb(data: Map<Locale, List<String?>>, fileNameTemplate: String, location: File) {
+    private fun saveDataIntoDb(data: Map<KLocale, List<String?>>, fileNameTemplate: String, location: File) {
         data.forEach { (locale, items) ->
-            val tag = if (locale == Locale.Undefined) "default" else locale.languageRegion
+            val tag = if (locale == KLocale.Undefined) "default" else locale.languageRegion
             val db = File(location, fileNameTemplate.format(tag))
             val dbData = BinaryDatabase().apply { setList(items) }.save()
             db.writeBytes(dbData)

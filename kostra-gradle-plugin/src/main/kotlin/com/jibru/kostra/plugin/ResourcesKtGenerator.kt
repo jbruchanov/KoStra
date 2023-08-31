@@ -3,7 +3,7 @@ package com.jibru.kostra.plugin
 import com.jibru.kostra.AppResources
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceKey
@@ -125,7 +125,7 @@ class ResourcesKtGenerator(
     private fun CodeBlock.Builder.addResourcesProperty(
         propertyName: String,
         propertyType: KClass<out Any>,
-        locales: Collection<Locale>,
+        locales: Collection<KLocale>,
         fileNameTemplate: String,
     ) {
         addStatement("%L = %T(", propertyName, propertyType)
@@ -133,12 +133,12 @@ class ResourcesKtGenerator(
         addStatement("mapOf(")
         indent()
         locales.onEach {
-            if (it == Locale.Undefined) {
-                add("%T.Undefined", Locale::class)
+            if (it == KLocale.Undefined) {
+                add("%T.Undefined", KLocale::class)
             } else {
-                add("%T(%L)", Locale::class, it.formattedDbKey())
+                add("%T(%L)", KLocale::class, it.formattedDbKey())
             }
-            val tag = if (it == Locale.Undefined) "default" else it.languageRegion
+            val tag = if (it == KLocale.Undefined) "default" else it.languageRegion
             addStatement(" to %S,", fileNameTemplate.format(tag))
         }
         unindent()

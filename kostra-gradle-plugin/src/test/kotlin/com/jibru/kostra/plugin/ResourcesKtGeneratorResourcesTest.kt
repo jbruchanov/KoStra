@@ -75,7 +75,7 @@ class ResourcesKtGeneratorResourcesTest {
             @file:Suppress("ktlint")
             package com.sample.app
             import com.jibru.kostra.AppResources
-            import com.jibru.kostra.Locale
+            import com.jibru.kostra.KLocale
             import com.jibru.kostra.`internal`.FileDatabase
             import com.jibru.kostra.`internal`.PluralDatabase
             import com.jibru.kostra.`internal`.StringDatabase
@@ -83,14 +83,14 @@ class ResourcesKtGeneratorResourcesTest {
             val Resources: AppResources = AppResources(
               string = StringDatabase(
                 mapOf(
-                  Locale.Undefined to "${'$'}kostra/string-default.db",
-                  Locale(4_05_00_00) to "${'$'}kostra/string-de.db",
-                  Locale(5_14_00_00) to "${'$'}kostra/string-en.db",
+                  KLocale.Undefined to "${'$'}kostra/string-default.db",
+                  KLocale(4_05_00_00) to "${'$'}kostra/string-de.db",
+                  KLocale(5_14_00_00) to "${'$'}kostra/string-en.db",
                 )
               ),
               plural = PluralDatabase(
                 mapOf(
-                  Locale.Undefined to "${'$'}kostra/plural-default.db",
+                  KLocale.Undefined to "${'$'}kostra/plural-default.db",
                 )
               ),
               binary = FileDatabase("${'$'}kostra/binary.db"),

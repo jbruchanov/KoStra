@@ -2,7 +2,7 @@ package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.Dpi
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.Qualifiers
@@ -16,7 +16,7 @@ class ResItemsProcessorTest {
         val items = listOf(
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
             ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
-            ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
+            ResItem.StringRes("s3", "s3en", Qualifiers(KLocale("en"))),
             ResItem.StringRes("s1", "s1X", Qualifiers.Undefined),
             ResItem.Plurals("s1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
             ResItem.Plurals("s1", mapOf(PluralCategory.Other to "p2").toPluralList(), Qualifiers.Undefined),
@@ -31,7 +31,7 @@ class ResItemsProcessorTest {
                     listOf(
                         ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
                         ResItem.StringRes("s1", "s1X", Qualifiers.Undefined),
-                        ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
+                        ResItem.StringRes("s3", "s3en", Qualifiers(KLocale("en"))),
                         ResItem.Plurals("s1", mapOf(PluralCategory.Other to "p2").toPluralList(), Qualifiers.Undefined),
                         ResItem.FileRes("s1", File("X2"), Qualifiers.Undefined, group = "group1", File("")),
                         ResItem.FileRes("s1", File("X"), Qualifiers.Undefined, group = "group2", File("")),
@@ -45,10 +45,10 @@ class ResItemsProcessorTest {
         val items = listOf(
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
             ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
-            ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
+            ResItem.StringRes("s3", "s3en", Qualifiers(KLocale("en"))),
             ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn").toPluralList(), Qualifiers(Locale("en"))),
-            ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
+            ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn").toPluralList(), Qualifiers(KLocale("en"))),
+            ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(KLocale("en", "gb"))),
             ResItem.FileRes("f3", File("X"), Qualifiers.Undefined, group = "group1", File("")),
         )
 
@@ -58,12 +58,12 @@ class ResItemsProcessorTest {
                     "string" to listOf(
                         ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
                         ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
-                        ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
+                        ResItem.StringRes("s3", "s3en", Qualifiers(KLocale("en"))),
                     ),
                     "plural" to listOf(
                         ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
-                        ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn").toPluralList(), Qualifiers(Locale("en"))),
-                        ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
+                        ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn").toPluralList(), Qualifiers(KLocale("en"))),
+                        ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(KLocale("en", "gb"))),
                     ),
                     "group1" to listOf(
                         ResItem.FileRes("f3", File("X"), Qualifiers.Undefined, group = "group1", File("")),
@@ -78,8 +78,8 @@ class ResItemsProcessorTest {
         val items = listOf(
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
             ResItem.StringRes("s1", "s1", Qualifiers.Undefined),
-            ResItem.StringRes("s3", "s3en", Qualifiers(Locale("en"))),
-            ResItem.StringRes("s4", "s3enUS", Qualifiers(Locale("en", "US"))),
+            ResItem.StringRes("s3", "s3en", Qualifiers(KLocale("en"))),
+            ResItem.StringRes("s4", "s3enUS", Qualifiers(KLocale("en", "US"))),
             ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
         )
 
@@ -87,9 +87,9 @@ class ResItemsProcessorTest {
             val testItems = stringsForDbs
             assertThat(testItems).isEqualTo(
                 mapOf(
-                    Locale.Undefined to listOf("s1", "s2", null, null),
-                    Locale("en") to listOf(null, null, "s3en", null),
-                    Locale("en", "us") to listOf(null, null, null, "s3enUS"),
+                    KLocale.Undefined to listOf("s1", "s2", null, null),
+                    KLocale("en") to listOf(null, null, "s3en", null),
+                    KLocale("en", "us") to listOf(null, null, null, "s3enUS"),
                 ),
             )
         }
@@ -100,23 +100,23 @@ class ResItemsProcessorTest {
         val items = listOf(
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
             ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
-            ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn", PluralCategory.One to "p2oneEn").toPluralList(), Qualifiers(Locale("en"))),
-            ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(Locale("en", "gb"))),
+            ResItem.Plurals("p2", mapOf(PluralCategory.Other to "p2otherEn", PluralCategory.One to "p2oneEn").toPluralList(), Qualifiers(KLocale("en"))),
+            ResItem.Plurals("p3", mapOf(PluralCategory.Zero to "p3zeroEnGb").toPluralList(), Qualifiers(KLocale("en", "gb"))),
             ResItem.FileRes("f3", File("X"), Qualifiers.Undefined, group = "group1", File("")),
         )
 
         with(ResItemsProcessor(items)) {
             assertThat(pluralsForDbs).isEqualTo(
                 mapOf(
-                    Locale.Undefined to listOfNulls(18, mapOf(1 to "p1")),
-                    Locale("en") to listOfNulls(
+                    KLocale.Undefined to listOfNulls(18, mapOf(1 to "p1")),
+                    KLocale("en") to listOfNulls(
                         18,
                         mapOf(
                             PluralCategory.size + (PluralCategory.Other.index) to "p2otherEn",
                             PluralCategory.size + (PluralCategory.One.index) to "p2oneEn",
                         ),
                     ),
-                    Locale("en", "gb") to listOfNulls(18, mapOf((2 * PluralCategory.size) + (PluralCategory.Zero.index) to "p3zeroEnGb")),
+                    KLocale("en", "gb") to listOfNulls(18, mapOf((2 * PluralCategory.size) + (PluralCategory.Zero.index) to "p3zeroEnGb")),
                 ),
             )
         }
@@ -128,7 +128,7 @@ class ResItemsProcessorTest {
             ResItem.StringRes("s2", "s2", Qualifiers.Undefined),
             ResItem.Plurals("p1", mapOf(PluralCategory.One to "p1").toPluralList(), Qualifiers.Undefined),
             ResItem.FileRes("f1", File("X"), Qualifiers.Undefined, group = "group", File("")),
-            ResItem.FileRes("f1", File("X"), Qualifiers(locale = Locale("en")), group = "group", File("")),
+            ResItem.FileRes("f1", File("X"), Qualifiers(locale = KLocale("en")), group = "group", File("")),
             ResItem.FileRes("f1", File("X"), Qualifiers(dpi = Dpi.HDPI), group = "group", File("")),
             ResItem.FileRes("f2", File("X"), Qualifiers.Undefined, group = "group2", File("")),
         )
@@ -139,7 +139,7 @@ class ResItemsProcessorTest {
                     "group" to mapOf(
                         ResItemKeyDbKey("f1", 1) to listOf(
                             ResItem.FileRes("f1", File("X"), Qualifiers.Undefined, group = "group", File("")),
-                            ResItem.FileRes("f1", File("X"), Qualifiers(locale = Locale("en")), group = "group", File("")),
+                            ResItem.FileRes("f1", File("X"), Qualifiers(locale = KLocale("en")), group = "group", File("")),
                             ResItem.FileRes("f1", File("X"), Qualifiers(dpi = Dpi.HDPI), group = "group", File("")),
                         ),
                     ),

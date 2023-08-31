@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.ibm.icu.text.PluralRules
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.plugin.ext.addDefaultSurpressAnnotation
 import com.jibru.kostra.plugin.ext.formattedDbKey
@@ -78,7 +78,7 @@ class IcuRulesGenerator(
             .groupBy { it.second }
             .mapValues { it.value.map { v -> v.first } }
             .toList()
-            .mapIndexed { index: Int, pair: Pair<Map<PluralCategory, String>, List<Locale>> -> Triple(index + 1, pair.second, pair.first) }
+            .mapIndexed { index: Int, pair: Pair<Map<PluralCategory, String>, List<KLocale>> -> Triple(index + 1, pair.second, pair.first) }
 
         prc.forEach { (index, listOfLocales, records) ->
             val icu4jRules = PluralRules.createRules(records.map { "${it.key.keyword}: ${it.value}" }.joinToString(";"))
@@ -97,7 +97,7 @@ class IcuRulesGenerator(
             .sortedBy { it.second }
 
         fb.addProperty(
-            PropertySpec.builder(publicPropertyName, Map::class.parameterizedBy(Locale::class, com.jibru.kostra.icu.PluralRules::class))
+            PropertySpec.builder(publicPropertyName, Map::class.parameterizedBy(KLocale::class, com.jibru.kostra.icu.PluralRules::class))
                 .initializer(
                     codeBlock = CodeBlock.builder()
                         .addStatement("buildMap(%L) {", specsList.size)
@@ -105,7 +105,7 @@ class IcuRulesGenerator(
                         .apply {
                             specsList.forEach { (index, locale) ->
                                 val key = locale.formattedDbKey()
-                                add("put(%T(%L)", Locale::class.asTypeName(), key)
+                                add("put(%T(%L)", KLocale::class.asTypeName(), key)
                                 if (addLocaleComments) {
                                     add("/*%L*/", locale.languageRegion)
                                 }

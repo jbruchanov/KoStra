@@ -13,14 +13,14 @@ private const val LetterOffset = LetterCodeMin - 1
 private val LocaleOffsets = intArrayOf(1_00_00_00_00, 1_00_00_00, 1_00_00, 1_00, 1)
 
 @JvmInline
-value class Locale(val key: Int) : Serializable, Comparable<Locale> {
+value class KLocale(val key: Int) : Serializable, Comparable<KLocale> {
 
     constructor(languageRegion: String) : this(packCode(languageRegion))
     constructor(language: String, region: String?) : this(packLanguageRegion(language, region))
 
-    fun equalsLanguage(other: Locale): Boolean = this.languageCode == other.languageCode
+    fun equalsLanguage(other: KLocale): Boolean = this.languageCode == other.languageCode
 
-    fun languageLocale() = Locale(key / LocaleOffsets[2] * LocaleOffsets[2])
+    fun languageLocale() = KLocale(key / LocaleOffsets[2] * LocaleOffsets[2])
 
     val language: String
         get() {
@@ -56,16 +56,16 @@ value class Locale(val key: Int) : Serializable, Comparable<Locale> {
         }
     }
 
-    override fun compareTo(other: Locale): Int = key.compareTo(other.key)
+    override fun compareTo(other: KLocale): Int = key.compareTo(other.key)
 
     override fun toString(): String {
-        return if (key == 0) "Locale.Undefined" else "Locale($languageRegion)"
+        return if (key == 0) "KLocale.Undefined" else "KLocale($languageRegion)"
     }
 
     fun hasRegion(): Boolean = (key % LocaleOffsets[3]) != 0
 
     companion object {
-        val Undefined = Locale(0)
+        val Undefined = KLocale(0)
 
         //ceil(log(('z' - 'a' + 1).pow(4), 2.0))
         //can be optimised down if it's taken to binary math, instead of decimal

@@ -16,7 +16,7 @@ import javax.imageio.ImageIO
 fun main() {
     val test = {
         println("-".repeat(32))
-        println("Locale:${Locale.getDefault().toLanguageTag()}")
+        println("KLocale:${Locale.getDefault().toLanguageTag()}")
         println(Resources.string(K.string.action_add))
         println("Plurals")
         println(Resources.plural(K.plural.bug_x, 0, 0f))

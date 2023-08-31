@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.Dpi
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.Qualifiers
 import com.jibru.kostra.ext.takeIfNotEmpty
 import java.io.File
@@ -48,7 +48,7 @@ internal fun File.groupQualifiers(): GroupQualifiers {
                 .singleOrNull()
                 ?.also { otherModifiers.remove(it) }
 
-            val locale = strLocale?.let { Locale(it, strLocaleRegion) } ?: Locale.Undefined
+            val locale = strLocale?.let { KLocale(it, strLocaleRegion) } ?: KLocale.Undefined
             val dpi = strDpi?.let { dpiMap.getValue(it) } ?: Dpi.Undefined
             Qualifiers(locale = locale, dpi = dpi)
         } ?: Qualifiers.Undefined

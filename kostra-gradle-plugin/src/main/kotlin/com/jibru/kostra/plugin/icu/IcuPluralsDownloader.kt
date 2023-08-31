@@ -2,7 +2,7 @@
 
 package com.jibru.kostra.plugin.icu
 
-import com.jibru.kostra.Locale
+import com.jibru.kostra.KLocale
 import com.jibru.kostra.icu.PluralCategory
 import groovy.json.JsonSlurper
 import java.io.File
@@ -15,7 +15,7 @@ class IcuPluralsDownloader(
     data class Result(
         val unicodeVersion: String,
         val cldrVersion: String,
-        val data: Map<Locale, Map<PluralCategory, String>>,
+        val data: Map<KLocale, Map<PluralCategory, String>>,
     )
 
     fun loadPlurals(): Result = load("plurals.json", "plurals-type-cardinal")
@@ -34,7 +34,7 @@ class IcuPluralsDownloader(
 
         val items = baseObject.obj(jsonObjName) as Map<String, Map<String, String>>
         val data = items.map { obj ->
-            Locale(obj.key) to obj.value.map { it.key.replace("pluralRule-count-", "").let { PluralCategory.of(it) } to it.value }.toMap()
+            KLocale(obj.key) to obj.value.map { it.key.replace("pluralRule-count-", "").let { PluralCategory.of(it) } to it.value }.toMap()
         }.toMap()
 
         return Result(
