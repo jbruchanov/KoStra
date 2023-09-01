@@ -25,6 +25,12 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+
+        jvmTest {
+            dependencies {
+                implementation(libs.bundles.unittest.jvm)
+            }
+        }
     }
 }
 
