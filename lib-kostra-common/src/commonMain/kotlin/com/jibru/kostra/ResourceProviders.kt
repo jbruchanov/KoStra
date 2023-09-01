@@ -2,11 +2,12 @@ package com.jibru.kostra
 
 import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.icu.IFixedDecimal
+import com.jibru.text.sFormat
 
 interface Strings {
     fun get(key: StringResourceKey, qualifiers: KQualifiers): String
     fun get(key: StringResourceKey, qualifiers: KQualifiers, vararg formatArgs: Any): String =
-        get(key, qualifiers).format(*formatArgs)
+        get(key, qualifiers).sFormat(*formatArgs)
 
     companion object : Strings {
         override fun get(key: StringResourceKey, qualifiers: KQualifiers): String =
@@ -20,13 +21,13 @@ interface Plurals {
 
     fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: IFixedDecimal, type: Type): String
     fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: IFixedDecimal, type: Type, vararg formatArgs: Any): String =
-        get(key, qualifiers, quantity, type).format(*formatArgs)
+        get(key, qualifiers, quantity, type).sFormat(*formatArgs)
 
     fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: Int, type: Type): String =
         get(key, qualifiers, FixedDecimal(quantity.toLong()), type)
 
     fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: Int, type: Type, vararg formatArgs: Any): String =
-        get(key, qualifiers, FixedDecimal(quantity.toLong()), type).format(*formatArgs)
+        get(key, qualifiers, FixedDecimal(quantity.toLong()), type).sFormat(*formatArgs)
 
     companion object : Plurals {
         override fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: IFixedDecimal, type: Type): String =
