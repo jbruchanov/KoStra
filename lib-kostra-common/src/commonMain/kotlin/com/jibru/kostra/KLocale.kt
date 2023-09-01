@@ -3,7 +3,6 @@
 package com.jibru.kostra
 
 import com.jibru.kostra.ext.takeIfNotEmpty
-import java.io.Serializable
 
 private const val LetterCodeMin = 'a'.code
 private const val LetterCodeMax = 'z'.code
@@ -13,7 +12,7 @@ private const val LetterOffset = LetterCodeMin - 1
 private val LocaleOffsets = intArrayOf(1_00_00_00_00, 1_00_00_00, 1_00_00, 1_00, 1)
 
 @JvmInline
-value class KLocale(val key: Int) : Serializable, Comparable<KLocale> {
+value class KLocale(val key: Int) : Comparable<KLocale> {
 
     constructor(languageRegion: String) : this(packCode(languageRegion))
     constructor(language: String, region: String?) : this(packLanguageRegion(language, region))

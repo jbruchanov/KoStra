@@ -2,6 +2,7 @@ package com.jibru.kostra.icu
 
 import kotlin.math.floor
 import kotlin.math.pow
+import kotlin.math.round
 
 /**
  * https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/PluralRules.IFixedDecimal.html
@@ -139,15 +140,6 @@ class FixedDecimal : Number, Comparable<FixedDecimal>, IFixedDecimal {
         return (decimalDigits + 37 * (visibleDecimalDigitCount + (37 * source).toInt())).toInt()
     }
 
-    override fun toString(): String {
-        val baseString = String.format("FD:%." + visibleDecimalDigitCount + "f", source)
-        return if (exponent != 0) {
-            baseString + "e" + exponent
-        } else {
-            baseString
-        }
-    }
-
     override fun toInt(): Int = toLong().toInt()
 
     override fun toLong(): Long {
@@ -169,6 +161,18 @@ class FixedDecimal : Number, Comparable<FixedDecimal>, IFixedDecimal {
     override fun toByte(): Byte = toInt().toByte()
 
     override fun toShort(): Short = toInt().toShort()
+    override fun toString(): String {
+        return "FixedDecimal(source=$source, " +
+            "visibleDecimalDigitCount=$visibleDecimalDigitCount, " +
+            "visibleDecimalDigitCountWithoutTrailingZeros=$visibleDecimalDigitCountWithoutTrailingZeros, " +
+            "decimalDigits=$decimalDigits, " +
+            "decimalDigitsWithoutTrailingZeros=$decimalDigitsWithoutTrailingZeros, " +
+            "integerValue=$integerValue, " +
+            "hasIntegerValue=$hasIntegerValue, " +
+            "isNegative=$isNegative, " +
+            "exponent=$exponent, " +
+            "baseFactor=$baseFactor)"
+    }
 
     override val isNaN: Boolean get() = source.isNaN()
 
@@ -191,7 +195,7 @@ class FixedDecimal : Number, Comparable<FixedDecimal>, IFixedDecimal {
                     n = -n
                 }
                 val baseFactor = 10.0.pow(v.toDouble()).toInt()
-                val scaled = Math.round(n * baseFactor)
+                val scaled = round(n * baseFactor)
                 (scaled % baseFactor).toInt()
             }
         }

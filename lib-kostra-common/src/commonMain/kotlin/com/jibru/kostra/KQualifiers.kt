@@ -1,9 +1,7 @@
 package com.jibru.kostra
 
-import java.io.Serializable
-
 @JvmInline
-value class KQualifiers(val key: Int) : Serializable {
+value class KQualifiers(val key: Int) {
     constructor(locale: KLocale = KLocale.Undefined, dpi: KDpi = KDpi.Undefined) : this(pack(locale, dpi))
     constructor(locale: String, dpi: KDpi = KDpi.Undefined) : this(pack(KLocale(locale), dpi))
 

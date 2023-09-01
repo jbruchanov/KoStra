@@ -1,5 +1,7 @@
 package com.jibru.kostra
 
+import kotlin.jvm.JvmInline
+
 interface ResourceKey {
     val key: Int
 }
