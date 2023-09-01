@@ -1,14 +1,14 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
-import com.jibru.kostra.KQualifiers
+import javax.xml.stream.XMLStreamException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.EnabledIf
-import javax.xml.stream.XMLStreamException
 
 internal class AndroidResourcesXmlParserTest {
 

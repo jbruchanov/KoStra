@@ -25,9 +25,9 @@ class FileResolverTest {
         assertThat(items).hasSize(3)
 
         assertThat(items).containsExactly(
-            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), KQualifiers.Undefined, ResItem.Drawable, root = resourcesRoot),
-            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
-            ResItem.StringRes("item2", "item2", KQualifiers.Undefined),
+            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), KQualifiers.Undefined.key, ResItem.Drawable, root = resourcesRoot),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item2", "item2", KQualifiers.Undefined.key),
         )
     }
 
@@ -41,11 +41,11 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), KQualifiers.Undefined, ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("sample", File(resourcesRoot, "raw/sample.xml"), KQualifiers.Undefined, "raw", root = resourcesRoot),
-            ResItem.FileRes("xyz", File(resourcesRoot, "sound/xyz.mp3"), KQualifiers.Undefined, "sound", root = resourcesRoot),
-            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
-            ResItem.StringRes("item2", "item2", KQualifiers.Undefined),
+            ResItem.FileRes("sample", File(resourcesRoot, "drawable/sample.xml"), KQualifiers.Undefined.key, ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("sample", File(resourcesRoot, "raw/sample.xml"), KQualifiers.Undefined.key, "raw", root = resourcesRoot),
+            ResItem.FileRes("xyz", File(resourcesRoot, "sound/xyz.mp3"), KQualifiers.Undefined.key, "sound", root = resourcesRoot),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item2", "item2", KQualifiers.Undefined.key),
         )
     }
 
@@ -57,8 +57,8 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.StringRes("item1", "src2Item1", KQualifiers.Undefined),
-            ResItem.StringRes("item2", "src2Item2", KQualifiers.Undefined),
+            ResItem.StringRes("item1", "src2Item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item2", "src2Item2", KQualifiers.Undefined.key),
         )
     }
 
@@ -73,11 +73,11 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("imageWebp", File(resourcesRoot, "drawable/imageWebp.webp"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("imageJpg", File(resourcesRoot, "drawable/imageJpg.jpg"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("imageJpeg", File(resourcesRoot, "drawable/imageJpeg.jpeg"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("imageBmp", File(resourcesRoot, "drawable/imageBmp.bmp"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageWebp", File(resourcesRoot, "drawable/imageWebp.webp"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageJpg", File(resourcesRoot, "drawable/imageJpg.jpg"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageJpeg", File(resourcesRoot, "drawable/imageJpeg.jpeg"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageBmp", File(resourcesRoot, "drawable/imageBmp.bmp"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -90,9 +90,9 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("imageBin", File(resourcesRoot, "drawable/imageBin.bin"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "obrazky/image.png"), KQualifiers.Undefined, group = "obrazky", root = resourcesRoot),
+            ResItem.FileRes("imagePng", File(resourcesRoot, "drawable/imagePng.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("imageBin", File(resourcesRoot, "drawable/imageBin.bin"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "obrazky/image.png"), KQualifiers.Undefined.key, group = "obrazky", root = resourcesRoot),
         )
     }
 
@@ -115,11 +115,11 @@ class FileResolverTest {
         ).resolve(listOf(resourcesRoot))
 
         assertThat(items).containsExactly(
-            ResItem.FileRes("image", File(resourcesRoot, "DRAWABLE/image.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("meme", File(resourcesRoot, "drawable_MEMES/MEME.bin"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("icon", File(resourcesRoot, "icon/icon.ICO"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("icons", File(resourcesRoot, "iCOns/ICONS.bmp"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("iconky", File(resourcesRoot, "iconky/iCONKy.bin"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "DRAWABLE/image.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("meme", File(resourcesRoot, "drawable_MEMES/MEME.bin"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("icon", File(resourcesRoot, "icon/icon.ICO"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("icons", File(resourcesRoot, "iCOns/ICONS.bmp"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("iconky", File(resourcesRoot, "iconky/iCONKy.bin"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -132,9 +132,9 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("flat", File(resourcesRoot, "drawable/flat.webp"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("tower", File(resourcesRoot, "drawable/buildings/tower.webp"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("car", File(resourcesRoot, "drawable/cars/car.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("flat", File(resourcesRoot, "drawable/flat.webp"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("tower", File(resourcesRoot, "drawable/buildings/tower.webp"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("car", File(resourcesRoot, "drawable/cars/car.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -149,15 +149,15 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), KQualifiers(dpi = KDpi.Undefined), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-nodpi/image.png"), KQualifiers(dpi = KDpi.NoDpi), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-ldpi/image.png"), KQualifiers(dpi = KDpi.LDPI), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-mdpi/image.png"), KQualifiers(dpi = KDpi.MDPI), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-tvdpi/image.png"), KQualifiers(dpi = KDpi.TVDPI), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-hdpi/image.png"), KQualifiers(dpi = KDpi.HDPI), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-xhdpi/image.png"), KQualifiers(dpi = KDpi.XHDPI), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxhdpi/image.png"), KQualifiers(dpi = KDpi.XXHDPI), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxxhdpi/image.png"), KQualifiers(dpi = KDpi.XXXHDPI), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), KQualifiers(dpi = KDpi.Undefined).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-nodpi/image.png"), KQualifiers(dpi = KDpi.NoDpi).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-ldpi/image.png"), KQualifiers(dpi = KDpi.LDPI).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-mdpi/image.png"), KQualifiers(dpi = KDpi.MDPI).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-tvdpi/image.png"), KQualifiers(dpi = KDpi.TVDPI).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-hdpi/image.png"), KQualifiers(dpi = KDpi.HDPI).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-xhdpi/image.png"), KQualifiers(dpi = KDpi.XHDPI).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxhdpi/image.png"), KQualifiers(dpi = KDpi.XXHDPI).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-xxxhdpi/image.png"), KQualifiers(dpi = KDpi.XXXHDPI).key, group = ResItem.Drawable, root = resourcesRoot),
         )
     }
 
@@ -176,27 +176,33 @@ class FileResolverTest {
 
         val items = FileResolver().resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
-            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-en/image.png"), KQualifiers(locale = KLocale("en")), group = ResItem.Drawable, root = resourcesRoot),
-            ResItem.FileRes("image", File(resourcesRoot, "drawable-en-rGB/image.png"), KQualifiers(locale = KLocale("en", "GB")), group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable/image.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes("image", File(resourcesRoot, "drawable-en/image.png"), KQualifiers(locale = KLocale("en")).key, group = ResItem.Drawable, root = resourcesRoot),
+            ResItem.FileRes(
+                "image",
+                File(resourcesRoot, "drawable-en-rGB/image.png"),
+                KQualifiers(locale = KLocale("en", "GB")).key,
+                group = ResItem.Drawable,
+                root = resourcesRoot,
+            ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-hdpi-en-rGB/image.png"),
-                KQualifiers(locale = KLocale("en", "GB"), dpi = KDpi.HDPI),
+                KQualifiers(locale = KLocale("en", "GB"), dpi = KDpi.HDPI).key,
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-hdpi-en-rUS/image.png"),
-                KQualifiers(locale = KLocale("en", "US"), dpi = KDpi.HDPI),
+                KQualifiers(locale = KLocale("en", "US"), dpi = KDpi.HDPI).key,
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
             ResItem.FileRes(
                 "image",
                 File(resourcesRoot, "drawable-en-rGB-xxhdpi/image.png"),
-                KQualifiers(locale = KLocale("en", "GB"), dpi = KDpi.XXHDPI),
+                KQualifiers(locale = KLocale("en", "GB"), dpi = KDpi.XXHDPI).key,
                 group = ResItem.Drawable,
                 root = resourcesRoot,
             ),
@@ -219,11 +225,11 @@ class FileResolverTest {
         val fileResolver = FileResolver()
 
         assertThat(fileResolver.resolve(listOf(res1, res2))).containsExactly(
-            ResItem.StringRes("item1", "src2Item1", KQualifiers.Undefined),
+            ResItem.StringRes("item1", "src2Item1", KQualifiers.Undefined.key),
         )
 
         assertThat(fileResolver.resolve(listOf(res2, res1))).containsExactly(
-            ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined),
+            ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined.key),
         )
     }
 
@@ -246,17 +252,17 @@ class FileResolverTest {
         val items = FileResolver().resolve(listOf(res2, res1))
 
         assertThat(items).containsExactly(
-            ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined),
-            ResItem.StringRes("item2", "src2Item2", KQualifiers.Undefined),
+            ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item2", "src2Item2", KQualifiers.Undefined.key),
 
-            ResItem.StringRes("item1", "src1Item1En", KQualifiers(locale = KLocale("en"))),
-            ResItem.StringRes("item2", "src1Item2En", KQualifiers(locale = KLocale("en"))),
+            ResItem.StringRes("item1", "src1Item1En", KQualifiers(locale = KLocale("en")).key),
+            ResItem.StringRes("item2", "src1Item2En", KQualifiers(locale = KLocale("en")).key),
 
-            ResItem.StringRes("item1", "src2Item1De", KQualifiers(locale = KLocale("de"))),
-            ResItem.StringRes("item2", "src2Item2De", KQualifiers(locale = KLocale("de"))),
+            ResItem.StringRes("item1", "src2Item1De", KQualifiers(locale = KLocale("de")).key),
+            ResItem.StringRes("item2", "src2Item2De", KQualifiers(locale = KLocale("de")).key),
 
-            ResItem.StringRes("item1", "src2Item1EnGb", KQualifiers(locale = KLocale("en", "GB"))),
-            ResItem.StringRes("item2", "src2Item2EnGb", KQualifiers(locale = KLocale("en", "GB"))),
+            ResItem.StringRes("item1", "src2Item1EnGb", KQualifiers(locale = KLocale("en", "GB")).key),
+            ResItem.StringRes("item2", "src2Item2EnGb", KQualifiers(locale = KLocale("en", "GB")).key),
         )
     }
 
@@ -279,14 +285,14 @@ class FileResolverTest {
         val items = FileResolver().resolve(resourcesRoot)
 
         assertThat(items).containsExactly(
-            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs"))),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs")).key),
 
-            ResItem.Plurals("dog", mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog").toPluralList(), KQualifiers.Undefined),
+            ResItem.Plurals("dog", mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog").toPluralList(), KQualifiers.Undefined.key),
             ResItem.Plurals(
                 "dog",
                 mapOf(PluralCategory.Other to "psů", PluralCategory.One to "pes", PluralCategory.Few to "psy", PluralCategory.Many to "psiska!").toPluralList(),
-                KQualifiers(locale = KLocale("cs")),
+                KQualifiers(locale = KLocale("cs")).key,
             ),
         )
     }

@@ -1,5 +1,6 @@
 package com.jibru.text
 
+import kotlin.jvm.JvmName
 import kotlin.math.absoluteValue
 
 /**
@@ -9,7 +10,11 @@ import kotlin.math.absoluteValue
  * Java docs https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html
  *
  */
+@JvmName("sFormat1")
 fun String.sFormat(vararg args: Any?): String = _sFormat(this, *args)
+
+@JvmName("sFormat2")
+fun sFormat(template: String, vararg args: Any?) = _sFormat(template, *args)
 
 @Suppress("FunctionName")
 private fun _sFormat(s: String, vararg args: Any?): String {

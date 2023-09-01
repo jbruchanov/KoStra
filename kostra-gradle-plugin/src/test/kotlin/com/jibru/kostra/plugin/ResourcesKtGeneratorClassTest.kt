@@ -87,8 +87,8 @@ class ResourcesKtGeneratorClassTest {
         val gen = ResourcesKtGenerator(
             className = "K",
             items = listOf(
-                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), KQualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
-                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), KQualifiers.Undefined, group = ResItem.Drawable, root = File(".")),
+                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = File(".")),
+                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = File(".")),
             ),
         )
         val result = gen.generateKClass().minify()
@@ -110,13 +110,13 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun `generateKClass WHEN multiple strings and plurals`() {
         val items = listOf(
-            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
-            ResItem.StringRes("item2", "item2", KQualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs"))),
-            ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en"))),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item2", "item2", KQualifiers.Undefined.key),
+            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs")).key),
+            ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en")).key),
 
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined),
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs"))),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined.key),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
         )
 
         val result = ResourcesKtGenerator(className = "K", items = items).generateKClass().minify()
@@ -142,17 +142,17 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun generateResources() {
         val items = listOf(
-            ResItem.StringRes("item1", "item1", KQualifiers.Undefined),
-            ResItem.StringRes("item2", "item2", KQualifiers.Undefined),
-            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs"))),
-            ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en"))),
-            ResItem.StringRes("item2", "item2EnGb", KQualifiers(locale = KLocale("en-GB"))),
+            ResItem.StringRes("item1", "item1", KQualifiers.Undefined.key),
+            ResItem.StringRes("item2", "item2", KQualifiers.Undefined.key),
+            ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs")).key),
+            ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en")).key),
+            ResItem.StringRes("item2", "item2EnGb", KQualifiers(locale = KLocale("en-GB")).key),
 
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined),
-            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs"))),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined.key),
+            ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
 
-            ResItem.FileRes("image", File("x.png"), KQualifiers.Undefined, ResItem.Drawable, File("x")),
-            ResItem.FileRes("sound", File("s.mp3"), KQualifiers.Undefined, "sound", File("x")),
+            ResItem.FileRes("image", File("x.png"), KQualifiers.Undefined.key, ResItem.Drawable, File("x")),
+            ResItem.FileRes("sound", File("s.mp3"), KQualifiers.Undefined.key, "sound", File("x")),
         )
 
         val result = ResourcesKtGenerator(className = "K", items = items).generateResources().minify()
@@ -196,7 +196,7 @@ class ResourcesKtGeneratorClassTest {
     }
 
     private fun hasRealProjectRef() = RealProjectRef.isDefined()
-    private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiers = KQualifiers.Undefined)
-    private fun plurals(key: String, items: List<String?>) = ResItem.Plurals(key, items = items, qualifiers = KQualifiers.Undefined)
-    private fun file(key: String, group: String) = ResItem.FileRes(key, File("X"), qualifiers = KQualifiers.Undefined, group = group, root = File("."))
+    private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiersKey = KQualifiers.Undefined.key)
+    private fun plurals(key: String, items: List<String?>) = ResItem.Plurals(key, items = items, qualifiersKey = KQualifiers.Undefined.key)
+    private fun file(key: String, group: String) = ResItem.FileRes(key, File("X"), qualifiersKey = KQualifiers.Undefined.key, group = group, root = File("."))
 }

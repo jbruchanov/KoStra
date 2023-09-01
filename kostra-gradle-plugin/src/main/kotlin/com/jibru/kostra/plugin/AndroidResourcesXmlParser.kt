@@ -2,16 +2,16 @@
 
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
-import com.jibru.kostra.KQualifiers
+import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
 import org.slf4j.LoggerFactory
-import java.io.File
 
 /**
  * Simple implementation for android resources parser.
@@ -53,7 +53,7 @@ class AndroidResourcesXmlParser(
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
-                            result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers))
+                            result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers.key))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -68,7 +68,7 @@ class AndroidResourcesXmlParser(
                                 items.add(xmlReader.text())
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
-                            result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers))
+                            result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers.key))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -84,7 +84,7 @@ class AndroidResourcesXmlParser(
                                 items[pluralKey] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers))
+                            result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers.key))
                         } else {
                             xmlReader.skipUntilEndElement()
                         }

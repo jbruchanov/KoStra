@@ -2,7 +2,6 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.plugin.ext.distinctByLast
 import java.io.File
-import kotlin.streams.asStream
 
 data class FileResolverConfig(
     val keyMapper: (String, File) -> String = { key, _ -> key },
@@ -75,9 +74,9 @@ class FileResolver(
                     }
 
                     drawableGroups.any { regex -> regex.matches(group) } && drawableExtensions.contains(ext.lowercase()) ->
-                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiers = qualifiers, group = ResItem.Drawable))
+                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = ResItem.Drawable))
 
-                    else -> listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiers = qualifiers, group = group))
+                    else -> listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = group))
                 }
             }
             .toList()
@@ -86,6 +85,6 @@ class FileResolver(
         return files
     }
 
-    private fun <T> Collection<T>.tryParallelStream() = if (config.parallelism) parallelStream() else stream()
-    private fun <T> Sequence<T>.tryParallelStream() = if (config.parallelism) asStream().parallel() else asStream()
+    private fun <T> Collection<T>.tryParallelStream() = this//if (config.parallelism) parallelStream() else stream()
+    private fun <T> Sequence<T>.tryParallelStream() = this//if (config.parallelism) asStream().parallel() else asStream()
 }
