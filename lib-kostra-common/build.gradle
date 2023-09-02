@@ -6,6 +6,7 @@ plugins {
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
 apply from: "$rootProject.projectDir/build-publish.gradle"
 apply from: "$rootProject.projectDir/build-android-lib.gradle"
+apply from: "$rootProject.projectDir/build-native-lib.gradle"
 
 project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()

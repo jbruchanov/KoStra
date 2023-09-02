@@ -1,5 +1,7 @@
 package com.jibru.kostra
 
+import kotlin.jvm.JvmInline
+
 @JvmInline
 value class KQualifiers(val key: Int) {
     constructor(locale: KLocale = KLocale.Undefined, dpi: KDpi = KDpi.Undefined) : this(pack(locale, dpi))

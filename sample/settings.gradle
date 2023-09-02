@@ -38,4 +38,5 @@ includeBuild("../") {
 include("shared")
 include("appJvmConsole")
 include("appJvmDesktop")
+include("appNativeConsole")
 include("appAndroid")

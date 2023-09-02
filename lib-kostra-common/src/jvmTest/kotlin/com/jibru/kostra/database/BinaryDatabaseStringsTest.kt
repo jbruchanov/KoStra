@@ -1,7 +1,7 @@
 package com.jibru.kostra.database
 
-import kotlin.test.Test
 import java.io.File
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BinaryDatabaseStringsTest {

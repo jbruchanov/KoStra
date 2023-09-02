@@ -1,9 +1,9 @@
 package com.jibru.kostra.database
 
 import com.jibru.kostra.collection.BinarySearchMap
-import kotlin.test.assertEquals
-import kotlin.test.Test
 import java.io.File
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class BinaryDatabaseMapTest {
 
