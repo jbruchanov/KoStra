@@ -17,7 +17,6 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun generateKClass() {
         val result = ResourcesKtGenerator(
-            className = "com.sample.app.K",
             listOf(
                 string("str1"),
                 string("2str"),
@@ -29,6 +28,7 @@ class ResourcesKtGeneratorClassTest {
                 file("audio1", group = "raw"),
                 file("test", group = "_"),
             ),
+            className = "com.sample.app.K",
         ).generateKClass().minify()
 
         assertThat(result).isEqualTo(
@@ -66,7 +66,7 @@ class ResourcesKtGeneratorClassTest {
 
     @Test
     fun `generateKClass no package`() {
-        val gen = ResourcesKtGenerator(className = "ResQ", items = listOf(string("str1")))
+        val gen = ResourcesKtGenerator(items = listOf(string("str1")), className = "ResQ")
         val result = gen.generateKClass().minify()
         assertThat(result).isEqualTo(
             """
@@ -85,11 +85,11 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun `generateKClass WHEN drawable with unexpected extension`() {
         val gen = ResourcesKtGenerator(
-            className = "K",
             items = listOf(
                 ResItem.FileRes("imagePng", File("drawable/imagePng.png"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = File(".")),
                 ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), KQualifiers.Undefined.key, group = ResItem.Drawable, root = File(".")),
             ),
+            className = "K",
         )
         val result = gen.generateKClass().minify()
         assertThat(result).isEqualTo(
@@ -119,7 +119,7 @@ class ResourcesKtGeneratorClassTest {
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
         )
 
-        val result = ResourcesKtGenerator(className = "K", items = items).generateKClass().minify()
+        val result = ResourcesKtGenerator(items = items, className = "K").generateKClass().minify()
         assertThat(result).isEqualTo(
             """
             @file:Suppress("ktlint")
@@ -155,7 +155,7 @@ class ResourcesKtGeneratorClassTest {
             ResItem.FileRes("sound", File("s.mp3"), KQualifiers.Undefined.key, "sound", File("x")),
         )
 
-        val result = ResourcesKtGenerator(className = "K", items = items).generateResources().minify()
+        val result = ResourcesKtGenerator(items = items, className = "K").generateResources().minify()
         assertThat(result).isEqualTo(
             """
             @file:Suppress("ktlint")
@@ -190,7 +190,7 @@ class ResourcesKtGeneratorClassTest {
     @Test
     fun `generateKClassX`() {
         val items = FileResolver().resolve(RealProjectRef.resources()!!)
-        val x = ResourcesKtGenerator(className = "K", items = items)
+        val x = ResourcesKtGenerator(items = items, className = "K")
             .generateKClass().minify()
         println(x)
     }

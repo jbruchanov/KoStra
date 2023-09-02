@@ -15,6 +15,7 @@ abstract class KostraPluginExtension {
     abstract val className: Property<String>
     abstract val resourceDirs: ListProperty<File>
     abstract val outputDir: Property<File>
+    abstract val outputDatabaseDirName: Property<String>
     abstract val autoConfig: Property<Boolean>
     abstract val useFileWatcher: Property<Boolean>
     abstract val composeDefaults: Property<Boolean>
