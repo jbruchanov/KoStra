@@ -1,0 +1,28 @@
+plugins {
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.jibru.kostra.resources")
+}
+
+apply from: "$rootProject.projectDir/../build-native-lib.gradle"
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.kostra.common)
+            }
+        }
+        nativeMain {
+            dependsOn(commonMain)
+        }
+        nativeTest
+    }
+}
+
+
+kostra {
+    androidResources {
+        resourceDirs.add(file("../shared/src/commonMain/resources_strings"))
+    }
+}
+

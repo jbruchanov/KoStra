@@ -3,6 +3,7 @@
 package com.jibru.kostra
 
 import com.jibru.kostra.ext.takeIfNotEmpty
+import kotlin.jvm.JvmInline
 
 private const val LetterCodeMin = 'a'.code
 private const val LetterCodeMax = 'z'.code

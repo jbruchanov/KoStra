@@ -42,7 +42,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         }
     }
 
-    fun count() = if (data.size >= (HeaderBytes + Int.SIZE_BYTES)) data.readInt(HeaderBytes) else 0
+    override fun count() = if (data.size >= (HeaderBytes + Int.SIZE_BYTES)) data.readInt(HeaderBytes) else 0
 
     fun setList(items: Collection<String?>) {
         setItems(items.mapIndexed { index, s -> StringItem.IntKey(index, s) }, refBytes = this.bytesPerInt)
@@ -109,6 +109,13 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         return data.readLong(keyOffset).absoluteValue
     }
 
+    private fun getKeyInt(index: Int, bytesPerRef: Int): Int {
+        require(0 <= index && index < count()) { "Invalid index:$index, count:${count()}" }
+        require(data.size > headerSize) { "Invalid data, size:${data.size}" }
+        val keyOffset = headerSize + (index * bytesPerRef)
+        return data.readInt(keyOffset)
+    }
+
     override fun getListValue(index: Int): String? = get(index, if (type == StorageType.KeyValue) BytesPerLong else bytesPerInt)
 
     private fun get(index: Int, bytesPerRef: Int): String? {
@@ -121,7 +128,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         require(index < records) { "Invalid index:$index, db has $records records!" }
 
         val dataAbsoluteOffset = headerSize + (records * bytesPerRef)
-        val recordRelativeOffset = data.readInt(offset = headerSize + (index * bytesPerRef))
+        val recordRelativeOffset = getKeyInt(index, bytesPerRef)
         if (recordRelativeOffset == nullConstant) return null
 
         val recordAbsoluteOffset = dataAbsoluteOffset + recordRelativeOffset
