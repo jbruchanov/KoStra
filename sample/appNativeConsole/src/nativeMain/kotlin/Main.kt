@@ -1,13 +1,24 @@
+@file:OptIn(ExperimentalForeignApi::class)
 
 import com.jibru.kostra.DefaultQualifiersProvider
 import com.jibru.kostra.IDefaultQualifiersProvider
 import com.jibru.kostra.K
+import com.jibru.kostra.KDpi
 import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.Resources
 import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.ordinal
 import com.jibru.kostra.plural
 import com.jibru.kostra.string
+import com.jibru.kostra.assetPath
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.posix.FILE
+import platform.posix.SEEK_END
+import platform.posix.fclose
+import platform.posix.fopen
+import platform.posix.fseek
+import platform.posix.ftell
 
 fun main() {
     val test = {
@@ -19,7 +30,7 @@ fun main() {
         println("Plurals:")
         println(
             listOf(
-                Resources.plural(K.plural.bug_x, 0, 0f),
+                Resources.plural(K.plural.bug_x, 0, 0),
                 Resources.plural(K.plural.bug_x, FixedDecimal(0.5), 0.5f),
                 Resources.plural(K.plural.bug_x, 1, 1),
                 Resources.plural(K.plural.bug_x, 10, 10)
@@ -28,29 +39,31 @@ fun main() {
         println("Ordinals:")
         println((0..5).joinToString { Resources.ordinal(K.plural.day_x, it, it) })
 
-        /*val assetPath = Resources.assetPath(K.drawable.capital_city)
-        println("$assetPath")
-
-        val xxHdpiQualifiers = defaultQualifiers().copy(dpi = KDpi.XXHDPI)
-        ImageIO.read(Resources.binaryInputStream(K.drawable.capital_city, qualifiers = xxHdpiQualifiers)).also {
-            val assetPath = Resources.assetPath(K.drawable.capital_city, xxHdpiQualifiers)
-            if (it != null) {
-                println("$assetPath imageRes:${it.width}x${it.height}")
-            } else {
-                println("Unable to load $assetPath, (webp not supported in java!?)")
-            }
-        }
-        Unit*/
+        println("Images:")
+        val assetPath = Resources.assetPath(K.drawable.capital_city)
+        println("$assetPath, fileSize:${fileSize(assetPath)}")
     }
 
-    DefaultQualifiersProvider.delegate = kLocale("enUS")
+    DefaultQualifiersProvider.delegate = kQualifiers("enUS", KDpi.XXHDPI)
     test()
-    DefaultQualifiersProvider.delegate = kLocale("enGB")
+    DefaultQualifiersProvider.delegate = kQualifiers("enGB", KDpi.XXHDPI)
     test()
-    DefaultQualifiersProvider.delegate = kLocale("cs")
+    DefaultQualifiersProvider.delegate = kQualifiers("cs", KDpi.XXHDPI)
     test()
 }
 
-private fun kLocale(locale: String) = object : IDefaultQualifiersProvider {
-    override fun get(): KQualifiers = KQualifiers(locale = locale)
+private fun fileSize(name: String): Int {
+    val file: CPointer<FILE>? = fopen(name, "rb")
+    if (file == null) {
+        println("Unable to open '$name'")
+        return -1
+    }
+    fseek(file, 0, SEEK_END)
+    val size = ftell(file)
+    fclose(file)
+    return size
+}
+
+private fun kQualifiers(locale: String, dpi: KDpi) = object : IDefaultQualifiersProvider {
+    override fun get(): KQualifiers = KQualifiers(locale = locale, dpi = dpi)
 }

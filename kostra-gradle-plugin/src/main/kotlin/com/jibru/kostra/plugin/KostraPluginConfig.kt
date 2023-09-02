@@ -28,5 +28,6 @@ object KostraPluginConfig {
         const val AnalyseResources = "analyseResources"
         const val GenerateCode = "generateCode"
         const val GenerateDatabases = "generateDatabases"
+        const val CopyResourcesForNativeTemplate_xy = "copy%sToNative%sOutput"
     }
 }

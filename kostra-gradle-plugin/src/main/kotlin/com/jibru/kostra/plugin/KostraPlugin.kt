@@ -6,6 +6,7 @@ package com.jibru.kostra.plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
+import com.jibru.kostra.plugin.KostraPluginConfig.outputDatabasesDir
 import com.jibru.kostra.plugin.KostraPluginConfig.outputResourcesDir
 import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
@@ -23,7 +24,12 @@ import kotlinx.coroutines.launch
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.Copy
+import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.Executable
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
 import org.slf4j.LoggerFactory
 
 class KostraPlugin : Plugin<Project> {
@@ -89,9 +95,38 @@ class KostraPlugin : Plugin<Project> {
         target.afterEvaluate { project ->
             if (extension.autoConfig.get()) {
                 tryUpdateSourceSets(project, extension)
+                tryAddNativeCopyTasks(project, extension)
             }
             updateFileWatcher(target, extension)
         }
+    }
+
+    private fun tryAddNativeCopyTasks(project: Project, extension: KostraPluginExtension) {
+        project.extensions.findByType(KotlinMultiplatformExtension::class.java)
+            ?.targets
+            ?.findByName("native")
+            ?.let { it as? KotlinNativeTarget }
+            ?.binaries
+            ?.filter { it is Executable && it.outputKind == NativeOutputKind.EXECUTABLE }
+            ?.map { it.name.capitalized() to it.outputDirectory }
+            ?.onEach { (name, outputDir) ->
+                //copy predefined resources
+                project.tasks.register(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("Resources", name), Copy::class.java) {
+                    it.group = KostraPluginConfig.Tasks.Group
+                    it.from(extension.resourceDirs)
+                    it.into(outputDir)
+                    project.tasks.getByName("link${name}Native").dependsOn(it)
+                }
+
+                //copy generated string dbs
+                project.tasks.register(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("DBs", name), Copy::class.java) {
+                    it.group = KostraPluginConfig.Tasks.Group
+                    it.from(extension.outputDatabasesDir())
+                    it.into(File(outputDir, extension.outputDatabaseDirName.get()))
+                    project.tasks.getByName("link${name}Native").dependsOn(it)
+                    it.dependsOn(project.tasks.getByName(KostraPluginConfig.Tasks.GenerateDatabases))
+                }
+            }
     }
 
     private fun tryUpdateSourceSets(project: Project, extension: KostraPluginExtension) {
@@ -119,8 +154,8 @@ class KostraPlugin : Plugin<Project> {
         run KotlinMultiplatform@{
             project.extensions.findByType(KotlinMultiplatformExtension::class.java)
                 ?.sourceSets
-                ?.findByName("commonMain")
-                ?.let { commonMainSourceSet ->
+                ?.filter { !it.name.contains("test", ignoreCase = true) }
+                ?.onEach { commonMainSourceSet ->
                     logger.info("KMP added sourceSet:${outputSourceDir.absolutePath}")
                     //let java know about kostra sourceDir
                     commonMainSourceSet.kotlin.srcDir(outputSourceDir)
@@ -150,7 +185,6 @@ class KostraPlugin : Plugin<Project> {
                 }
         }
     }
-
     private var fileWatcher = FileWatcher()
     private var fileWatcherJob: Job? = null
     private fun updateFileWatcher(target: Project, extension: KostraPluginExtension) {
