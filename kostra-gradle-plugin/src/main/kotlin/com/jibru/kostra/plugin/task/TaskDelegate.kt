@@ -14,7 +14,8 @@ object TaskDelegate {
         val fileResolverConfig: FileResolverConfig,
         val kClassName: String,
         val composeDefaults: Boolean,
-        val output: File,
+        val outputDir: File,
+        val resDbsFolderName: String,
     )
 
     fun analyseCode(
@@ -27,11 +28,13 @@ object TaskDelegate {
         kClassName: String,
         composeDefaults: Boolean,
         outputDir: File,
+        resDbsFolderName: String,
         minify: Boolean = true,
     ) {
         val result = ResourcesKtGenerator(
-            className = kClassName,
             items = items,
+            resDbsFolderName = resDbsFolderName,
+            className = kClassName,
             useAliasImports = false,
         ).let {
             buildList {

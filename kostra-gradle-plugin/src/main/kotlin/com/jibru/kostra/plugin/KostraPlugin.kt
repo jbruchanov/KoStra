@@ -43,6 +43,7 @@ class KostraPlugin : Plugin<Project> {
             task.kClassName.set(extension.className)
             task.resources.set(analyseResources.flatMap { it.outputFile })
             task.composeDefaults.set(extension.composeDefaults)
+            task.resDbsFolderName.set(extension.outputDatabaseDirName)
             task.outputDir.set(extension.outputSourceDir())
             task.dependsOn(analyseResources)
         }
@@ -81,6 +82,7 @@ class KostraPlugin : Plugin<Project> {
             useFileWatcher.set(false)
             className.set(KClassName)
             outputDir.set(target.defaultOutputDir())
+            outputDatabaseDirName.set(ResourceDbFolderName)
             composeDefaults.set(target.plugins.any { it.javaClass.packageName.startsWith("org.jetbrains.compose") })
         }
 
@@ -161,7 +163,8 @@ class KostraPlugin : Plugin<Project> {
                 fileResolverConfig = extension.androidResources.toFileResolverConfig(),
                 kClassName = extension.className.get(),
                 composeDefaults = extension.composeDefaults.get(),
-                output = File(extension.outputDir.get(), "src"),
+                outputDir = File(extension.outputDir.get(), "src"),
+                resDbsFolderName = extension.outputDatabaseDirName.get(),
             )
             val log = target.fileWatcherLog()
             fileWatcherJob = GlobalScope.launch(Dispatchers.IO) {
@@ -188,7 +191,8 @@ class KostraPlugin : Plugin<Project> {
                 kClassName = taskDelegateConfig.kClassName,
                 items = items,
                 composeDefaults = taskDelegateConfig.composeDefaults,
-                outputDir = taskDelegateConfig.output,
+                outputDir = taskDelegateConfig.outputDir,
+                resDbsFolderName = taskDelegateConfig.resDbsFolderName,
             )
         }.exceptionOrNull()?.also {
             log?.let { log ->

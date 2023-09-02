@@ -1,8 +1,8 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.KAppResources
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
+import com.jibru.kostra.KAppResources
 import com.jibru.kostra.KLocale
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
@@ -26,8 +26,9 @@ import com.squareup.kotlinpoet.asClassName
 import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
-    className: String = KostraPluginConfig.KClassName,
     items: List<ResItem>,
+    private val resDbsFolderName: String,
+    className: String = KostraPluginConfig.KClassName,
     private val useAliasImports: Boolean = true,
 ) : ResItemsProcessor(items) {
 
@@ -35,7 +36,7 @@ class ResourcesKtGenerator(
     private val className = className.substringAfterLast(".")
     private val resourcePropertyName = KostraPluginConfig.ResourcePropertyName
     private val resourceMemberName = MemberName(packageName, resourcePropertyName)
-    private val innerDbsPath = KostraPluginConfig.ResourceDbFolderName
+
     private val composeDefaults = KostraPluginConfig.ComposeDefaultResourceProvider
 
     fun generateKClass(): FileSpec {
@@ -89,7 +90,7 @@ class ResourcesKtGenerator(
                                         propertyName = ResItem.String,
                                         propertyType = StringDatabase::class,
                                         locales = stringsAndPluralsForDb.getValue(ResItem.String).keys,
-                                        "$innerDbsPath/${ResItem.String}-%s.db",
+                                        "$resDbsFolderName/${ResItem.String}-%s.db",
                                     )
                                 }
                                 if (hasPlurals) {
@@ -97,11 +98,11 @@ class ResourcesKtGenerator(
                                         propertyName = ResItem.Plural,
                                         propertyType = PluralDatabase::class,
                                         locales = stringsAndPluralsForDb.getValue(ResItem.Plural).keys,
-                                        "$innerDbsPath/${ResItem.Plural}-%s.db",
+                                        "$resDbsFolderName/${ResItem.Plural}-%s.db",
                                     )
                                 }
                                 if (hasAnyFiles) {
-                                    addStatement("%L = %T(%S),", ResItem.Binary, FileDatabase::class, "$innerDbsPath/${ResItem.Binary}.db")
+                                    addStatement("%L = %T(%S),", ResItem.Binary, FileDatabase::class, "$resDbsFolderName/${ResItem.Binary}.db")
                                 }
                                 unindent()
                                 addStatement(")")
