@@ -5,7 +5,6 @@ import com.jibru.kostra.plugin.ext.minify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
 import test.RealProjectRef
-import test.ext.trimIndentTestResults
 import test.testResources
 
 class ResourcesKtGeneratorResourcesTest {
@@ -29,7 +28,7 @@ class ResourcesKtGeneratorResourcesTest {
         buildResources()
 
         val items = FileResolver().resolve(resourcesRoot)
-        val gen = ResourcesKtGenerator(items, "com.sample.app.K")
+        val gen = ResourcesKtGenerator(items, className = "com.sample.app.K")
 
         val result = buildString {
             val files = listOf(
@@ -83,19 +82,19 @@ class ResourcesKtGeneratorResourcesTest {
             val Resources: KAppResources = KAppResources(
               string = StringDatabase(
                 mapOf(
-                  KLocale.Undefined to "${'$'}kostra/string-default.db",
-                  KLocale(4_05_00_00) to "${'$'}kostra/string-de.db",
-                  KLocale(5_14_00_00) to "${'$'}kostra/string-en.db",
+                  KLocale.Undefined to "kresources/string-default.db",
+                  KLocale(4_05_00_00) to "kresources/string-de.db",
+                  KLocale(5_14_00_00) to "kresources/string-en.db",
                 )
               ),
               plural = PluralDatabase(
                 mapOf(
-                  KLocale.Undefined to "${'$'}kostra/plural-default.db",
+                  KLocale.Undefined to "kresources/plural-default.db",
                 )
               ),
-              binary = FileDatabase("${'$'}kostra/binary.db"),
+              binary = FileDatabase("kresources/binary.db"),
             )
-            """.trimIndentTestResults(),
+            """.trimIndent(),
         )
     }
 
@@ -103,7 +102,7 @@ class ResourcesKtGeneratorResourcesTest {
     @EnabledIf("hasRealProjectLocation")
     fun test() {
         val items = FileResolver().resolve(RealProjectRef.resources()!!)
-        val gen = ResourcesKtGenerator(items, "com.sample.app.K")
+        val gen = ResourcesKtGenerator(items, resDbsFolderName = "com.sample.app.K")
 
         val result = buildString {
             val files = listOf(

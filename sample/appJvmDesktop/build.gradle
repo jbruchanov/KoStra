@@ -18,15 +18,11 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
 }
 
-test {
-    useJUnitPlatform()
-}
-
 compose.desktop {
     application {
         mainClass = "com.jibru.kostra.appsample.jvm.AppKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe, TargetFormat.AppImage)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "KostraSampleApp"
             packageVersion = "1.0.0"
         }

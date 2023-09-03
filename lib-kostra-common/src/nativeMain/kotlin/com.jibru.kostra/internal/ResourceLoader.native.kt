@@ -30,7 +30,8 @@ private object NativeResourceLoader {
     private val currentDir by lazy {
         val dir = opendir(".")
         memScoped {
-            val buffer = getcwd(null, 0)
+            //0.convert(), the convert seems tobe necessary for build in linux
+            val buffer = getcwd(null, 0.convert())
             buffer?.toKString() ?: ""
         }.also {
             closedir(dir)
@@ -56,8 +57,8 @@ private object NativeResourceLoader {
         return memScoped {
             val tmp = allocArray<ByteVar>(size)
             val read = fread(tmp, sizeOf<ByteVar>().convert(), size.convert(), file)
-            require(read == size.toULong()) { "Read $read vs fileLen:$size must be equal!" }
-            tmp.readBytes(size)
+            require(read.toLong() == size.toLong()) { "Read $read vs fileLen:$size must be equal!" }
+            tmp.readBytes(size.convert())
         }.also {
             fclose(file)
         }

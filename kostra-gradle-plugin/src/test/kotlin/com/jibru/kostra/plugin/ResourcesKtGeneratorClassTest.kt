@@ -10,7 +10,6 @@ import java.io.File
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIf
 import test.RealProjectRef
-import test.ext.trimIndentTestResults
 
 class ResourcesKtGeneratorClassTest {
 
@@ -168,21 +167,21 @@ class ResourcesKtGeneratorClassTest {
             val Resources: KAppResources = KAppResources(
               string = StringDatabase(
                 mapOf(
-                  KLocale.Undefined to "${'$'}kostra/string-default.db",
-                  KLocale(3_19_00_00) to "${'$'}kostra/string-cs.db",
-                  KLocale(5_14_00_00) to "${'$'}kostra/string-en.db",
-                  KLocale(5_14_07_02) to "${'$'}kostra/string-engb.db",
+                  KLocale.Undefined to "kresources/string-default.db",
+                  KLocale(3_19_00_00) to "kresources/string-cs.db",
+                  KLocale(5_14_00_00) to "kresources/string-en.db",
+                  KLocale(5_14_07_02) to "kresources/string-engb.db",
                 )
               ),
               plural = PluralDatabase(
                 mapOf(
-                  KLocale.Undefined to "${'$'}kostra/plural-default.db",
-                  KLocale(3_19_00_00) to "${'$'}kostra/plural-cs.db",
+                  KLocale.Undefined to "kresources/plural-default.db",
+                  KLocale(3_19_00_00) to "kresources/plural-cs.db",
                 )
               ),
-              binary = FileDatabase("${'$'}kostra/binary.db"),
+              binary = FileDatabase("kresources/binary.db"),
             )
-            """.trimIndentTestResults(),
+            """.trimIndent(),
         )
     }
 

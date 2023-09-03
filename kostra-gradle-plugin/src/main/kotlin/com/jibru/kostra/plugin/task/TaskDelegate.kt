@@ -33,8 +33,8 @@ object TaskDelegate {
     ) {
         val result = ResourcesKtGenerator(
             items = items,
-            resDbsFolderName = resDbsFolderName,
             className = kClassName,
+            resDbsFolderName = resDbsFolderName,
             useAliasImports = false,
         ).let {
             buildList {
