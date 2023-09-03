@@ -30,13 +30,9 @@ dependencies {
     implementation(libs.kostra.common)
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
 kostra {
     androidResources {
-        keyMapperKt = { key, _ -> key.lowercase() }
+        keyMapperKt.set { key, _ -> key.lowercase() }
         resourceDirs.add(file("../shared/src/commonMain/resources_strings"))
     }
 }

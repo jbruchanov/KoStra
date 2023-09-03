@@ -13,3 +13,23 @@ plugins {
     //can't be present here
     //alias(libs.plugins.gradle.plugin).apply(false)
 }
+
+subprojects {
+    afterEvaluate {
+        if (name.startsWith("lib")) {
+            tasks.jvmTest {
+                useJUnitPlatform()
+                testLogging {
+                    showExceptions = true
+                }
+            }
+        } else {
+            test {
+                useJUnitPlatform()
+                testLogging {
+                    showExceptions = true
+                }
+            }
+        }
+    }
+}

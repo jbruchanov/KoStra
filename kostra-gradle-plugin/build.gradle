@@ -37,10 +37,6 @@ java {
     }
 }
 
-test {
-    useJUnitPlatform()
-}
-
 publishing {
     repositories {
         maven {

@@ -11,5 +11,5 @@ object RealProjectRef {
             Properties()
                 .apply { load(it.bufferedReader()) }["realProjectResources"]?.toString()
         }
-        ?.let { File(it).listFiles()!!.filter { v -> v.isDirectory && v.name.startsWith("res") } }
+        ?.let { File(it).listFiles()?.filter { v -> v.isDirectory && v.name.startsWith("res") } }
 }

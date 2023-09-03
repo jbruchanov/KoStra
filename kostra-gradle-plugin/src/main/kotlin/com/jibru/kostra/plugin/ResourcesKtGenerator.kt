@@ -27,8 +27,8 @@ import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
     items: List<ResItem>,
-    private val resDbsFolderName: String,
     className: String = KostraPluginConfig.KClassName,
+    private val resDbsFolderName: String = KostraPluginConfig.ResourceDbFolderName,
     private val useAliasImports: Boolean = true,
 ) : ResItemsProcessor(items) {
 

@@ -8,7 +8,7 @@ class ResourcesKtGeneratorComposeDefaultsTest {
 
     @Test
     fun generateComposeDefaults() {
-        val gen = ResourcesKtGenerator(emptyList(), "com.sample.app.K")
+        val gen = ResourcesKtGenerator(emptyList(), className = "com.sample.app.K")
         val result = gen.generateComposeDefaults().minify()
 
         assertThat(result.trim()).isEqualTo(

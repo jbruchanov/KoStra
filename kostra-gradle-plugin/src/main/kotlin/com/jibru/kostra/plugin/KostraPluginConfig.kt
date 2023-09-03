@@ -12,7 +12,7 @@ object KostraPluginConfig {
     const val ResourcePropertyName = "Resources"
 
     //looks like _kostra is ignored
-    const val ResourceDbFolderName = "\$kostra"
+    const val ResourceDbFolderName = "kresources"
     const val ComposeDefaultResourceProvider = "ComposeDefaultResourceProvider"
 
     fun KostraPluginExtension.analysisFile() = File(outputDir.get(), "resources.obj")
