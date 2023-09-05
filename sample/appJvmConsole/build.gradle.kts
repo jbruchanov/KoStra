@@ -39,5 +39,9 @@ kostra {
 
 fun String.toCamelCase(): String = split("_")
     .map { it.lowercase() }
-    .mapIndexed { index, s -> if (index > 0) s[0].uppercase() + s.drop(1) else s }
-    .joinToString(separator = "")
+    .filter { it.isNotEmpty() }
+    .takeIf { it.isNotEmpty() }
+    ?.mapIndexed { index, s -> if (index > 0) s[0].uppercase() + s.drop(1) else s }
+    ?.joinToString(separator = "")
+    //just return anything original, this is naive toCamelCase implementation
+    ?: this
