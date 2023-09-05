@@ -45,10 +45,10 @@ class FileResolver(
     private fun resolveImpl(resourcesRoot: File): List<ResItem> {
         //sorting seems to be necessary on mac
         val listFiles = resourcesRoot.listFiles()?.sorted() ?: return emptyList()
-        val items = listFiles.filter { it.isDirectory }
-            .asSequence()
-            //parse group + qualifiers
-            .map { it to it.groupQualifiers(anyLocale = !config.strictLocale) }
+
+        val folders = fileGroups(listFiles) { it.isDirectory }
+        val filesInRoot = fileGroups(listFiles) { it.isFile }.map { it.first to it.second.copy(group = "root") }
+        val items = (folders + filesInRoot)
             //group values by the group, drawable/string etc
             .groupBy { it.second.group }
             //resolve particular files, simple image, strings etc
@@ -67,6 +67,11 @@ class FileResolver(
 
         return items
     }
+
+    private fun fileGroups(listFiles: List<File>, predicate: (File) -> Boolean) = listFiles.filter(predicate)
+        .asSequence()
+        //parse group + qualifiers
+        .map { it to it.groupQualifiers(anyLocale = !config.strictLocale) }
 
     private fun resolve(rootFolder: File, resRoot: File, groupQualifiers: GroupQualifiers): List<ResItem> = with(config) {
         val (rootGroup, rootQualifiers) = groupQualifiers
