@@ -32,7 +32,12 @@ dependencies {
 
 kostra {
     androidResources {
-        keyMapperKt.set { key, _ -> key.lowercase() }
+        keyMapperKt.set { key, _ -> key.toCamelCase() }
         resourceDirs.add(file("../shared/src/commonMain/resources_strings"))
     }
 }
+
+fun String.toCamelCase(): String = split("_")
+    .map { it.lowercase() }
+    .mapIndexed { index, s -> if (index > 0) s[0].uppercase() + s.drop(1) else s }
+    .joinToString(separator = "")
