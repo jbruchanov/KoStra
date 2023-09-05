@@ -1,19 +1,19 @@
 package com.jibru.kostra.plugin.task
 
-import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.KLocale
+import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResItemsProcessor
+import java.io.File
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-import java.io.FileInputStream
-import java.io.ObjectInputStream
 
 abstract class GenerateDatabasesTask : DefaultTask() {
 

@@ -92,9 +92,9 @@ private fun packCode(code: String): Int {
     return when {
         code.isEmpty() -> 0
         code.contains("-") -> packLanguageRegion(code.substringBefore("-"), code.substringAfter("-", "").takeIfNotEmpty())
-        code.length in 2..4 ->
+        code.length in 1..4 ->
             ((code[0].validCode() - LetterOffset) * LocaleOffsets[1]) +
-                ((code[1].validCode() - LetterOffset) * LocaleOffsets[2]) +
+                (((code.getOrNull(1)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[2]) +
                 (((code.getOrNull(2)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[3]) +
                 (((code.getOrNull(3)?.validCode() ?: LetterOffset) - LetterOffset) * LocaleOffsets[4])
 

@@ -111,6 +111,7 @@ class KostraPlugin : Plugin<Project> {
         extension.apply {
             autoConfig.set(true)
             useFileWatcher.set(false)
+            strictLocale.set(true)
             className.set(KClassName)
             outputDir.set(target.defaultOutputDir())
             outputDatabaseDirName.set(ResourceDbFolderName)
@@ -165,9 +166,9 @@ class KostraPlugin : Plugin<Project> {
 
         //jvm only targets, not KMP involved
         run JavaPlugin@{
-            project.extensions.findByType(JavaPluginExtension::class.java)
-                ?.sourceSets
-                ?.findByName("main")
+            (project.extensions.findByType(JavaPluginExtension::class.java) ?: return@JavaPlugin)
+                .sourceSets
+                .findByName("main")
                 .let { mainSourceSet ->
                     if (mainSourceSet == null) {
                         logger.warn("Kostra: ${project.name}:main source set not found, unable to finish auto setup!")
@@ -187,9 +188,9 @@ class KostraPlugin : Plugin<Project> {
         }
 
         run KotlinMultiplatform@{
-            project.extensions.findByType(KotlinMultiplatformExtension::class.java)
-                ?.sourceSets
-                ?.let {
+            (project.extensions.findByType(KotlinMultiplatformExtension::class.java) ?: return@KotlinMultiplatform)
+                .sourceSets
+                .let {
                     val commonMainSourceSet = it.findByName("commonMain")
                     if (commonMainSourceSet == null) {
                         logger.warn("Kostra: ${project.name}:commonMain source set not found, unable to finish auto setup!")
@@ -213,8 +214,8 @@ class KostraPlugin : Plugin<Project> {
             val sourceSets = project.extensions.findByType(LibraryExtension::class.java)?.sourceSets
                 ?: project.extensions.findByType(AppExtension::class.java)?.sourceSets
 
-            sourceSets
-                ?.findByName("main")
+            (sourceSets ?: return@Android)
+                .findByName("main")
                 ?.resources
                 .let { resources ->
                     if (resources == null) {
@@ -239,7 +240,7 @@ class KostraPlugin : Plugin<Project> {
         if (folders.isNotEmpty() && extension.useFileWatcher.get()) {
             val taskDelegateConfig = TaskDelegate.Config(
                 resourceDirs = extension.resourceDirs.get() + extension.androidResources.resourceDirs.get(),
-                fileResolverConfig = extension.androidResources.toFileResolverConfig(),
+                fileResolverConfig = extension.toFileResolverConfig(),
                 kClassName = extension.className.get(),
                 composeDefaults = extension.composeDefaults.get(),
                 outputDir = File(extension.outputDir.get(), "src"),
