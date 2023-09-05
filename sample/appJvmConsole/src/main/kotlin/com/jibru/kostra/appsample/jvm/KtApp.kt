@@ -23,9 +23,13 @@ fun main() {
         println("Plurals:")
         println(
             listOf(
-                Resources.plural(K.plural.bugX, 0, 0f),
+                Resources.plural(K.plural.bugX, 0, 0),
                 Resources.plural(K.plural.bugX, FixedDecimal(0.5), 0.5f),
                 Resources.plural(K.plural.bugX, 1, 1),
+                Resources.plural(K.plural.bugX, 2, 2),
+                Resources.plural(K.plural.bugX, 3, 3),
+                Resources.plural(K.plural.bugX, 4, 4),
+                Resources.plural(K.plural.bugX, 5, 5),
                 Resources.plural(K.plural.bugX, 10, 10)
             ).joinToString()
         )
