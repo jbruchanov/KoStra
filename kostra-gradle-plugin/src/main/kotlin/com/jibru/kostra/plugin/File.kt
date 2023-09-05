@@ -19,15 +19,22 @@ const val QualifierDivider = "-"
 
 fun File.ext() = name.substringAfterLast(".", "")
 
-internal fun File.groupQualifiers(): GroupQualifiers {
-    val source = name.lowercase()
+internal fun File.groupQualifiers(anyLocale: Boolean = false): GroupQualifiers {
+    val source = name
+        .let { if (isFile) it.substringBeforeLast(".") else it }
+        .lowercase()
     val group = source.substringBefore(QualifierDivider)
     val qualifiers = source.substringAfter(QualifierDivider, "")
         .takeIfNotEmpty()
         ?.split(QualifierDivider)
         ?.let { list ->
             val otherModifiers = list.toMutableSet()
-            val strLocale = locales.intersect(otherModifiers).singleOrNull()
+
+            val strDpi = dpiValues.intersect(otherModifiers)
+                .singleOrNull()
+                ?.also { otherModifiers.remove(it) }
+
+            val strLocale = (if (anyLocale) otherModifiers.firstOrNull() else locales.intersect(otherModifiers).singleOrNull())
                 ?.also { otherModifiers.remove(it) }
 
             //looking for stuff like en-rUS
@@ -37,20 +44,24 @@ internal fun File.groupQualifiers(): GroupQualifiers {
                     https://developer.android.com/guide/topics/resources/providing-resources
                     The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two-letter ISO 3166-1-alpha-2 region code (preceded by lowercase r).
                  */
-                ?.takeIf { it.startsWith("r") && it.length >= 3 }
+                ?.takeIf {
+                    val rPrefixRegion = it.startsWith("r") && it.length == 3
+                    val twoCharRegion = it.length == 2
+                    rPrefixRegion || (anyLocale && twoCharRegion)
+                }
                 ?.let {
-                    val javaLocaleTag = "$strLocale-${it.substring(1)}"
-                    if (locales.contains(javaLocaleTag)) it else null
+                    val region = (if (it.startsWith("r")) it.drop(1) else it).take(2)
+                    if (anyLocale || locales.contains("$strLocale-$region")) region else null
                 }
                 ?.also { otherModifiers.remove(it) }
 
-            val strDpi = dpiValues.intersect(otherModifiers)
-                .singleOrNull()
-                ?.also { otherModifiers.remove(it) }
-
-            val locale = strLocale?.let { KLocale(it, strLocaleRegion) } ?: KLocale.Undefined
-            val dpi = strDpi?.let { dpiMap.getValue(it) } ?: KDpi.Undefined
-            KQualifiers(locale = locale, dpi = dpi)
+            try {
+                val locale = strLocale?.let { if (anyLocale) KLocale(it + (strLocaleRegion ?: "")) else KLocale(it, strLocaleRegion) } ?: KLocale.Undefined
+                val dpi = strDpi?.let { dpiMap.getValue(it) } ?: KDpi.Undefined
+                KQualifiers(locale = locale, dpi = dpi)
+            } catch (e: Throwable) {
+                throw IllegalArgumentException("Unable to parse GroupQualifiers, path:'$absolutePath'", e)
+            }
         } ?: KQualifiers.Undefined
 
     return GroupQualifiers(group, qualifiers)

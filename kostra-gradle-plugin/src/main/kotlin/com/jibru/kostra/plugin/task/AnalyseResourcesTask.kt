@@ -28,7 +28,7 @@ abstract class AnalyseResourcesTask : DefaultTask() {
         val extension = project.extensions.getByType(KostraPluginExtension::class.java)
         val items = analyseCode(
             resourceDirs = extension.allResourceDirs(),
-            fileResolverConfig = extension.androidResources.toFileResolverConfig(),
+            fileResolverConfig = extension.toFileResolverConfig(),
         )
         val outputFile = outputFile.get().asFile
         outputFile.parentFile.mkdirs()

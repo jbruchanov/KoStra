@@ -19,6 +19,7 @@ abstract class KostraPluginExtension {
     abstract val autoConfig: Property<Boolean>
     abstract val useFileWatcher: Property<Boolean>
     abstract val composeDefaults: Property<Boolean>
+    abstract val strictLocale: Property<Boolean>
 
     @get:Nested
     abstract val androidResources: AndroidResourcesExtension
@@ -28,6 +29,19 @@ abstract class KostraPluginExtension {
 
     fun androidResources(action: Action<in AndroidResourcesExtension>) {
         action.execute(androidResources)
+    }
+
+    fun toFileResolverConfig(): FileResolverConfig = with(androidResources) {
+        val defaults = FileResolverConfig.Defaults
+        return FileResolverConfig(
+            keyMapper = keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } }
+                ?: keyMapperKt.orNull
+                ?: defaults.keyMapper,
+            stringFiles = stringFiles.orNull?.setOf { v -> v.toRegex() } ?: defaults.stringFiles,
+            drawableGroups = drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.drawableGroups,
+            drawableExtensions = drawableExtensions.orNull?.toSet() ?: defaults.drawableExtensions,
+            strictLocale = strictLocale.get(),
+        )
     }
 }
 
@@ -50,16 +64,4 @@ abstract class AndroidResourcesExtension {
 
     @get:Optional
     abstract val resourceDirs: ListProperty<File>
-
-    fun toFileResolverConfig(): FileResolverConfig {
-        val defaults = FileResolverConfig.Defaults
-        return FileResolverConfig(
-            keyMapper = keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } }
-                ?: keyMapperKt.orNull
-                ?: defaults.keyMapper,
-            stringFiles = stringFiles.orNull?.setOf { v -> v.toRegex() } ?: defaults.stringFiles,
-            drawableGroups = drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.drawableGroups,
-            drawableExtensions = drawableExtensions.orNull?.toSet() ?: defaults.drawableExtensions,
-        )
-    }
 }

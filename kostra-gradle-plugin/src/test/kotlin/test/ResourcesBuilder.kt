@@ -71,4 +71,6 @@ class ResourcesBuilder(val resourcesRoot: File) {
     fun delete() {
         resourcesRoot.deleteRecursively()
     }
+
+    fun file(relativePath: String) = File(resourcesRoot, relativePath)
 }
