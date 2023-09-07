@@ -18,6 +18,10 @@ kotlin {
 
     createNativeTarget(delegate)
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     sourceSets {
         commonMain {
             dependencies {
@@ -27,6 +31,27 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
             }
+        }
+
+        iosX64Main
+        iosArm64Main
+        iosSimulatorArm64Main
+
+        iosMain {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(delegate)
+            iosArm64Main.dependsOn(delegate)
+            iosSimulatorArm64Main.dependsOn(delegate)
+        }
+
+        iosX64Test
+        iosArm64Test
+        iosSimulatorArm64Test
+        iosTest {
+            dependsOn(commonTest)
+            iosX64Test.dependsOn(delegate)
+            iosArm64Test.dependsOn(delegate)
+            iosSimulatorArm64Test.dependsOn(delegate)
         }
 
         jvmTest {

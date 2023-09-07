@@ -64,11 +64,13 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                 .animateContentSize()
                 .wrapContentSize(),
         ) {
-            val locales = remember { listOf(java.util.Locale.getDefault(), java.util.Locale.ENGLISH, java.util.Locale("cs")) }
-            var localeIndex by remember { mutableStateOf(0) }
-            val locale by derivedStateOf { KLocale(locales[localeIndex].toLanguageTag()) }
-
             val defaultQualifiers = LocalQualifiers.current
+            val locales = remember {
+                listOf(defaultQualifiers.locale, KLocale("enGB"), KLocale("en"), KLocale("cs")).distinct()
+            }
+            var localeIndex by remember { mutableStateOf(0) }
+            val locale by derivedStateOf { locales[localeIndex] }
+
             val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XXHDPI) }
             var dpiIndex by remember { mutableStateOf(0) }
             val dpi by derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi }
@@ -76,6 +78,7 @@ fun SampleScreen() = with(SampleScreenDefaults) {
             val qualifiers by derivedStateOf { KQualifiers(locale, dpi) }
 
             CompositionLocalProvider(LocalQualifiers provides qualifiers) {
+                Text("KQualifiers:$defaultQualifiers")
                 Text("KLocale")
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(spacing),
@@ -85,13 +88,14 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
                             checked = index == localeIndex,
-                            text = locale.toLanguageTag(),
+                            text = locale.languageRegion,
                         )
                     }
                 }
 
                 Text("DPI: ${defaultQualifiers.dpi}")
                 Text("Density:${LocalDensity.current}")
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(spacing),
                     verticalAlignment = Alignment.CenterVertically,
@@ -111,10 +115,13 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                     Button(onClick = {}) { Text(stringResource(K.string.color)) }
                 }
 
-                Text(assetPath(K.drawable.capital_city))
+
+                //crashing on iOS
+                //Text(assetPath(K.drawable.capital_city))
                 Image(painterResource(K.drawable.capital_city), contentDescription = null)
 
                 var quantity by remember { mutableStateOf("1") }
+
 
                 TextField(
                     value = quantity,
