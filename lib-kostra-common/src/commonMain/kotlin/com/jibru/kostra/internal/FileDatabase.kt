@@ -1,16 +1,16 @@
 package com.jibru.kostra.internal
 
 import com.jibru.kostra.AssetResourceKey
-import com.jibru.kostra.KDpi
 import com.jibru.kostra.FileReferences
+import com.jibru.kostra.KDpi
 import com.jibru.kostra.KLocale
-import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.KQualifiers
+import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.database.BinaryDatabase
 
 open class FileDatabase(database: String) : FileReferences {
     private val data by lazy {
-        BinaryDatabase(loadResource(database)).toLongSparseArray()
+        BinaryDatabase(loadResource(database)).toBinarySearchMap()
     }
 
     protected open fun getValue(key: AssetResourceKey, qualifiers: KQualifiers): String? {

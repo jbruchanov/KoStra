@@ -48,7 +48,7 @@ class BinaryDatabaseMapTest {
             }
         }
         //equality on 2 sparse arrays doesn't work
-        val sparseArray = db.toLongSparseArray()
+        val sparseArray = db.toBinarySearchMap()
         items.forEach { (key, value) ->
             assertEquals(value, sparseArray.get(key))
         }
