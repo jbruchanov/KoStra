@@ -181,7 +181,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
         this@BinaryDatabase.forEach { key, s -> put(key, s) }
     }
 
-    override fun toLongSparseArray() = BinarySearchMap<String?>(count()).apply {
+    override fun toBinarySearchMap(): Map<Long, String?> = BinarySearchMap<String?>(count()).apply {
         this@BinaryDatabase.forEach { key, s -> put(key, s) }
     }
 

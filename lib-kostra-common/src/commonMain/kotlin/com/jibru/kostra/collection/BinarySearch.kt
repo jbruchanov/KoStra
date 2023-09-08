@@ -1,6 +1,6 @@
 package com.jibru.kostra.collection
 
-fun LongArray.binarySearch(value: Long, fromIndex: Int = 0, toIndex: Int = this.size): Int {
+internal fun LongArray.binarySearch(value: Long, fromIndex: Int = 0, toIndex: Int = this.size): Int {
     //JVM implementation
     var low: Int = fromIndex
     var high: Int = toIndex - 1
