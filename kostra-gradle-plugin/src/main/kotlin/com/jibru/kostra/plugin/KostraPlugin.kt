@@ -93,7 +93,8 @@ class KostraPlugin : Plugin<Project> {
 
             val deps = mapOf(
                 generateCodeTaskProvider to listOf("compileKotlin.*", "compile.*KotlinAndroid"),
-                generateDatabasesTaskTaskProvider to listOf("generateProjectStructureMetadata", "processResources", "nativeProcessResources", "generate.*Resources"),
+                generateDatabasesTaskTaskProvider to
+                    listOf("generateProjectStructureMetadata", "processResources", "jvmProcessResources", "nativeProcessResources", "generate.*Resources"),
             )
 
             deps.forEach { (task, taskNames) ->
