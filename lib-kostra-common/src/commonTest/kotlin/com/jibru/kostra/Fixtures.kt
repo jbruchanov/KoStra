@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:discouraged-comment-location")
+
 package com.jibru.kostra
 
 import com.jibru.kostra.icu.PluralCategory
