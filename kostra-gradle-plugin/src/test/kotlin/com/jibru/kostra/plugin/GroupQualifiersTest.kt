@@ -34,7 +34,7 @@ class GroupQualifiersTest {
 private class StrictGroupQualifiersArgsProvider : ArgumentsProvider {
     override fun provideArguments(context: ExtensionContext): Stream<out Arguments> {
         return Stream.of(
-            /*strict, path, qualifiers*/
+            //strict, path, qualifiers
             //locale
             Arguments.of(null, "group", GroupQualifiers("group", KQualifiers.Undefined)),
             Arguments.of(null, "GROUP", GroupQualifiers("group", KQualifiers.Undefined)),
