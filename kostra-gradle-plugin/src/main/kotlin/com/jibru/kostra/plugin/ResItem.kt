@@ -30,6 +30,11 @@ sealed class ResItem : Serializable {
     open val resourcesGroup get() = group
     val qualifiers get() = KQualifiers(qualifiersKey)
 
+    protected fun validateInput() {
+        require(key.isNotEmpty()) { "Key is empty, $this" }
+        require(group.isNotEmpty()) { "Group is empty, $this" }
+    }
+
     data class StringRes(
         override val key: String,
         override val value: String,
@@ -37,6 +42,10 @@ sealed class ResItem : Serializable {
     ) : ResItem(), StringValueResItem, Serializable {
         override val group: String get() = String
         override val resourceKeyType: TypeName get() = typeNameOf<StringResourceKey>()
+
+        init {
+            validateInput()
+        }
     }
 
     data class StringArray(
@@ -46,6 +55,10 @@ sealed class ResItem : Serializable {
     ) : ResItem(), Serializable {
         override val group: String get() = StringArray
         override val resourceKeyType: TypeName get() = throw UnsupportedOperationException("StringArray arrays not supported!")
+
+        init {
+            validateInput()
+        }
     }
 
     data class Plurals(
@@ -57,6 +70,10 @@ sealed class ResItem : Serializable {
         override val group: String get() = Plural
 
         override val resourceKeyType: TypeName get() = typeNameOf<PluralResourceKey>()
+
+        init {
+            validateInput()
+        }
 
         companion object {
             val EmptyItems = List<String?>(com.jibru.kostra.icu.PluralCategory.size) { null }
@@ -74,6 +91,10 @@ sealed class ResItem : Serializable {
         override val value get() = file.relativeTo(root, ignoreCase = true)
         override val resourcesGroup: String get() = if (drawable) Drawable else Binary
         override val resourceKeyType: TypeName get() = if (drawable) typeNameOf<PainterResourceKey>() else typeNameOf<BinaryResourceKey>()
+
+        init {
+            validateInput()
+        }
     }
 
     companion object {

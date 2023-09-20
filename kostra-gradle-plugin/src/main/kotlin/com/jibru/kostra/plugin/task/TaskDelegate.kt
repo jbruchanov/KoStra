@@ -49,10 +49,14 @@ object TaskDelegate {
         result.onEach {
             val file = File(outputDir, "${it.name}.kt")
             file.parentFile.mkdirs()
-            if (minify) {
-                file.writeText(it.minify())
-            } else {
-                file.writeText(it.toString())
+            try {
+                if (minify) {
+                    file.writeText(it.minify())
+                } else {
+                    file.writeText(it.toString())
+                }
+            } catch (t: Throwable) {
+                throw IllegalStateException("Unable to generate source code of '$file'", t)
             }
         }
     }

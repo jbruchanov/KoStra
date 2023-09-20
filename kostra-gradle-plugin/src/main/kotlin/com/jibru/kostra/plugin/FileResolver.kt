@@ -2,8 +2,8 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.plugin.ext.distinctByLast
-import java.io.File
 import org.slf4j.LoggerFactory
+import java.io.File
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 
@@ -78,6 +78,8 @@ class FileResolver(
         val items = rootFolder.walkTopDown()
             .tryParallelStream()
             .filter { it.isFile && (!useOnlyFilesWithSize || it.length() > 0) }
+            //ignore any unix hidden files starting with "."
+            .filter { !it.name.startsWith(".") }
             .map { file ->
                 var name = file.name
                 val ext = file.ext()
@@ -88,6 +90,8 @@ class FileResolver(
                 val qualifiers = fileQualifiers ?: subPathQualifiers ?: rootQualifiers
 
                 val key = keyMapper(name.let { if (ext.isNotEmpty()) it.substringBefore(".$ext") else it }, file)
+                    .also { check(it.isNotEmpty()) { "Key must not be empty, file:'$file'" } }
+
                 when {
                     stringFiles.any { regex -> regex.matches(file.name.lowercase()) } -> {
                         check(qualifiers.hasOnlyLocale) { "Only locale qualifiers allowed for strings, file:${file.absolutePath}, qualifiers:$qualifiers" }

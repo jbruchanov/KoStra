@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.EnabledIf
+import java.lang.IllegalStateException
 
 internal class AndroidResourcesXmlParserTest {
 
@@ -263,7 +264,7 @@ internal class AndroidResourcesXmlParserTest {
     }
 
     @Test
-    fun `findStrings WHEN keyMapper then keys updated`() {
+    fun `findStrings WHEN keyMapper THEN keys updated`() {
         val stringXml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <resources>
@@ -274,6 +275,25 @@ internal class AndroidResourcesXmlParserTest {
         val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
         val item = result[0] as ResItem.StringRes
         assertThat(item.key).isEqualTo("text1")
+    }
+
+    @Test
+    fun `findStrings WHEN missing key THEN throws exception`() {
+        val stringXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <resources>
+            <string name="">Text1</string>
+        </resources>
+        """.trimIndent()
+        val xmlParser = AndroidResourcesXmlParser(keyMapper = { key, _ -> key.lowercase() })
+        val ex = assertThrows<IllegalStateException> { xmlParser.findStrings(stringXml, KQualifiers.Undefined) }
+        assertThat(ex.message).contains("Unable to parse string")
+        assertThat(ex.message).contains(
+            """
+            Line number = 3
+            Column number = 35
+            """.trimIndent(),
+        )
     }
 
     private fun isParseXmlEnabled() = AndroidResourcesXmlParser.parseStringArrays
