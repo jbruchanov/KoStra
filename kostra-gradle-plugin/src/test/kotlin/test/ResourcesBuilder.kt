@@ -4,6 +4,7 @@ import org.gradle.internal.impldep.org.apache.commons.lang.StringEscapeUtils
 import java.io.File
 
 private val DefaultLocation = "build/resources-test"
+
 fun resources(
     root: File = File(DefaultLocation),
     autoDelete: Boolean = true,

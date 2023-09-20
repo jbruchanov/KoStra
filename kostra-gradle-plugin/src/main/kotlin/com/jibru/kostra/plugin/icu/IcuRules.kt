@@ -9,6 +9,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
 internal abstract class ReflectionWrapper(val ref: Any)
+
 internal class IcuPluralRules(pluralRules: PluralRules) : ReflectionWrapper(pluralRules) {
     val rules: IcuRuleList by fieldObject(IcuRuleList::class)
 }
@@ -27,6 +28,7 @@ internal sealed class IcuConstraint(ref: Any) : ReflectionWrapper(ref) {
     override fun toString(): String = "${javaClass::getName}:$ref"
 
     class IcuAndConstraint(ref: Any) : IcuBinaryConstraint(ref)
+
     class IcuOrConstraint(ref: Any) : IcuBinaryConstraint(ref)
 
     open class IcuBinaryConstraint(ref: Any) : IcuConstraint(ref) {
@@ -48,6 +50,7 @@ internal sealed class IcuConstraint(ref: Any) : ReflectionWrapper(ref) {
 
     companion object {
         private const val PLURAL_RULES = "com.ibm.icu.text.PluralRules\$"
+
         fun create(ref: Any): IcuConstraint {
             return when (val className = ref::class.java.name.replace(PLURAL_RULES, "")) {
                 "AndConstraint" -> IcuAndConstraint(ref)

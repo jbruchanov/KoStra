@@ -3,6 +3,7 @@ package com.jibru.kostra.database
 internal interface ByteOps {
 
     val bytesPerInt: Int
+
     fun ByteArray.readInt(offset: Int): Int
 
     fun ByteArray.writeInt(value: Int, offset: Int)
@@ -17,6 +18,7 @@ internal interface ByteOps {
     }
 
     fun ByteArray.readByteAsUInt(offset: Int): UInt = this[offset].toUByte().toUInt()
+
     fun ByteArray.writeByte(value: UInt, offset: Int) {
         require(value < Byte.MAX_VALUE.toUInt())
         this[offset] = value.toByte()
@@ -41,6 +43,7 @@ internal interface ByteOps {
         override fun validateInt(value: Int) = delegate.validateInt(value)
 
         override fun ByteArray.readInt(offset: Int): Int = with(delegate) { readInt(offset) }
+
         override fun ByteArray.writeInt(value: Int, offset: Int) = with(delegate) { writeInt(value, offset) }
     }
 }
@@ -50,6 +53,7 @@ internal object ByteOps4Bytes : ByteOps {
     override fun validateInt(value: Int) = value
 
     override val bytesPerInt = 4
+
     override fun ByteArray.readInt(offset: Int) =
         (this[offset].toInt() and 0xFF shl 24) or
             (this[offset + 1].toInt() and 0xFF shl 16) or
@@ -72,6 +76,7 @@ internal object ByteOps2Bytes : ByteOps {
     }
 
     override val bytesPerInt = 2
+
     override fun ByteArray.readInt(offset: Int) =
         (this[offset].toInt() and 0xFF shl 8) or
             (this[offset + 1].toInt() and 0xFF)

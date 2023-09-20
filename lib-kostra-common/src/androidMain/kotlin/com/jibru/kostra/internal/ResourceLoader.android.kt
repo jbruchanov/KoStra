@@ -4,6 +4,7 @@ import com.jibru.kostra.UnableToOpenResourceStream
 import java.io.InputStream
 
 internal actual fun loadResource(key: String): ByteArray = AndroidResourceImpl.getStream(key).readBytes()
+
 internal fun openResource(key: String): InputStream = AndroidResourceImpl.getStream(key)
 
 private object AndroidResourceImpl {

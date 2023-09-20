@@ -13,6 +13,7 @@ enum class PluralCategory(val index: Int, val keyword: String) {
         val map = entries.associateBy { it.keyword }
 
         val size = map.size
+
         fun of(keyword: String) = map.getValue(keyword)
 
         fun Map<PluralCategory, String>.toPluralList() = map.values.map { this[it] }

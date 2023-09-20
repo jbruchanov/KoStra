@@ -195,7 +195,10 @@ class ResourcesKtGeneratorClassTest {
     }
 
     private fun hasRealProjectRef() = RealProjectRef.isDefined()
+
     private fun string(key: String) = ResItem.StringRes(key, value = "", qualifiersKey = KQualifiers.Undefined.key)
+
     private fun plurals(key: String, items: List<String?>) = ResItem.Plurals(key, items = items, qualifiersKey = KQualifiers.Undefined.key)
+
     private fun file(key: String, group: String) = ResItem.FileRes(key, File("X"), qualifiersKey = KQualifiers.Undefined.key, group = group, root = File("."))
 }

@@ -161,6 +161,7 @@ class FixedDecimal : Number, Comparable<FixedDecimal>, IFixedDecimal {
     override fun toByte(): Byte = toInt().toByte()
 
     override fun toShort(): Short = toInt().toShort()
+
     override fun toString(): String {
         return "FixedDecimal(source=$source, " +
             "visibleDecimalDigitCount=$visibleDecimalDigitCount, " +
