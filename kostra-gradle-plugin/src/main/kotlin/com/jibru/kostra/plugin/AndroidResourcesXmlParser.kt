@@ -53,7 +53,11 @@ class AndroidResourcesXmlParser(
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
-                            result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers.key))
+                            try {
+                                result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers.key))
+                            } catch (t: Throwable) {
+                                throwParsingException(TagString, file, xmlReader, t)
+                            }
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -68,7 +72,11 @@ class AndroidResourcesXmlParser(
                                 items.add(xmlReader.text())
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
-                            result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers.key))
+                            try {
+                                result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers.key))
+                            } catch (t: Throwable) {
+                                throwParsingException(TagStringArray, file, xmlReader, t)
+                            }
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -84,7 +92,11 @@ class AndroidResourcesXmlParser(
                                 items[pluralKey] = xmlReader.text()
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
-                            result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers.key))
+                            try {
+                                result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers.key))
+                            } catch (t: Throwable) {
+                                throwParsingException(TagPlurals, file, xmlReader, t)
+                            }
                         } else {
                             xmlReader.skipUntilEndElement()
                         }
@@ -96,6 +108,10 @@ class AndroidResourcesXmlParser(
             }
         }
         return result
+    }
+
+    private fun throwParsingException(tag: String, file: File, xmlReader: XMLStreamReader, t: Throwable): Nothing {
+        throw IllegalStateException("Unable to parse $tag\nFile '$file'\n${xmlReader.location}", t)
     }
 
     private fun XMLStreamReader.parseNestedElements(onItemAction: () -> Unit) {

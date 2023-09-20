@@ -9,7 +9,11 @@ import com.jibru.kostra.plugin.ext.setOf
 data class ResItemKeyDbKey(
     val resItemKey: String,
     val dbRootKey: Int,
-)
+) {
+    init {
+        require(resItemKey.isNotEmpty()) { "Invalid input $this, resItemKey is empty" }
+    }
+}
 
 open class ResItemsProcessor(private val items: List<ResItem>) {
     val distinctItemsByDistinctKey by lazy { items.distinctByLast { it.distinctKey } }

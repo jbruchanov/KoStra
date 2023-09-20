@@ -7,11 +7,11 @@ import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
 import com.jibru.kostra.plugin.ext.takeIfNotEmpty
-import java.io.File
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import test.resources
 import test.testResources
+import java.io.File
 
 class FileResolverTest {
 
@@ -438,6 +438,53 @@ class FileResolverTest {
             ResItem.StringRes("item1", "item1En", KQualifiers("en").key),
             ResItem.StringRes("item1", "item1EnGB", KQualifiers("enGB").key),
             ResItem.StringRes("item1", "item1Cs", KQualifiers("cs").key),
+        )
+    }
+
+    @Test
+    fun `resolve WHEN unexpected files THEN ignored`() = testResources {
+        addFile(".DS_STORE")
+        addFile(".test")
+        addFile(".xml")
+        addFile(".png")
+        addFile(" .test")
+        addFile("  .xml")
+        addFile("  .png")
+
+        buildResources()
+
+        val items = FileResolver().resolve(resourcesRoot)
+
+        //looks like java does trimEnd on windows file name when creating the file
+        assertThat(items).containsExactly(
+            ResItem.FileRes(" ", file(" .test"), KQualifiers.Undefined.key, "root", root = resourcesRoot),
+            ResItem.FileRes("  ", file("  .xml"), KQualifiers.Undefined.key, "root", root = resourcesRoot),
+        )
+    }
+
+    @Test
+    fun `resolve WHEN keyMapper returns empty String THEN throws exception`() = testResources {
+        addFile("test.png")
+        buildResources()
+
+        val resolver = FileResolver(config = FileResolverConfig(keyMapper = { _, _ -> "" }))
+        assertThrows<IllegalStateException> { resolver.resolve(resourcesRoot) }
+    }
+
+    @Test
+    fun `resolve WHEN unexpected file names THEN processed`() = testResources {
+        addFile("values/1.bin")
+        addFile(" 2.test")
+        addFile("values/ 3 .test")
+        addFile("!4.test")
+        buildResources()
+
+        val items = FileResolver().resolve(resourcesRoot)
+        assertThat(items).containsExactly(
+            ResItem.FileRes("1", file("values/1.bin"), KQualifiers.Undefined.key, "values", root = resourcesRoot),
+            ResItem.FileRes(" 2", file(" 2.test"), KQualifiers.Undefined.key, "root", root = resourcesRoot),
+            ResItem.FileRes(" 3 ", file("values/ 3 .test"), KQualifiers.Undefined.key, "values", root = resourcesRoot),
+            ResItem.FileRes("!4", file("!4.test"), KQualifiers.Undefined.key, "root", root = resourcesRoot),
         )
     }
 }
