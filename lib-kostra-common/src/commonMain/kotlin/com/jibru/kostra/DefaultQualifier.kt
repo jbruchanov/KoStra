@@ -11,5 +11,6 @@ interface IDefaultQualifiersProvider {
 @ThreadLocal
 object DefaultQualifiersProvider : IDefaultQualifiersProvider {
     var delegate: IDefaultQualifiersProvider? = null
+
     override fun get(): KQualifiers = delegate?.get() ?: defaultQualifiers()
 }

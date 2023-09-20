@@ -28,7 +28,9 @@ class FileResolver(
 
     private val logger = LoggerFactory.getLogger(FileResolver::class.java)
     private val tag = "FileResolver"
+
     fun resolve(root: File): List<ResItem> = resolve(listOf(root))
+
     fun resolve(roots: List<File>): List<ResItem> {
         val resources = roots
             .tryParallelStream()
@@ -114,6 +116,7 @@ class FileResolver(
     }
 
     private fun <T> Collection<T>.tryParallelStream() = if (config.parallelism) parallelStream() else stream()
+
     private fun <T> Sequence<T>.tryParallelStream() = if (config.parallelism) asStream().parallel() else asStream()
 
     private fun File.findGroupQualifiers(until: File): GroupQualifiers? {

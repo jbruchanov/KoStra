@@ -21,8 +21,11 @@ enum class KDpi(val key: Int, val density: Float, val qualifier: String) {
         private val values = values()
 
         fun fromBits(bits: Int): KDpi = values[bits]
+
         fun KDpi.next() = values[(this.ordinal + 1).coerceAtMost(XXXHDPI.ordinal)]
+
         fun KDpi.prev() = values[(this.ordinal - 1).coerceAtLeast(LDPI.ordinal)]
+
         fun getClosest(density: Float): KDpi {
             if (density.isNaN()) return Undefined
             return when {

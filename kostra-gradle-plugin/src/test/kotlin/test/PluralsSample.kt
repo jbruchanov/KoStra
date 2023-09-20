@@ -25,6 +25,7 @@ sealed class PluralsSample : Iterable<IFixedDecimal> {
 
     class FRange(private val range: ClosedFloatingPointRange<Double>, override val text: String) : PluralsSample() {
         override fun iterator(): Iterator<IFixedDecimal> = iterator(step = 0.125)
+
         fun iterator(step: Double): Iterator<IFixedDecimal> = iterator {
             var now = range.start
             while (now < range.endInclusive) {

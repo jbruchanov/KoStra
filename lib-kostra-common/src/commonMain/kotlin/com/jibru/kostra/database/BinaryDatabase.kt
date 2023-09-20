@@ -206,5 +206,6 @@ private sealed class StringItem {
     val valueLength get() = value?.length ?: 0
 
     data class IntKey(val key: Int, override val value: String?) : StringItem()
+
     data class LongKey(val key: Long, override val value: String?) : StringItem()
 }

@@ -19,6 +19,7 @@ class IcuPluralsDownloader(
     )
 
     fun loadPlurals(): Result = load("plurals.json", "plurals-type-cardinal")
+
     fun loadOrdinals(): Result = load("ordinals.json", "plurals-type-ordinal")
 
     private fun load(url: String, jsonObjName: String): Result {

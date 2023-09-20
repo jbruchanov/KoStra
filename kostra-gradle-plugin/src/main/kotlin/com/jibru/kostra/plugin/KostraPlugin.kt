@@ -192,6 +192,7 @@ class KostraPlugin : Plugin<Project> {
 
     private var fileWatcher = FileWatcher()
     private var fileWatcherJob: Job? = null
+
     private fun updateFileWatcher(target: Project, extension: KostraPluginExtension) {
         fileWatcherJob?.cancel()
         fileWatcherJob = null

@@ -26,6 +26,7 @@ class AndroidResourcesXmlParser(
     private val noFile = File("/")
 
     internal fun findStrings(xml: String, qualifiers: KQualifiers) = findStrings(StringReader(xml), qualifiers, noFile)
+
     fun findStrings(file: File, qualifiers: KQualifiers): List<ResItem> {
         logger.info(file.absolutePath)
         return findStrings(file.reader(), qualifiers, file)
@@ -145,7 +146,9 @@ class AndroidResourcesXmlParser(
     }
 
     private fun XMLStreamReader.attrName() = attr("name")
+
     private fun XMLStreamReader.attrQuantity() = attr("quantity")?.let { PluralCategory.of(it) }
+
     private fun XMLStreamReader.attr(name: String) = (0 until attributeCount)
         .firstOrNull { getAttributeLocalName(it) == name }
         ?.let { getAttributeValue(it) }
