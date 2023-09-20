@@ -102,7 +102,7 @@ private fun packCode(code: String): Int {
     }
 }
 
-@Suppress("ConvertTwoComparisonsToRangeCheck")
+@Suppress("ConvertTwoComparisonsToRangeCheck", "ktlint:standard:discouraged-comment-location")
 private fun Char.validCode(): Int {
     val c = code
     val code = if (c < LetterOffset) c + 32/*'A' vs 'a' offset*/ else c

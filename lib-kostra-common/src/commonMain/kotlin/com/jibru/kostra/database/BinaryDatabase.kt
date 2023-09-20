@@ -4,7 +4,9 @@ import com.jibru.kostra.collection.BinarySearchMap
 import kotlin.math.absoluteValue
 
 private enum class StorageType(val value: UInt) {
-    Undefined(0u), List(1u), KeyValue(2u)
+    Undefined(0u),
+    List(1u),
+    KeyValue(2u),
 }
 
 /**

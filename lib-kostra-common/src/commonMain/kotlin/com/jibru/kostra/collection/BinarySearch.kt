@@ -8,7 +8,14 @@ internal fun LongArray.binarySearch(value: Long, fromIndex: Int = 0, toIndex: In
     while (low <= high) {
         val mid = low + high ushr 1
         val midVal: Long = this[mid]
-        if (midVal < value) low = mid + 1 else if (midVal > value) high = mid - 1 else return mid // key found
+        if (midVal < value) {
+            low = mid + 1
+        } else if (midVal > value) {
+            high = mid - 1
+        } else {
+            // key found
+            return mid
+        }
     }
     return -(low + 1)
 }

@@ -80,6 +80,7 @@ sealed class ResItem : Serializable {
         }
     }
 
+    @Suppress("ktlint:standard:discouraged-comment-location")
     data class FileRes(
         override val key: String,
         val file: File,
