@@ -75,7 +75,7 @@ class KostraPlugin : Plugin<Project> {
             run explicitOrder@{
                 val order = mapOf(
                     generateCodeTaskProvider to listOf("runKtlint.*SourceSet"),
-                    generateDatabasesTaskTaskProvider to listOf("metadata.*ProcessResources"),
+                    generateDatabasesTaskTaskProvider to listOf("metadata.*ProcessResources", "syncPodCompose.*Ios"),
                 )
 
                 if (target.extensions.findByType(KotlinMultiplatformExtension::class.java) != null) {
@@ -92,9 +92,16 @@ class KostraPlugin : Plugin<Project> {
             }
 
             val deps = mapOf(
-                generateCodeTaskProvider to listOf("compileKotlin.*", "compile.*KotlinAndroid"),
+                generateCodeTaskProvider to listOf("compile.*Kotlin.*"),
                 generateDatabasesTaskTaskProvider to
-                    listOf("generateProjectStructureMetadata", "processResources", "jvmProcessResources", "nativeProcessResources", "generate.*Resources"),
+                    listOf(
+                        "generateProjectStructureMetadata",
+                        "processResources",
+                        "jvmProcessResources",
+                        "nativeProcessResources",
+                        "generate.*Resources",
+                        "link.*Framework.*",
+                    ),
             )
 
             deps.forEach { (task, taskNames) ->
