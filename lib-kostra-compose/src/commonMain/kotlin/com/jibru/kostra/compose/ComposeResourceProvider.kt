@@ -62,7 +62,13 @@ fun KResources.painter(key: PainterResourceKey): Painter =
     org.jetbrains.compose.resources.painterResource(assetPath(key, LocalQualifiers.current))
 
 @Composable
-fun KResources.assetPath(key: AssetResourceKey, qualifiers: KQualifiers = LocalQualifiers.current): String =
+fun KResources.assetPath(key: AssetResourceKey): String =
+    binary.get(key, LocalQualifiers.current)
+
+//TODO: default values iOS bug
+//https://github.com/JetBrains/compose-multiplatform/issues/3643
+@Composable
+fun KResources.assetPath(key: AssetResourceKey, qualifiers: KQualifiers): String =
     binary.get(key, qualifiers)
 
 suspend fun KResources.binaryByteArray(key: AssetResourceKey, qualifiers: KQualifiers): ByteArray =

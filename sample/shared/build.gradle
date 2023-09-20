@@ -2,6 +2,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.native.cocoapods")
     id("com.jibru.kostra.resources")
 }
 
@@ -17,15 +18,27 @@ kotlin {
         }
     }
 
+    cocoapods {
+        version = "1.0.0"
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        ios.deploymentTarget = "14.1"
+        podfile = project.file("../appIos/Podfile")
+        framework {
+            baseName = "shared"
+            binaryOption("bundleId", "com.jibru.kostra.sample.shared")
+            binaryOption("bundleVersion", "2")
+            isStatic = true
+        }
+    }
+
     jvm {
         jvmToolchain(libs.versions.jvmtarget.get().toInteger())
     }
     jvmTest
-    /*
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-     */
 
     sourceSets {
         commonMain {
@@ -46,15 +59,9 @@ kotlin {
             dependsOn(commonMain)
         }
 
-        /*
-        androidMain
-        androidUnitTest {
-            //makes AS asking to run unit test on Jvm or android
-            //dependsOn(jvmTest)
-            dependencies {
 
-            }
-        }
+        androidMain
+        androidUnitTest
 
         iosX64Main
         iosArm64Main
@@ -76,7 +83,6 @@ kotlin {
             iosArm64Test.dependsOn(delegate)
             iosSimulatorArm64Test.dependsOn(delegate)
         }
-         */
     }
 }
 

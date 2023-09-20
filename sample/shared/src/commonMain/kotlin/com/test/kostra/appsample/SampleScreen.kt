@@ -75,24 +75,25 @@ fun SampleScreen() = with(SampleScreenDefaults) {
             var localeIndex by remember { mutableStateOf(0) }
             val locale by derivedStateOf { KLocale(locales[localeIndex].languageRegion) }
 
-            val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XXHDPI) }
+            val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XHDPI, KDpi.XXHDPI) }
             var dpiIndex by remember { mutableStateOf(0) }
             val dpi by derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi }
 
             val qualifiers by derivedStateOf { KQualifiers(locale, dpi) }
 
             CompositionLocalProvider(LocalQualifiers provides qualifiers) {
+                Text("KQualifiers:$defaultQualifiers")
                 Text("KLocale")
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
 
-                    ) {
+                ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
                             checked = index == localeIndex,
                             text = locale.languageRegion,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
@@ -101,14 +102,18 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                 Text("Density:${LocalDensity.current}")
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     dpis.forEachIndexed { index, dpi ->
+                        var text = dpi?.name ?: "Dev:${defaultQualifiers.dpi.name}"
+                        if (dpi == KDpi.XXHDPI) {
+                            text += "\n(CS/EN-GB for capital_city asset)"
+                        }
                         TextCheckBox(
                             onCheckedChange = { if (it) dpiIndex = index else Unit },
                             checked = index == dpiIndex,
-                            text = dpi?.name ?: "Device:${defaultQualifiers.dpi.name}",
-                            modifier = Modifier.weight(1f)
+                            text = text,
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
