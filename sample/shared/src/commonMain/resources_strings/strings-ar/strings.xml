@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">إضافة</string>
+    <string name="action_remove">إزالة</string>
+    <string name="color">اللون</string>
+    <string name="plurals">صيغ الجمع</string>
+    <string name="ordinals">الأعداد الترتيبية</string>
+    <string name="type_quantity">اكتب هنا كمية</string>
+</resources>

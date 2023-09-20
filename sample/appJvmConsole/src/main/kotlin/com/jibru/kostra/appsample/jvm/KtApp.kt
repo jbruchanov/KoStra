@@ -52,10 +52,10 @@ fun main() {
         Unit
     }
 
-    Locale.setDefault(Locale("en", "US"))
-    test()
-    Locale.setDefault(Locale("en", "GB"))
-    test()
-    Locale.setDefault(Locale("cs"))
-    test()
+    val codes = listOf("ar", "cs", "en", "enGB", "enUS", "he", "hi", "ja", "ko", "ru", "th")
+    codes.forEach {
+        val (lang, country) = it.padEnd(4, ' ').windowed(2, 2)
+        Locale.setDefault(Locale(lang.trim(), country.trim()))
+        test()
+    }
 }

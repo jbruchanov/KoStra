@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">Добавить</string>
+    <string name="action_remove">Удалить</string>
+    <string name="color">Цвет</string>
+    <string name="plurals">Множественное число</string>
+    <string name="ordinals">Порядковые номера</string>
+    <string name="type_quantity">Введите здесь количество</string>
+</resources>

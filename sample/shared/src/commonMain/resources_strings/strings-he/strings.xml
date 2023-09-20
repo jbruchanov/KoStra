@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">הוסף</string>
+    <string name="action_remove">הסר</string>
+    <string name="color">צבע</string>
+    <string name="plurals">רבים</string>
+    <string name="ordinals">סדרות</string>
+    <string name="type_quantity">הקלד כאן כמות</string>
+</resources>

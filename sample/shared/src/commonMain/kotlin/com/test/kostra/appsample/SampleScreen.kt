@@ -1,13 +1,17 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package com.test.kostra.appsample
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -54,8 +58,7 @@ fun SampleScreen() = with(SampleScreenDefaults) {
     Box(
         modifier = Modifier
             .padding(spacing)
-            .verticalScroll(rememberScrollState())
-            .horizontalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState()),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(spacing),
@@ -64,11 +67,14 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                 .animateContentSize()
                 .wrapContentSize(),
         ) {
-            val locales = remember { listOf(java.util.Locale.getDefault(), java.util.Locale.ENGLISH, java.util.Locale("cs")) }
-            var localeIndex by remember { mutableStateOf(0) }
-            val locale by derivedStateOf { KLocale(locales[localeIndex].toLanguageTag()) }
-
             val defaultQualifiers = LocalQualifiers.current
+            val locales = remember {
+                val codes = listOf("ar", "cs", "en", "enGB", "he", "hi", "ja", "ko", "ru", "th")
+                (listOf(defaultQualifiers.locale) + codes.map { KLocale(it) }).distinct()
+            }
+            var localeIndex by remember { mutableStateOf(0) }
+            val locale by derivedStateOf { KLocale(locales[localeIndex].languageRegion) }
+
             val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XXHDPI) }
             var dpiIndex by remember { mutableStateOf(0) }
             val dpi by derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi }
@@ -77,35 +83,37 @@ fun SampleScreen() = with(SampleScreenDefaults) {
 
             CompositionLocalProvider(LocalQualifiers provides qualifiers) {
                 Text("KLocale")
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(spacing),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                FlowRow(
+                    verticalArrangement = Arrangement.Center,
+
+                    ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
                             checked = index == localeIndex,
-                            text = locale.toLanguageTag(),
+                            text = locale.languageRegion,
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
 
                 Text("DPI: ${defaultQualifiers.dpi}")
                 Text("Density:${LocalDensity.current}")
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(spacing),
-                    verticalAlignment = Alignment.CenterVertically,
+                FlowRow(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     dpis.forEachIndexed { index, dpi ->
                         TextCheckBox(
                             onCheckedChange = { if (it) dpiIndex = index else Unit },
                             checked = index == dpiIndex,
                             text = dpi?.name ?: "Device:${defaultQualifiers.dpi.name}",
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
 
-                Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(spacing)) {
                     Button(onClick = {}) { Text(stringResource(K.string.action_add)) }
                     Button(onClick = {}) { Text(stringResource(K.string.action_remove)) }
                     Button(onClick = {}) { Text(stringResource(K.string.color)) }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">जोड़ें</string>
+    <string name="action_remove">निकालें</string>
+    <string name="color">रंग</string>
+    <string name="plurals">बहुवचन</string>
+    <string name="ordinals">ऑर्डिनल्स</string>
+    <string name="type_quantity">यहां एक मात्रा टाइप करें</string>
+</resources>

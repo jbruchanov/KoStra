@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">追加</string>
+    <string name="action_remove">削除</string>
+    <string name="color">色</string>
+    <string name="plurals">複数形</string>
+    <string name="ordinals">序数</string>
+    <string name="type_quantity">ここに数量を入力します</string>
+</resources>
