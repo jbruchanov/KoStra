@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">เพิ่ม</string>
+    <string name="action_remove">ลบ</string>
+    <string name="color">สี</string>
+    <string name="plurals">พหูพจน์</string>
+    <string name="ordinals">ลำดับ</string>
+    <string name="type_quantity">พิมพ์ปริมาณที่นี่</string>
+</resources>

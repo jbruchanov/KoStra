@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="action_add">추가</string>
+    <string name="action_remove">제거</string>
+    <string name="color">색상</string>
+    <string name="plurals">복수형</string>
+    <string name="ordinals">서수</string>
+    <string name="type_Quantity">여기에 수량을 입력하세요</string>
+</resources>
