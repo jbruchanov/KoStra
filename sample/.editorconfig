@@ -1,0 +1,7 @@
+# Comma-separated list of rules to disable (Since 0.34.0)
+# Note that rules in any ruleset other than the standard ruleset will need to be prefixed
+# by the ruleset identifier.
+[*.{kt,kts,java,xml,gradle,md}]
+ktlint_standard_function-naming = disabled
+# to go for ../.editorconfig
+root = false
