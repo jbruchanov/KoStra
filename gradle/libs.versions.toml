@@ -69,6 +69,7 @@ junitbom = "5.9.3"
 mockk = "1.13.5"
 ktlint = "1.0.0"
 ktlintplugin = "11.6.0"
+ktlintrules-compose = "0.3.0"
 ktor = "2.3.2"
 kmp-buffer = "1.3.0"
 kotlinx-serialisation = "1.5.1"
@@ -119,6 +120,7 @@ kotlinx-coroutines-jdk = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jd
 kotlinx-serialisation-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialisation" }
 kotlinx-serialisation-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialisation" }
 kotlinx-serialisation-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinx-serialisation" }
+ktlintrules-compose = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintrules-compose" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }

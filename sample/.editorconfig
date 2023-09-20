@@ -3,5 +3,6 @@
 # by the ruleset identifier.
 [*.{kt,kts,java,xml,gradle,md}]
 ktlint_standard_function-naming = disabled
+ktlint_compose_modifier-missing-check = disabled
 # to go for ../.editorconfig
 root = false

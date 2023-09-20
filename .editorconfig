@@ -17,6 +17,10 @@ ktlint_standard_function-signature = disabled
 
 ktlint_standard = enabled
 
+# ktlint rules for compose
+compose_allowed_composition_locals = LocalQualifiers
+ktlint_compose = enabled
+
 max_line_length = 180
 ij_kotlin_packages_to_use_import_on_demand = ""
 charset = utf-8
