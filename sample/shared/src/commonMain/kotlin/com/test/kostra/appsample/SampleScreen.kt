@@ -73,13 +73,13 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                 (listOf(defaultQualifiers.locale) + codes.map { KLocale(it) }).distinct()
             }
             var localeIndex by remember { mutableStateOf(0) }
-            val locale by derivedStateOf { KLocale(locales[localeIndex].languageRegion) }
+            val locale by remember { derivedStateOf { KLocale(locales[localeIndex].languageRegion) } }
 
             val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XHDPI, KDpi.XXHDPI) }
             var dpiIndex by remember { mutableStateOf(0) }
-            val dpi by derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi }
+            val dpi by remember { derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi } }
 
-            val qualifiers by derivedStateOf { KQualifiers(locale, dpi) }
+            val qualifiers by remember { derivedStateOf { KQualifiers(locale, dpi) } }
 
             CompositionLocalProvider(LocalQualifiers provides qualifiers) {
                 Text("KQualifiers:$defaultQualifiers")
