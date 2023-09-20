@@ -8,7 +8,7 @@ import kotlin.jvm.JvmInline
 private const val LetterCodeMin = 'a'.code
 private const val LetterCodeMax = 'z'.code
 
-/*-1 to have a as 1, not 0, to avoid clashing with 0 as undefined*/
+//-1 to have a as 1, not 0, to avoid clashing with 0 as undefined
 private const val LetterOffset = LetterCodeMin - 1
 private val LocaleOffsets = intArrayOf(1_00_00_00_00, 1_00_00_00, 1_00_00, 1_00, 1)
 

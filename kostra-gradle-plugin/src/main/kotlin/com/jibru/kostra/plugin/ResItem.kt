@@ -85,7 +85,7 @@ sealed class ResItem : Serializable {
         val file: File,
         override val qualifiersKey: Int,
         override val group: String,
-        val root: File, /* = file.parentFile.parentFile*/
+        val root: File, // = file.parentFile.parentFile
     ) : ResItem(), StringValueResItem, Serializable {
         val drawable get() = group == Drawable
         override val value get() = file.relativeTo(root, ignoreCase = true)
