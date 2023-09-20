@@ -13,8 +13,6 @@ import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.GenerateCodeTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
 import com.jibru.kostra.plugin.task.TaskDelegate
-import java.io.File
-import java.time.LocalDateTime
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -34,6 +32,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.Executable
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
 import org.slf4j.LoggerFactory
+import java.io.File
+import java.time.LocalDateTime
 
 class KostraPlugin : Plugin<Project> {
 
@@ -75,7 +75,7 @@ class KostraPlugin : Plugin<Project> {
             run explicitOrder@{
                 val order = mapOf(
                     generateCodeTaskProvider to listOf("runKtlint.*SourceSet"),
-                    generateDatabasesTaskTaskProvider to listOf("metadata.*ProcessResources", "syncPodCompose.*Ios"),
+                    generateDatabasesTaskTaskProvider to listOf("metadata.*ProcessResources", "syncPodCompose.*Ios", "ios.*ProcessResources"),
                 )
 
                 if (target.extensions.findByType(KotlinMultiplatformExtension::class.java) != null) {
