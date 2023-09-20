@@ -16,3 +16,7 @@ afterEvaluate { p ->
     def task = p.tasks.findByName("lint") ?: p.tasks.findByName("check")
     task.dependsOn ktlintCheck
 }
+
+dependencies {
+    ktlintRuleset libs.ktlintrules.compose
+}
