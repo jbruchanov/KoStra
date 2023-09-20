@@ -2,13 +2,13 @@ package com.jibru.kostra.internal
 
 import com.jibru.kostra.Fixtures
 import com.jibru.kostra.Fixtures.Resources.K
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
-import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.icu.FixedDecimal
-import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class PluralDatabaseTest {
@@ -17,10 +17,11 @@ class PluralDatabaseTest {
 
     @Test
     fun get() {
-        assertFailsWith<IllegalStateException> { db.get(K.plural.dog, KQualifiers.Undefined, 1, type = Plurals.Type.Plurals) }
-        assertFailsWith<IllegalStateException> { db.get(K.plural.dog, KQualifiers.Undefined, 2, type = Plurals.Type.Plurals) }
-        //this doesn't fall back as 2f in cs translates to 'few', but there is no definition in global for it
-        assertFailsWith<MissingResourceException> { assertEquals("dogs", db.get(K.plural.dog, KQualifiers("cs-CZ"), 2, type = Plurals.Type.Plurals)) }
+        assertEquals("dogs", db.get(K.plural.dog, KQualifiers.Undefined, 1, type = Plurals.Type.Plurals))
+        assertEquals("dogs", db.get(K.plural.dog, KQualifiers.Undefined, 2, type = Plurals.Type.Plurals))
+        //fallback to default-other
+        assertEquals("dogs", db.get(K.plural.dog, KQualifiers("cs-CZ"), 2, type = Plurals.Type.Plurals))
+
         assertEquals("dog-en", db.get(K.plural.dog, KQualifiers("en"), 1, type = Plurals.Type.Plurals))
         assertEquals("dogs-en", db.get(K.plural.dog, KQualifiers("en"), 2, type = Plurals.Type.Plurals))
         assertEquals("dog-en", db.get(K.plural.dog, KQualifiers("en-US"), 1, type = Plurals.Type.Plurals))
@@ -42,7 +43,7 @@ class PluralDatabaseTest {
         assertEquals("brouk", db.get(K.plural.bug, KQualifiers("cs-CZ"), 1, type = Plurals.Type.Plurals))
         assertEquals("brouků", db.get(K.plural.bug, KQualifiers("cs"), 100, type = Plurals.Type.Plurals))
 
-        assertFailsWith<IllegalStateException> { db.get(PluralResourceKey(10), KQualifiers.Undefined, 0, type = Plurals.Type.Plurals) }
+        assertFailsWith<MissingResourceException> { db.get(PluralResourceKey(10), KQualifiers.Undefined, 0, type = Plurals.Type.Plurals) }
         assertFailsWith<MissingResourceException> { db.get(PluralResourceKey(10), KQualifiers("de"), 0, type = Plurals.Type.Plurals) }
     }
 

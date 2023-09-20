@@ -1,10 +1,10 @@
 package com.jibru.kostra.internal
 
 import com.jibru.kostra.KLocale
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
-import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.icu.IFixedDecimal
 import com.jibru.kostra.icu.OrdinalRuleSpecs
@@ -24,14 +24,16 @@ open class PluralDatabase(localeDatabases: Map<KLocale, String>) : Plurals {
     }
 
     override fun get(key: PluralResourceKey, qualifiers: KQualifiers, quantity: IFixedDecimal, type: Plurals.Type): String {
-        val pluralCategory = type.pluralCategory(quantity, qualifiers.locale)
         //try locale+region if exists
-        return qualifiers.locale.takeIf { it.hasRegion() }?.let { getValue(key, qualifiers.locale, pluralCategory) }
+        return qualifiers.locale.takeIf { it.hasRegion() }
+            ?.let { locale -> getValue(key, qualifiers.locale, type.pluralCategory(quantity, locale)) }
             //try locale only
-            ?: qualifiers.locale.takeIf { it != KLocale.Undefined }?.let { getValue(key, qualifiers.locale.languageLocale(), pluralCategory) }
+            ?: qualifiers.locale.takeIf { it != KLocale.Undefined }
+                ?.let { qualifiers.locale.languageLocale() }
+                ?.let { locale -> getValue(key, locale, type.pluralCategory(quantity, locale)) }
             //fallback
-            ?: getValue(key, KLocale.Undefined, pluralCategory)
-            ?: throw MissingResourceException(key, qualifiers, "plural-${pluralCategory.keyword}")
+            ?: getValue(key, KLocale.Undefined, PluralCategory.Other)
+            ?: throw MissingResourceException(key, qualifiers, "plural")
     }
 
     private fun Plurals.Type.pluralCategory(quantity: IFixedDecimal, locale: KLocale): PluralCategory {
