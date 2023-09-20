@@ -6,11 +6,11 @@ import com.jibru.kostra.K
 import com.jibru.kostra.KDpi
 import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.Resources
+import com.jibru.kostra.assetPath
 import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.ordinal
 import com.jibru.kostra.plural
 import com.jibru.kostra.string
-import com.jibru.kostra.assetPath
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
@@ -21,6 +21,13 @@ import platform.posix.fopen
 import platform.posix.fseek
 import platform.posix.ftell
 
+/*
+    run configuration from jIDEA has by default app project run folder, but the kexe is in build/../ => fails with Unable to open DB exception
+    to make working proper test: just build the project and run it manually
+    ./gradlew appNativeConsole:build
+    cd appNativeConsole/build/bin/native/releaseExecutable/
+    ./appNativeConsole.kexe (exe or whatever appropriate extension)
+ */
 fun main(@Suppress("UNUSED_PARAMETER") args: Array<String>) {
     val test = {
         println("-".repeat(32))
@@ -49,12 +56,11 @@ fun main(@Suppress("UNUSED_PARAMETER") args: Array<String>) {
         println("$assetPath, fileSize:${fileSize(assetPath)}")
     }
 
-    DefaultQualifiersProvider.delegate = kQualifiers("enUS", KDpi.XXHDPI)
-    test()
-    DefaultQualifiersProvider.delegate = kQualifiers("enGB", KDpi.XXHDPI)
-    test()
-    DefaultQualifiersProvider.delegate = kQualifiers("cs", KDpi.XXHDPI)
-    test()
+    val codes = listOf("ar", "cs", "en", "enGB", "enUS", "he", "hi", "ja", "ko", "ru", "th")
+    codes.forEach {
+        DefaultQualifiersProvider.delegate = kQualifiers(it, KDpi.XXHDPI)
+        test()
+    }
 }
 
 private fun fileSize(name: String): Int {
