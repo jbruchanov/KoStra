@@ -29,10 +29,16 @@ compose.desktop {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(project(":shared"))
     implementation(libs.kostra.common)
     implementation(libs.kostra.compose)
     implementation(compose.desktop.currentOs)
     implementation(libs.bundles.jetbrains.compose.app)
+
+    implementation(libs.bundles.unittest.jvm)
 }

@@ -25,9 +25,8 @@ import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.Executable
+import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractExecutable
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
@@ -101,7 +100,7 @@ class KostraPlugin : Plugin<Project> {
             ?.findByName("native")
             ?.let { it as? KotlinNativeTarget }
             ?.binaries
-            ?.filter { it is Executable && it.outputKind == NativeOutputKind.EXECUTABLE }
+            ?.filterIsInstance<AbstractExecutable>()
             ?.map { it.name.capitalized() to it.outputDirectory }
             ?.onEach { (name, outputDir) ->
                 //copy predefined resources
