@@ -6,9 +6,6 @@ package com.jibru.kostra.plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
-import com.jibru.kostra.plugin.KostraPluginConfig.outputDatabasesDir
-import com.jibru.kostra.plugin.KostraPluginConfig.outputResourcesDir
-import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.GenerateCodeTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
@@ -25,8 +22,8 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.configurationcache.extensions.capitalized
-import org.gradle.language.jvm.tasks.ProcessResources
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.Executable
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -59,59 +56,13 @@ class KostraPlugin : Plugin<Project> {
 
         val generateDatabasesTaskTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateDatabases, GenerateDatabasesTask::class.java) {
             it.resources.set(analyseResources.flatMap { it.outputFile })
-            it.output.set(extension.outputDatabasesDir())
+            it.databaseDir.set(extension.outputDatabaseDirName.get())
+            it.outputDir.set(extension.outputResourcesDir())
             it.dependsOn(analyseResources)
         }
 
         target.tasks.findByName("clean")?.apply {
             finalizedBy(generateCodeTaskProvider)
-        }
-
-        target.afterEvaluate {
-            //TODO is there better way ?
-
-            //prevent of Reason: Task ':shared:runKtlint.*SourceSet' uses this output of task ':shared:generateCode'
-            //without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed
-            run explicitOrder@{
-                val order = mapOf(
-                    generateCodeTaskProvider to listOf("runKtlint.*SourceSet"),
-                    generateDatabasesTaskTaskProvider to listOf("metadata.*ProcessResources", "syncPodCompose.*Ios", "ios.*ProcessResources"),
-                )
-
-                if (target.extensions.findByType(KotlinMultiplatformExtension::class.java) != null) {
-                    target.tasks.register("metadataCommonMainProcessResources", ProcessResources::class.java) {
-                        it.mustRunAfter(generateDatabasesTaskTaskProvider.get())
-                    }
-                }
-
-                order.forEach { (task, taskNames) ->
-                    val regexps = taskNames.map { it.toRegex() }
-                    val tasks = target.tasks.filter { t -> regexps.any { regex -> t.name.matches(regex) } }
-                    tasks.onEach { it.mustRunAfter(task) }
-                }
-            }
-
-            val deps = mapOf(
-                generateCodeTaskProvider to listOf("compile.*Kotlin.*"),
-                generateDatabasesTaskTaskProvider to
-                    listOf(
-                        "generateProjectStructureMetadata",
-                        "processResources",
-                        "jvmProcessResources",
-                        "nativeProcessResources",
-                        "generate.*Resources",
-                        "link.*Framework.*",
-                    ),
-            )
-
-            deps.forEach { (task, taskNames) ->
-                val regexps = taskNames.map { it.toRegex() }
-                val tasks = target.tasks.filter { t -> regexps.any { regex -> t.name.matches(regex) } }
-                tasks.onEach { it.dependsOn(task) }
-                if (tasks.isNotEmpty()) {
-                    logger.info("KostraPlugin update tasks deps tasks:${tasks.joinToString { "'${it.name}'" }} dependsOn '${task.name}'")
-                }
-            }
         }
 
         target.defaultTasks(generateCodeTaskProvider.name)
@@ -128,14 +79,18 @@ class KostraPlugin : Plugin<Project> {
 
         target.afterEvaluate { project ->
             if (extension.autoConfig.get()) {
-                tryUpdateSourceSets(project, extension)
-                tryAddNativeCopyTasks(project, extension)
+                tryUpdateSourceSets(project, extension, generateCodeTaskProvider, generateDatabasesTaskTaskProvider)
+                tryAddNativeCopyTasks(project, extension, generateDatabasesTaskTaskProvider)
             }
             updateFileWatcher(target, extension)
         }
     }
 
-    private fun tryAddNativeCopyTasks(project: Project, extension: KostraPluginExtension) {
+    private fun tryAddNativeCopyTasks(
+        project: Project,
+        extension: KostraPluginExtension,
+        generateDbTaskProvider: TaskProvider<GenerateDatabasesTask>,
+    ) {
         val otherTaskDeps = { task: Task, linkNativeVariant: String ->
             project.tasks.getByName("link${linkNativeVariant}Native").dependsOn(task)
             project.tasks.getByName("nativeProcessResources").mustRunAfter(task)
@@ -160,19 +115,19 @@ class KostraPlugin : Plugin<Project> {
                 //copy generated string dbs
                 project.tasks.register(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("DBs", name), Copy::class.java) {
                     it.group = KostraPluginConfig.Tasks.Group
-                    it.from(extension.outputDatabasesDir())
-                    it.into(File(outputDir, extension.outputDatabaseDirName.get()))
+                    it.from(generateDbTaskProvider)
+                    it.into(outputDir)
                     otherTaskDeps(it, name)
-                    it.dependsOn(project.tasks.getByName(KostraPluginConfig.Tasks.GenerateDatabases))
                 }
             }
     }
 
-    private fun tryUpdateSourceSets(project: Project, extension: KostraPluginExtension) {
-        val outputSourceDir = extension.outputSourceDir().get()
-        val outputResourcesDir = extension.outputResourcesDir().get()
-
-        //jvm only targets, not KMP involved
+    private fun tryUpdateSourceSets(
+        project: Project,
+        extension: KostraPluginExtension,
+        generateCodeTaskProvider: TaskProvider<GenerateCodeTask>,
+        generateDbTaskProvider: TaskProvider<GenerateDatabasesTask>,
+    ) {
         run JavaPlugin@{
             (project.extensions.findByType(JavaPluginExtension::class.java) ?: return@JavaPlugin)
                 .sourceSets
@@ -182,15 +137,14 @@ class KostraPlugin : Plugin<Project> {
                         logger.warn("Kostra: ${project.name}:main source set not found, unable to finish auto setup!")
                         return@let
                     }
-                    logger.info("Java added sourceSet:${outputSourceDir.absolutePath}")
                     //let java know about kostra sourceDir
-                    mainSourceSet.java.srcDir(outputSourceDir)
+                    mainSourceSet.java.srcDir(generateCodeTaskProvider)
 
-                    //put into kostra extension the resource folders
+                    //put into kostra extension the resource folders, to let KGP know what we currently have
                     extension.resourceDirs.set(extension.resourceDirs.get() + mainSourceSet.resources.srcDirs)
 
                     //let java know about kostra resource dir
-                    mainSourceSet.resources.srcDir(outputResourcesDir)
+                    mainSourceSet.resources.srcDir(generateDbTaskProvider)
                     logger.info("Java updated resourceDirs:${mainSourceSet.resources.srcDirs.joinToString()}")
                 }
         }
@@ -204,16 +158,13 @@ class KostraPlugin : Plugin<Project> {
                         logger.warn("Kostra: ${project.name}:commonMain source set not found, unable to finish auto setup!")
                         return@let
                     }
-                    logger.info("KMP added sourceSet:${outputSourceDir.absolutePath}")
-                    //let java know about kostra sourceDir
-                    commonMainSourceSet.kotlin.srcDir(outputSourceDir)
 
+                    //let java know about kostra sourceDir
+                    commonMainSourceSet.kotlin.srcDir(generateCodeTaskProvider)
                     //put into kostra extension the resource folders
                     extension.resourceDirs.set(extension.resourceDirs.get() + commonMainSourceSet.resources.srcDirs)
-
-                    //let java know about kostra resource dir
-                    commonMainSourceSet.resources.srcDir(outputResourcesDir)
-                    logger.info("KMP updated resourceDirs:${commonMainSourceSet.resources.srcDirs.joinToString()}")
+                    //let KMP know about kostra resource dir
+                    commonMainSourceSet.resources.srcDir(generateDbTaskProvider)
                 }
         }
 
@@ -232,9 +183,9 @@ class KostraPlugin : Plugin<Project> {
                     }
                     //add kostra resources part of android resources (not res <- android resources, just "jar" resources)
                     //we don't want androidResources.resourceDirs here, those are parsed and converted into own db
-                    resources.srcDir(outputResourcesDir)
                     resources.srcDir(extension.resourceDirs.get())
-                    logger.info("Android updated resourceDirs:\n${resources.srcDirs.joinToString()}")
+                    //add kostra db as part of android resources
+                    resources.srcDir(generateDbTaskProvider)
                 }
         }
     }

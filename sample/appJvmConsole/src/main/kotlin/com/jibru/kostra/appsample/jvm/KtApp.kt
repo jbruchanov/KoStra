@@ -16,7 +16,7 @@ import javax.imageio.ImageIO
 fun main() {
     val test = {
         println("-".repeat(32))
-        println("Current locale:${Locale.getDefault()}")
+        println("Current locale:${Locale.getDefault().toLanguageTag()}")
         println("Strings:")
         val items = listOf(K.string.actionAdd, K.string.actionRemove, K.string.color, K.string.plurals, K.string.ordinals)
         println(items.joinToString { Resources.string(it) })
