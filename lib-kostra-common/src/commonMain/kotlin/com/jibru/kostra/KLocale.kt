@@ -8,7 +8,7 @@ import kotlin.jvm.JvmInline
 private const val LetterCodeMin = 'a'.code
 private const val LetterCodeMax = 'z'.code
 
-//-1 to have a as 1, not 0, to avoid clashing with 0 as undefined
+//-1 to have 'a' as 1, not 0, to avoid clashing with 0 as undefined
 private const val LetterOffset = LetterCodeMin - 1
 private val LocaleOffsets = intArrayOf(1_00_00_00_00, 1_00_00_00, 1_00_00, 1_00, 1)
 
@@ -78,7 +78,6 @@ private fun packLanguageRegion(language: String, region: String?): Int {
     val region = if (region?.getOrNull(0) == 'r') region.substring(1) else region
     require(language.isEmpty() || language.length == 2) { "Invalid language:'$language', must be 0 or 2 chars!" }
     require(region.isNullOrEmpty() || region.length == 2) { "Invalid region:'$region', must be null, 0 or 2 chars!" }
-    if (language.isEmpty()) return 0
     if (language.isEmpty()) return 0
     val result =
         ((language[0].validCode() - LetterOffset) * LocaleOffsets[1]) +
