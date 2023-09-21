@@ -22,12 +22,17 @@ kotlin {
     jvmToolchain(libs.versions.jvmtarget.get().toInt())
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 application {
     mainClass.set("com.jibru.kostra.appsample.jvm.KtAppKt")
 }
 
 dependencies {
     implementation(libs.kostra.common)
+    implementation(libs.bundles.unittest.jvm)
 }
 
 kostra {
