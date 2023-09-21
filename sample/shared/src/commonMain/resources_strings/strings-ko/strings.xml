@@ -5,5 +5,5 @@
     <string name="color">색상</string>
     <string name="plurals">복수형</string>
     <string name="ordinals">서수</string>
-    <string name="type_Quantity">여기에 수량을 입력하세요</string>
+    <string name="type_quantity">여기에 수량을 입력하세요</string>
 </resources>
