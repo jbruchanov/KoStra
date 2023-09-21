@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
-import java.io.File
 import org.gradle.api.Project
+import java.io.File
 
 object KostraPluginConfig {
     const val DslObjectName = "kostra"
@@ -18,7 +18,6 @@ object KostraPluginConfig {
     fun KostraPluginExtension.analysisFile() = File(outputDir.get(), "resources.obj")
     fun KostraPluginExtension.outputSourceDir() = outputDir.map { File(it, "src") }
     fun KostraPluginExtension.outputResourcesDir() = outputDir.map { File(it, "resources") }
-    fun KostraPluginExtension.outputDatabasesDir() = File(outputResourcesDir().get(), outputDatabaseDirName.get())
 
     fun Project.defaultOutputDir() = File(buildDir, "kostra")
     fun Project.fileWatcherLog() = File(defaultOutputDir(), "filewatcher.log")

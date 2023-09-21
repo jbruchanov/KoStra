@@ -5,23 +5,29 @@ import com.jibru.kostra.database.BinaryDatabase
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResItemsProcessor
-import java.io.File
-import java.io.FileInputStream
-import java.io.ObjectInputStream
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 
 abstract class GenerateDatabasesTask : DefaultTask() {
 
     @get:InputFile
     abstract val resources: RegularFileProperty
 
+    @get:Input
+    @get:Optional
+    abstract val databaseDir: Property<String>
+
     @get:OutputDirectory
-    abstract val output: Property<File>
+    abstract val outputDir: Property<File>
 
     init {
         group = KostraPluginConfig.Tasks.Group
@@ -32,14 +38,14 @@ abstract class GenerateDatabasesTask : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         val items = ObjectInputStream(FileInputStream(resources.get().asFile)).readObject() as List<ResItem>
         val processor = ResItemsProcessor(items)
-        val root = output.get()
-        root.mkdirs()
-
-        saveDataIntoDb(data = processor.stringsForDbs, "${ResItem.String}-%s.db", root)
-        saveDataIntoDb(data = processor.pluralsForDbs, "${ResItem.Plural}-%s.db", root)
+        val outDir = outputDir.get()
+        val dbDir = databaseDir.orNull?.let { File(outDir, it) } ?: outDir
+        dbDir.mkdirs()
+        saveDataIntoDb(data = processor.stringsForDbs, "${ResItem.String}-%s.db", dbDir)
+        saveDataIntoDb(data = processor.pluralsForDbs, "${ResItem.Plural}-%s.db", dbDir)
 
         run {
-            val db = File(root, "${ResItem.Binary}.db")
+            val db = File(dbDir, "${ResItem.Binary}.db")
             val data = BinaryDatabase().apply { setPairs(processor.otherForDbs) }.save()
             db.writeBytes(data)
         }
