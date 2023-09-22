@@ -45,16 +45,16 @@ class ResourcesKtGenerator(
             .apply {
                 if (useAliasImports) {
                     if (hasStrings) {
-                        addAliasedImport(StringResourceKey::class, "S")
+                        addAliasedImport(StringResourceKey::class)
                     }
                     if (hasPlurals) {
-                        addAliasedImport(PluralResourceKey::class, "P")
+                        addAliasedImport(PluralResourceKey::class)
                     }
                     if (hasDrawables) {
-                        addAliasedImport(PainterResourceKey::class, "D")
+                        addAliasedImport(PainterResourceKey::class)
                     }
                     if (hasOthers) {
-                        addAliasedImport(BinaryResourceKey::class, "B")
+                        addAliasedImport(BinaryResourceKey::class)
                     }
                 }
             }
@@ -222,6 +222,18 @@ class ResourcesKtGenerator(
                 .build(),
         )
         return this
+    }
+
+    private fun FileSpec.Builder.addAliasedImport(kClass: KClass<out ResourceKey>): FileSpec.Builder =
+        apply { addAliasedImport(kClass, AliasedImports.getValue(kClass)) }
+
+    companion object {
+        internal val AliasedImports = mapOf(
+            StringResourceKey::class to "S",
+            PluralResourceKey::class to "P",
+            PainterResourceKey::class to "D",
+            BinaryResourceKey::class to "B",
+        )
     }
 }
 
