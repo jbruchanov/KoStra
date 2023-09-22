@@ -66,7 +66,7 @@ class ResourcesKtGeneratorResourcesTest {
               object audio {
                 val sound: B = B(1)
               }
-              object drawable {
+              object painter {
                 val image: D = D(2)
               }
             }

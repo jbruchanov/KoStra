@@ -27,7 +27,7 @@ object Fixtures {
                 val bugFormat = PluralResourceKey(3)
             }
 
-            object drawable {
+            object painter {
                 val undefinedDpi = PainterResourceKey(1)
                 val xxHdpiOnly = PainterResourceKey(2)
                 val multipleDpi = PainterResourceKey(3)
@@ -90,30 +90,30 @@ object Fixtures {
             ),
         )
 
-        val drawableResources = create(
+        val painterResources = create(
             files = FileMemoryReferences(
                 mapOf(
                     KQualifiers.Undefined to mapOf(
-                        K.drawable.undefinedDpi to "undefinedDpiDefault",
-                        K.drawable.multipleDpi to "multipleDpiDefault",
-                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleDefault",
+                        K.painter.undefinedDpi to "undefinedDpiDefault",
+                        K.painter.multipleDpi to "multipleDpiDefault",
+                        K.painter.multipleDpiLocale to "multipleDpiKLocaleDefault",
                     ),
                     KQualifiers(dpi = KDpi.XXHDPI) to mapOf(
-                        K.drawable.xxHdpiOnly to "xxHdpiOnly",
-                        K.drawable.multipleDpi to "multipleDpiXXHDPI",
+                        K.painter.xxHdpiOnly to "xxHdpiOnly",
+                        K.painter.multipleDpi to "multipleDpiXXHDPI",
                     ),
                     KQualifiers(dpi = KDpi.XXXHDPI) to mapOf(
-                        K.drawable.multipleDpi to "multipleDpiXXXHDPI",
-                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleXXXHDPI",
+                        K.painter.multipleDpi to "multipleDpiXXXHDPI",
+                        K.painter.multipleDpiLocale to "multipleDpiKLocaleXXXHDPI",
                     ),
                     KQualifiers("en", KDpi.XXHDPI) to mapOf(
-                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnXXHDPI",
+                        K.painter.multipleDpiLocale to "multipleDpiKLocaleEnXXHDPI",
                     ),
                     KQualifiers("en-GB", KDpi.Undefined) to mapOf(
-                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnGBUndefined",
+                        K.painter.multipleDpiLocale to "multipleDpiKLocaleEnGBUndefined",
                     ),
                     KQualifiers("en-GB", KDpi.XXXHDPI) to mapOf(
-                        K.drawable.multipleDpiLocale to "multipleDpiKLocaleEnGBXXXHDPI",
+                        K.painter.multipleDpiLocale to "multipleDpiKLocaleEnGBXXXHDPI",
                     ),
                 ),
             ),

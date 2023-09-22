@@ -88,10 +88,10 @@ sealed class ResItem : Serializable {
         override val group: String,
         val root: File, // = file.parentFile.parentFile
     ) : ResItem(), StringValueResItem, Serializable {
-        val drawable get() = group == Drawable
+        val painter get() = group == Painter
         override val value get() = file.relativeTo(root, ignoreCase = true)
-        override val resourcesGroup: String get() = if (drawable) Drawable else Binary
-        override val resourceKeyType: TypeName get() = if (drawable) typeNameOf<PainterResourceKey>() else typeNameOf<BinaryResourceKey>()
+        override val resourcesGroup: String get() = if (painter) Painter else Binary
+        override val resourceKeyType: TypeName get() = if (painter) typeNameOf<PainterResourceKey>() else typeNameOf<BinaryResourceKey>()
 
         init {
             validateInput()
@@ -99,7 +99,7 @@ sealed class ResItem : Serializable {
     }
 
     companion object {
-        const val Drawable = "drawable"
+        const val Painter = "painter"
         const val String = "string"
         const val Binary = "binary"
         const val Plural = "plural"
