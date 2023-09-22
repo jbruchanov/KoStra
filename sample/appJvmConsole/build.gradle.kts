@@ -4,6 +4,8 @@ plugins {
     id("com.jibru.kostra.resources")
 }
 
+apply(from = "${rootProject.projectDir}/../build-ktlint.gradle")
+
 java {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmtarget.get())
     targetCompatibility = JavaVersion.toVersion(libs.versions.jvmtarget.get())

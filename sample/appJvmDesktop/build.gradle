@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.compose")
 }
 
+apply from: "$rootProject.projectDir/../build-ktlint.gradle"
+
 java {
     sourceCompatibility = libs.versions.jvmtarget.get()
     targetCompatibility = libs.versions.jvmtarget.get()
