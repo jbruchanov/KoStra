@@ -39,22 +39,22 @@ object TaskDelegate {
             useAliasImports = KostraPluginConfig.AliasedImports,
         ).let {
             buildList {
-                add(it.generateKClass())
-                add(it.generateResources())
+                add(it.generateKClass() to KostraPluginConfig.AliasedImports)
+                add(it.generateResources() to false)
                 if (composeDefaults) {
-                    add(it.generateComposeDefaults())
+                    add(it.generateComposeDefaults() to false)
                 }
             }
         }
         outputDir.deleteRecursively()
-        result.onEach {
-            val file = File(outputDir, "${it.name}.kt")
+        result.onEach { (fileSpec, fixAliasImports) ->
+            val file = File(outputDir, "${fileSpec.name}.kt")
             file.parentFile.mkdirs()
             try {
                 if (minify) {
-                    file.writeText(it.minify().fixAliasImports())
+                    file.writeText(fileSpec.minify().fixAliasImports(fixAliasImports))
                 } else {
-                    file.writeText(it.toString().fixAliasImports())
+                    file.writeText(fileSpec.toString().fixAliasImports(fixAliasImports))
                 }
             } catch (t: Throwable) {
                 throw IllegalStateException("Unable to generate source code of '$file'", t)
