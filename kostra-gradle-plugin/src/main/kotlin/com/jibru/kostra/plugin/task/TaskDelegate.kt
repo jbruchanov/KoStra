@@ -2,6 +2,7 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.FileResolver
 import com.jibru.kostra.plugin.FileResolverConfig
+import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResourcesKtGenerator
 import com.jibru.kostra.plugin.ext.minify
@@ -35,7 +36,7 @@ object TaskDelegate {
             items = items,
             className = kClassName,
             resDbsFolderName = resDbsFolderName,
-            useAliasImports = false,
+            useAliasImports = KostraPluginConfig.AliasedImports,
         ).let {
             buildList {
                 add(it.generateKClass())
@@ -51,13 +52,24 @@ object TaskDelegate {
             file.parentFile.mkdirs()
             try {
                 if (minify) {
-                    file.writeText(it.minify())
+                    file.writeText(it.minify().fixAliasImports())
                 } else {
-                    file.writeText(it.toString())
+                    file.writeText(it.toString().fixAliasImports())
                 }
             } catch (t: Throwable) {
                 throw IllegalStateException("Unable to generate source code of '$file'", t)
             }
         }
     }
+}
+
+//https://github.com/square/kotlinpoet/issues/1696
+private fun String.fixAliasImports(useAliasImports: Boolean = KostraPluginConfig.AliasedImports): String {
+    if (!useAliasImports) return this
+    var result = this
+    ResourcesKtGenerator.AliasedImports.forEach { (klass, alias) ->
+        //" " to avoid replacing imports
+        result = result.replace(" " + requireNotNull(klass.simpleName), " $alias")
+    }
+    return result
 }

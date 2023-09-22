@@ -10,6 +10,7 @@ object KostraPluginConfig {
     const val PackageNameIcu = "$PackageName.icu"
     const val KClassName = "$PackageName.K"
     const val ResourcePropertyName = "Resources"
+    const val AliasedImports = true
 
     //looks like _kostra is ignored
     const val ResourceDbFolderName = "kresources"
