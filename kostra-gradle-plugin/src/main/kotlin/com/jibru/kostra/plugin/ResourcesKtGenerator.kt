@@ -279,7 +279,7 @@ private fun TypeSpec.Builder.addLongKeyObjectWithProperties(
     items: Set<ResItemKeyDbKey>,
     objectName: String,
 ) {
-    val type = if (objectName == ResItem.Drawable) PainterResourceKey::class else BinaryResourceKey::class
+    val type = if (objectName == ResItem.Painter) PainterResourceKey::class else BinaryResourceKey::class
     addType(
         TypeSpec
             .objectBuilder(objectName)

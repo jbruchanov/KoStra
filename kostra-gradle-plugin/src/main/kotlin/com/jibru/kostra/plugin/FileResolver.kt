@@ -10,8 +10,8 @@ import kotlin.streams.asStream
 data class FileResolverConfig(
     val keyMapper: (String, File) -> String = { key, _ -> key },
     val stringFiles: Set<Regex> = setOf("string.*\\.xml".toRegex()),
-    val drawableGroups: Set<Regex> = setOf("drawables?.*".toRegex(), "mipmap?.*".toRegex(), "image?.*".toRegex()),
-    val drawableExtensions: Set<String> = setOf("jpg", "jpeg", "png", "webp", "bmp", "xml"),
+    val imageGroups: Set<Regex> = setOf("drawables?.*".toRegex(), "mipmap?.*".toRegex(), "image?.*".toRegex()),
+    val imageExtensions: Set<String> = setOf("jpg", "jpeg", "png", "webp", "bmp", "xml"),
     val useOnlyFilesWithSize: Boolean = true,
     val parallelism: Boolean = false,
     val strictLocale: Boolean = true,
@@ -100,8 +100,8 @@ class FileResolver(
                         androidResourcesXmlParser.findStrings(file, qualifiers)
                     }
 
-                    drawableGroups.any { regex -> regex.matches(rootGroup) } && drawableExtensions.contains(ext.lowercase()) ->
-                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = ResItem.Drawable))
+                    imageGroups.any { regex -> regex.matches(rootGroup) } && imageExtensions.contains(ext.lowercase()) ->
+                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = ResItem.Painter))
 
                     else -> listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = rootGroup))
                 }.also {

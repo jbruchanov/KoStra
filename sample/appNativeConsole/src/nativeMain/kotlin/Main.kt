@@ -52,7 +52,7 @@ fun main(@Suppress("UNUSED_PARAMETER") args: Array<String>) {
         println((0..5).joinToString { Resources.ordinal(K.plural.day_x, it, it) })
 
         println("Images:")
-        val assetPath = Resources.assetPath(K.drawable.capital_city)
+        val assetPath = Resources.assetPath(K.painter.capital_city)
         println("$assetPath, fileSize:${fileSize(assetPath)}")
     }
 

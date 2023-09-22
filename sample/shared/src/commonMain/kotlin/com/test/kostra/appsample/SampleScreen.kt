@@ -124,8 +124,8 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                     Button(onClick = {}) { Text(stringResource(K.string.color)) }
                 }
 
-                Text(assetPath(K.drawable.capital_city))
-                Image(painterResource(K.drawable.capital_city), contentDescription = null)
+                Text(assetPath(K.painter.capital_city))
+                Image(painterResource(K.painter.capital_city), contentDescription = null)
 
                 var quantity by remember { mutableStateOf("1") }
 

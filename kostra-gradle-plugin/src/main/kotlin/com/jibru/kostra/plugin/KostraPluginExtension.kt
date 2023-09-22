@@ -38,8 +38,8 @@ abstract class KostraPluginExtension {
                 ?: keyMapperKt.orNull
                 ?: defaults.keyMapper,
             stringFiles = stringFiles.orNull?.setOf { v -> v.toRegex() } ?: defaults.stringFiles,
-            drawableGroups = drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.drawableGroups,
-            drawableExtensions = drawableExtensions.orNull?.toSet() ?: defaults.drawableExtensions,
+            imageGroups = drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.imageGroups,
+            imageExtensions = drawableExtensions.orNull?.toSet() ?: defaults.imageExtensions,
             strictLocale = strictLocale.get(),
         )
     }

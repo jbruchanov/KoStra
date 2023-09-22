@@ -26,8 +26,8 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
 
     val hasStrings by lazy { allItemsPerGroup.containsKey(ResItem.String) }
     val hasPlurals by lazy { allItemsPerGroup.containsKey(ResItem.Plural) }
-    val hasDrawables by lazy { allItemsPerGroup.containsKey(ResItem.Drawable) }
-    val hasOthers by lazy { (allItemsPerGroup.keys - setOf(ResItem.String, ResItem.Plural, ResItem.Drawable)).isNotEmpty() }
+    val hasDrawables by lazy { allItemsPerGroup.containsKey(ResItem.Painter) }
+    val hasOthers by lazy { (allItemsPerGroup.keys - setOf(ResItem.String, ResItem.Plural, ResItem.Painter)).isNotEmpty() }
     val hasAnyFiles by lazy { (allItemsPerGroup.keys - setOf(ResItem.String, ResItem.Plural)).isNotEmpty() }
 
     //Map<Group, Map<Locale, List<Pair<Key, ResItem?>>>>
