@@ -4,6 +4,7 @@ plugins {
 }
 
 apply from: "$rootProject.projectDir/../build-native-lib.gradle"
+apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 
 kotlin {
     createNativeTarget(delegate).with {
@@ -34,4 +35,3 @@ kostra {
         resourceDirs.add(file("../shared/src/commonMain/resources_strings"))
     }
 }
-
