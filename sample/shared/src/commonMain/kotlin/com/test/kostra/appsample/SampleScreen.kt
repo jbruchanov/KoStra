@@ -8,10 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -54,11 +57,11 @@ private object SampleScreenDefaults {
 }
 
 @Composable
-fun SampleScreen() = with(SampleScreenDefaults) {
+fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(SampleScreenDefaults) {
     Box(
         modifier = Modifier
-            .padding(spacing)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(spacing),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(spacing),
@@ -87,7 +90,7 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
 
-                ) {
+                    ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
@@ -124,8 +127,14 @@ fun SampleScreen() = with(SampleScreenDefaults) {
                     Button(onClick = {}) { Text(stringResource(K.string.color)) }
                 }
 
-                Text(assetPath(K.painter.capital_city))
-                Image(painterResource(K.painter.capital_city), contentDescription = null)
+                Text(assetPath(K.images.capital_city))
+                Image(painterResource(K.images.capital_city), contentDescription = null)
+
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(assetPath(K.flagsxml.country_flag))
+                Image(painterResource(K.flagsxml.country_flag), contentDescription = null, modifier = Modifier.height(64.dp))
+
+                extraContent()
 
                 var quantity by remember { mutableStateOf("1") }
 
