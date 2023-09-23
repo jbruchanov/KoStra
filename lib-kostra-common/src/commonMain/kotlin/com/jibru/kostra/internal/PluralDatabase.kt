@@ -32,6 +32,7 @@ open class PluralDatabase(localeDatabases: Map<KLocale, String>) : Plurals {
                 ?.let { qualifiers.locale.languageLocale() }
                 ?.let { locale -> getValue(key, locale, type.pluralCategory(quantity, locale)) }
             //fallback
+            ?: getValue(key, KLocale.Undefined, type.pluralCategory(quantity, qualifiers.locale))
             ?: getValue(key, KLocale.Undefined, PluralCategory.Other)
             ?: throw MissingResourceException(key, qualifiers, "plural")
     }
