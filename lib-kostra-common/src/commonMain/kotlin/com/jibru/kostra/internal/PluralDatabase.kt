@@ -32,6 +32,7 @@ open class PluralDatabase(localeDatabases: Map<KLocale, String>) : Plurals {
                 ?.let { qualifiers.locale.languageLocale() }
                 ?.let { locale -> getValue(key, locale, type.pluralCategory(quantity, locale)) }
             //fallback
+            ?: getValue(key, KLocale.Undefined, type.pluralCategory(quantity, qualifiers.locale))
             ?: getValue(key, KLocale.Undefined, PluralCategory.Other)
             ?: throw MissingResourceException(key, qualifiers, "plural")
     }
@@ -39,8 +40,7 @@ open class PluralDatabase(localeDatabases: Map<KLocale, String>) : Plurals {
     private fun Plurals.Type.pluralCategory(quantity: IFixedDecimal, locale: KLocale): PluralCategory {
         val specs = specs[locale]
             ?: specs[locale.languageLocale()]
-            ?: throw IllegalStateException("Unable to find PluralCategory for $locale, quantity:$quantity")
-
+            ?: return PluralCategory.Other
         return specs.select(quantity)
     }
 
