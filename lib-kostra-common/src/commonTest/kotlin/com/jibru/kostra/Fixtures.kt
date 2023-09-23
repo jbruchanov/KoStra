@@ -24,7 +24,8 @@ object Fixtures {
             object plural {
                 val dog = PluralResourceKey(1)
                 val bug = PluralResourceKey(2)
-                val bugFormat = PluralResourceKey(3)
+                val bugX = PluralResourceKey(3)
+                val dayX = PluralResourceKey(4)
             }
 
             object painter {
@@ -66,7 +67,13 @@ object Fixtures {
                     KLocale("en") to mapOf(
                         K.plural.dog to mapOf(PluralCategory.Other to "dogs-en", PluralCategory.One to "dog-en"),
                         K.plural.bug to mapOf(PluralCategory.Other to "bugs-en", PluralCategory.One to "bug-en"),
-                        K.plural.bugFormat to mapOf(PluralCategory.Other to "%s bugs-en", PluralCategory.One to "%s bug-en"),
+                        K.plural.bugX to mapOf(PluralCategory.Other to "%s bugs-en", PluralCategory.One to "%s bug-en"),
+                        K.plural.dayX to mapOf(
+                            PluralCategory.One to "%sst day",
+                            PluralCategory.Two to "%snd day",
+                            PluralCategory.Few to "%srd day",
+                            PluralCategory.Other to "%sth day",
+                        ),
                     ),
                     KLocale("en-GB") to mapOf(
                         K.plural.dog to mapOf(PluralCategory.Other to "dogs-en-gb", PluralCategory.One to "dog-en-gb"),
@@ -79,13 +86,25 @@ object Fixtures {
                             PluralCategory.Many to "brouku", //1.5
                             PluralCategory.Other to "brouků", //100
                         ),
-                        K.plural.bugFormat to mapOf(
+                        K.plural.bugX to mapOf(
                             PluralCategory.One to "%s brouk",
                             PluralCategory.Few to "%s brouci",
                             PluralCategory.Many to "%s brouku", //1.5
                             PluralCategory.Other to "%s brouků", //100
                         ),
+                        K.plural.dayX to mapOf(
+                            PluralCategory.Other to "%s. den",
+                        ),
                     ),
+                ),
+            ),
+        )
+
+        val pluralResourcesCsAndDefault = create(
+            plurals = PluralMemoryDatabase(
+                mapOf(
+                    KLocale.Undefined to pluralResources.memPlurals().data.getValue(KLocale("en")),
+                    KLocale("cs") to pluralResources.memPlurals().data.getValue(KLocale("cs")),
                 ),
             ),
         )
@@ -124,5 +143,9 @@ object Fixtures {
             plurals: Plurals = Plurals,
             files: FileReferences = FileReferences,
         ) = KAppResources(strings, plurals, files)
+
+        private fun KAppResources.memStrings() = string as StringMemoryDatabase
+
+        private fun KAppResources.memPlurals() = plural as PluralMemoryDatabase
     }
 }

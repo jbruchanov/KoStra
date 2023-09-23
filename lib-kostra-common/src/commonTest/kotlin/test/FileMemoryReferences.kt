@@ -5,7 +5,7 @@ import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.internal.FileDatabase
 
 class FileMemoryReferences(
-    private val data: Map<KQualifiers, Map<AssetResourceKey, String>>,
+    internal val data: Map<KQualifiers, Map<AssetResourceKey, String>>,
 ) : FileDatabase("mem") {
     override fun getValue(key: AssetResourceKey, qualifiers: KQualifiers): String? {
         return data[qualifiers]?.get(key).also {

@@ -40,8 +40,7 @@ open class PluralDatabase(localeDatabases: Map<KLocale, String>) : Plurals {
     private fun Plurals.Type.pluralCategory(quantity: IFixedDecimal, locale: KLocale): PluralCategory {
         val specs = specs[locale]
             ?: specs[locale.languageLocale()]
-            ?: throw IllegalStateException("Unable to find PluralCategory for $locale, quantity:$quantity")
-
+            ?: return PluralCategory.Other
         return specs.select(quantity)
     }
 
