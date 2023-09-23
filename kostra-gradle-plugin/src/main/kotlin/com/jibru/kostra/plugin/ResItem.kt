@@ -87,7 +87,6 @@ sealed class ResItem : Serializable {
     }
 
     companion object {
-        const val Painter = "painter"
         const val String = "string"
         const val Binary = "binary"
         const val Plural = "plural"
