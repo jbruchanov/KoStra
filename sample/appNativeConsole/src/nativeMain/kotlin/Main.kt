@@ -54,7 +54,7 @@ fun main(
         println((0..5).joinToString { Resources.ordinal(K.plural.day_x, it, it) })
 
         println("Images:")
-        val assetPath = Resources.assetPath(K.painter.capital_city)
+        val assetPath = Resources.assetPath(K.images.capital_city)
         println("$assetPath, fileSize:${fileSize(assetPath)}")
     }
 

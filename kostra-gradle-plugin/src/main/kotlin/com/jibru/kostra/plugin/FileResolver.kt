@@ -2,6 +2,7 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.plugin.ext.distinctByLast
+import com.jibru.kostra.plugin.ext.ext
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.streams.asSequence
@@ -9,13 +10,17 @@ import kotlin.streams.asStream
 
 data class FileResolverConfig(
     val keyMapper: (String, File) -> String = { key, _ -> key },
-    val stringFiles: Set<Regex> = setOf("string.*\\.xml".toRegex()),
-    val imageGroups: Set<Regex> = setOf("drawables?.*".toRegex(), "mipmap?.*".toRegex(), "image?.*".toRegex()),
-    val imageExtensions: Set<String> = setOf("jpg", "jpeg", "png", "webp", "bmp", "xml"),
+    val stringFiles: Set<String> = setOf("string.*\\.xml"),
+    val painterGroups: Set<String> = setOf("drawables?.*", "mipmaps?.*", "images?.*"),
+    val imageExtensions: Set<String> = KostraPluginConfig.ImageExts,
     val useOnlyFilesWithSize: Boolean = true,
     val parallelism: Boolean = false,
     val strictLocale: Boolean = true,
 ) {
+    val imageExtensionsAndXml: Set<String> = imageExtensions + "xml"
+    val stringFilesRegexps = stringFiles.map { it.toRegex() }
+    val painterGroupsRegexps = painterGroups.map { it.toRegex() }
+
     companion object {
         val Defaults = FileResolverConfig()
     }
@@ -95,15 +100,20 @@ class FileResolver(
                     .also { check(it.isNotEmpty()) { "Key must not be empty, file:'$file'" } }
 
                 when {
-                    stringFiles.any { regex -> regex.matches(file.name.lowercase()) } -> {
+                    stringFilesRegexps.any { regex -> regex.matches(file.name.lowercase()) } -> {
                         check(qualifiers.hasOnlyLocale) { "Only locale qualifiers allowed for strings, file:${file.absolutePath}, qualifiers:$qualifiers" }
                         androidResourcesXmlParser.findStrings(file, qualifiers)
                     }
 
-                    imageGroups.any { regex -> regex.matches(rootGroup) } && imageExtensions.contains(ext.lowercase()) ->
-                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = ResItem.Painter))
+                    //any image + xml what is in painterGroupsRegexps => image
+                    painterGroupsRegexps.any { regex -> regex.matches(rootGroup) } && imageExtensionsAndXml.contains(ext.lowercase()) ->
+                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = rootGroup, image = true))
 
-                    else -> listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = rootGroup))
+                    //any image
+                    imageExtensions.contains(ext.lowercase()) ->
+                        listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = rootGroup, image = true))
+
+                    else -> listOf(ResItem.FileRes(key = key, file = file, root = resRoot, qualifiersKey = qualifiers.key, group = rootGroup, image = false))
                 }.also {
                     logger.info("[$tag]: ${file.absolutePath} => ${it.joinToString()}")
                 }

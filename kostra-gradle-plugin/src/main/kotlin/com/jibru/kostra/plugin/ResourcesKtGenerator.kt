@@ -41,7 +41,7 @@ class ResourcesKtGenerator(
                     if (hasPlurals) {
                         addAliasedImport(PluralResourceKey::class)
                     }
-                    if (hasDrawables) {
+                    if (hasPainters) {
                         addAliasedImport(PainterResourceKey::class)
                     }
                     if (hasOthers) {
@@ -194,12 +194,11 @@ private fun TypeSpec.Builder.addLongKeyObjectWithProperties(
     items: Set<ResItemKeyDbKey>,
     objectName: String,
 ) {
-    val type = if (objectName == ResItem.Painter) PainterResourceKey::class else BinaryResourceKey::class
     addType(
         TypeSpec
             .objectBuilder(objectName)
             .apply {
-                items.forEach { (resItemKey, dbRootKey) ->
+                items.forEach { (resItemKey, dbRootKey, type) ->
                     addProperty(
                         PropertySpec.builder(resItemKey, type, KModifier.PUBLIC)
                             .initializer("%T(%L)", type, dbRootKey)

@@ -36,13 +36,13 @@ fun main() {
         println("Ordinals:")
         println((0..5).joinToString { Resources.ordinal(K.plural.dayX, it, it) })
 
-        ImageIO.read(Resources.binaryInputStream(K.painter.capitalCity)).also {
-            val assetPath = Resources.assetPath(K.painter.capitalCity)
+        ImageIO.read(Resources.binaryInputStream(K.images.capitalCity)).also {
+            val assetPath = Resources.assetPath(K.images.capitalCity)
             println("$assetPath imageRes:${it.width}x${it.height}")
         }
         val xxHdpiQualifiers = defaultQualifiers().copy(dpi = KDpi.XXHDPI)
-        ImageIO.read(Resources.binaryInputStream(K.painter.capitalCity, qualifiers = xxHdpiQualifiers)).also {
-            val assetPath = Resources.assetPath(K.painter.capitalCity, xxHdpiQualifiers)
+        ImageIO.read(Resources.binaryInputStream(K.images.capitalCity, qualifiers = xxHdpiQualifiers)).also {
+            val assetPath = Resources.assetPath(K.images.capitalCity, xxHdpiQualifiers)
             if (it != null) {
                 println("$assetPath imageRes:${it.width}x${it.height}")
             } else {

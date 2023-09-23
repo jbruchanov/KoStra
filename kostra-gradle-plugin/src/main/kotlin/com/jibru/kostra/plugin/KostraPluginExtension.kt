@@ -2,14 +2,13 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.plugin.ext.setOf
 import groovy.lang.Closure
-import java.io.File
-import java.util.regex.Pattern
 import org.gradle.api.Action
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
+import java.io.File
 
 abstract class KostraPluginExtension {
     abstract val className: Property<String>
@@ -37,9 +36,9 @@ abstract class KostraPluginExtension {
             keyMapper = keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } }
                 ?: keyMapperKt.orNull
                 ?: defaults.keyMapper,
-            stringFiles = stringFiles.orNull?.setOf { v -> v.toRegex() } ?: defaults.stringFiles,
-            imageGroups = drawableGroups.orNull?.setOf { v -> v.toRegex() } ?: defaults.imageGroups,
-            imageExtensions = drawableExtensions.orNull?.toSet() ?: defaults.imageExtensions,
+            stringFiles = stringFiles.orNull?.setOf { v -> v } ?: defaults.stringFiles,
+            painterGroups = painterGroups.orNull?.setOf { v -> v } ?: defaults.painterGroups,
+            imageExtensions = painterExtensions.orNull?.toSet() ?: defaults.imageExtensions,
             strictLocale = strictLocale.get(),
         )
     }
@@ -54,13 +53,13 @@ abstract class AndroidResourcesExtension {
     abstract val keyMapper: Property<Closure<String>>
 
     @get:Optional
-    abstract val stringFiles: Property<Collection<Pattern>>
+    abstract val stringFiles: Property<MutableCollection<String>>
 
     @get:Optional
-    abstract val drawableGroups: Property<Collection<Pattern>>
+    abstract val painterGroups: Property<MutableCollection<String>>
 
     @get:Optional
-    abstract val drawableExtensions: Property<Collection<String>>
+    abstract val painterExtensions: Property<MutableCollection<String>>
 
     @get:Optional
     abstract val resourceDirs: ListProperty<File>

@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin.ext
 
+import com.jibru.kostra.plugin.KostraPluginConfig
 import java.io.File
 
 fun File.relativeTo(to: File, ignoreCase: Boolean = true): String = buildString {
@@ -14,3 +15,7 @@ fun File.relativeTo(to: File, ignoreCase: Boolean = true): String = buildString 
         append(path.pathNormalise())
     }
 }
+
+fun File.ext() = name.substringAfterLast(".", "").trim()
+
+fun File.isImage() = ext().lowercase().let { KostraPluginConfig.ImageExts.contains(it) }

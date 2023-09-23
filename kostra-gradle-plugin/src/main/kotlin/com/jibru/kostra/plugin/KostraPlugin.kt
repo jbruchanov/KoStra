@@ -79,7 +79,11 @@ class KostraPlugin : Plugin<Project> {
             className.set(KClassName)
             outputDir.set(target.defaultOutputDir())
             outputDatabaseDirName.set(ResourceDbFolderName)
-            composeDefaults.set(target.plugins.any { it.javaClass.packageName.startsWith("org.jetbrains.compose") })
+            composeDefaults.set(target.plugins.any { it.javaClass.packageName.startsWith(ComposePluginPackage) })
+        }
+        extension.androidResources.apply {
+            stringFiles.set(FileResolverConfig.Defaults.stringFiles.toMutableSet())
+            painterGroups.set(FileResolverConfig.Defaults.painterGroups.toMutableSet())
         }
 
         target.afterEvaluate { project ->
@@ -257,7 +261,6 @@ class KostraPlugin : Plugin<Project> {
                 resourceDirs = extension.resourceDirs.get() + extension.androidResources.resourceDirs.get(),
                 fileResolverConfig = extension.toFileResolverConfig(),
                 kClassName = extension.className.get(),
-                composeDefaults = extension.composeDefaults.get(),
                 outputDir = File(extension.outputDir.get(), "src"),
                 resDbsFolderName = extension.outputDatabaseDirName.get(),
             )

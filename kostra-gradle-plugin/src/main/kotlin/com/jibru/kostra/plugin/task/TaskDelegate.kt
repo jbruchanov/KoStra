@@ -15,7 +15,6 @@ object TaskDelegate {
         val resourceDirs: List<File>,
         val fileResolverConfig: FileResolverConfig,
         val kClassName: String,
-        val composeDefaults: Boolean,
         val outputDir: File,
         val resDbsFolderName: String,
     )

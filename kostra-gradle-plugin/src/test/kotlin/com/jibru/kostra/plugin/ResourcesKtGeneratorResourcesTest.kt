@@ -66,7 +66,7 @@ class ResourcesKtGeneratorResourcesTest {
               object audio {
                 val sound: B = B(1)
               }
-              object painter {
+              object drawable {
                 val image: D = D(2)
               }
             }
@@ -94,6 +94,33 @@ class ResourcesKtGeneratorResourcesTest {
               ),
               binary = FileDatabase("kresources/binary.db"),
             )
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun testImages() = testResources {
+        addFile("flagxml/flag.png")
+        addFile("flagsvg/flag.svg")
+        buildResources()
+
+        val items = FileResolver().resolve(resourcesRoot)
+        val gen = ResourcesKtGenerator(items, resDbsFolderName = "com.sample.app.K", useAliasImports = false)
+        val result = gen.generateKClass().minify()
+
+        assertThat(result.trim()).isEqualTo(
+            """
+                @file:Suppress("ktlint")
+                package com.jibru.kostra
+                import kotlin.Suppress
+                object K {
+                  object flagsvg {
+                    val flag: PainterResourceKey = PainterResourceKey(1)
+                  }
+                  object flagxml {
+                    val flag: PainterResourceKey = PainterResourceKey(2)
+                  }
+                }
             """.trimIndent(),
         )
     }

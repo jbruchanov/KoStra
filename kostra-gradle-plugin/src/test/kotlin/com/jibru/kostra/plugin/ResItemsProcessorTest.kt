@@ -1,6 +1,7 @@
 package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
+import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.KDpi
 import com.jibru.kostra.KLocale
 import com.jibru.kostra.KQualifiers
@@ -137,14 +138,14 @@ class ResItemsProcessorTest {
             assertThat(otherItemsPerGroupPerKey).isEqualTo(
                 mapOf(
                     "group" to mapOf(
-                        ResItemKeyDbKey("f1", 1) to listOf(
+                        ResItemKeyDbKey("f1", 1, BinaryResourceKey::class) to listOf(
                             ResItem.FileRes("f1", File("X"), KQualifiers.Undefined.key, group = "group", File("")),
                             ResItem.FileRes("f1", File("X"), KQualifiers(locale = KLocale("en")).key, group = "group", File("")),
                             ResItem.FileRes("f1", File("X"), KQualifiers(dpi = KDpi.HDPI).key, group = "group", File("")),
                         ),
                     ),
                     "group2" to mapOf(
-                        ResItemKeyDbKey("f2", 2) to listOf(
+                        ResItemKeyDbKey("f2", 2, BinaryResourceKey::class) to listOf(
                             ResItem.FileRes("f2", File("X"), KQualifiers.Undefined.key, group = "group2", File("")),
                         ),
                     ),

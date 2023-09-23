@@ -1,13 +1,8 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.KQualifiers
-import com.jibru.kostra.PainterResourceKey
-import com.jibru.kostra.PluralResourceKey
-import com.jibru.kostra.StringResourceKey
+import com.jibru.kostra.plugin.ext.isImage
 import com.jibru.kostra.plugin.ext.relativeTo
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.typeNameOf
 import java.io.File
 import java.io.Serializable
 
@@ -23,12 +18,11 @@ sealed class ResItem : Serializable {
     abstract val qualifiersKey: Int
     abstract val group: String
 
-    abstract val resourceKeyType: TypeName
-
     val distinctKey by lazy(LazyThreadSafetyMode.NONE) { Triple(key, qualifiersKey, group) }
     open val isStringOrPlural = this is StringRes || this is Plurals
-    open val resourcesGroup get() = group
     val qualifiers get() = KQualifiers(qualifiersKey)
+
+    val isImageFile: Boolean get() = (this as? FileRes)?.image == true
 
     protected fun validateInput() {
         require(key.isNotEmpty()) { "Key is empty, $this" }
@@ -41,7 +35,6 @@ sealed class ResItem : Serializable {
         override val qualifiersKey: Int,
     ) : ResItem(), StringValueResItem, Serializable {
         override val group: String get() = String
-        override val resourceKeyType: TypeName get() = typeNameOf<StringResourceKey>()
 
         init {
             validateInput()
@@ -54,7 +47,6 @@ sealed class ResItem : Serializable {
         override val qualifiersKey: Int,
     ) : ResItem(), Serializable {
         override val group: String get() = StringArray
-        override val resourceKeyType: TypeName get() = throw UnsupportedOperationException("StringArray arrays not supported!")
 
         init {
             validateInput()
@@ -68,8 +60,6 @@ sealed class ResItem : Serializable {
         override val qualifiersKey: Int,
     ) : ResItem(), Serializable {
         override val group: String get() = Plural
-
-        override val resourceKeyType: TypeName get() = typeNameOf<PluralResourceKey>()
 
         init {
             validateInput()
@@ -87,11 +77,9 @@ sealed class ResItem : Serializable {
         override val qualifiersKey: Int,
         override val group: String,
         val root: File, // = file.parentFile.parentFile
+        val image: Boolean = file.isImage(),
     ) : ResItem(), StringValueResItem, Serializable {
-        val painter get() = group == Painter
         override val value get() = file.relativeTo(root, ignoreCase = true)
-        override val resourcesGroup: String get() = if (painter) Painter else Binary
-        override val resourceKeyType: TypeName get() = if (painter) typeNameOf<PainterResourceKey>() else typeNameOf<BinaryResourceKey>()
 
         init {
             validateInput()

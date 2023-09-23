@@ -17,8 +17,6 @@ data class GroupQualifiers(
 
 const val QualifierDivider = "-"
 
-fun File.ext() = name.substringAfterLast(".", "").trim()
-
 internal fun File.groupQualifiers(anyLocale: Boolean = false): GroupQualifiers {
     val source = name
         .let { if (isFile) it.substringBeforeLast(".") else it }

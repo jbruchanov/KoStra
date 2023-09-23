@@ -13,6 +13,7 @@ object KostraPluginConfig {
     const val ResourcePropertyName = "Resources"
     const val AliasedImports = true
     const val ComposePluginPackage = "org.jetbrains.compose"
+    val ImageExts = setOf("bmp", "jpg", "jpeg", "png", "svg", "webp")
 
     //looks like _kostra is ignored
     const val ResourceDbFolderName = "kresources"
