@@ -30,8 +30,8 @@ fun main() {
                 Resources.plural(K.plural.bugX, 3, 3),
                 Resources.plural(K.plural.bugX, 4, 4),
                 Resources.plural(K.plural.bugX, 5, 5),
-                Resources.plural(K.plural.bugX, 10, 10)
-            ).joinToString()
+                Resources.plural(K.plural.bugX, 10, 10),
+            ).joinToString(),
         )
         println("Ordinals:")
         println((0..5).joinToString { Resources.ordinal(K.plural.dayX, it, it) })

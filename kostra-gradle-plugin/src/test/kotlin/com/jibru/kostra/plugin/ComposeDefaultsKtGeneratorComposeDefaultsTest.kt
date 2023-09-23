@@ -2,14 +2,15 @@ package com.jibru.kostra.plugin
 
 import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.plugin.ext.minify
+import com.jibru.kostra.plugin.task.ComposeDefaults
 import org.junit.jupiter.api.Test
 
-class ResourcesKtGeneratorComposeDefaultsTest {
+class ComposeDefaultsKtGeneratorComposeDefaultsTest {
 
     @Test
-    fun generateComposeDefaults() {
-        val gen = ResourcesKtGenerator(emptyList(), className = "com.sample.app.K")
-        val result = gen.generateComposeDefaults().minify()
+    fun generateCommonComposeDefaults() {
+        val gen = ComposeDefaultsKtGenerator(kClassName = "com.sample.app.K")
+        val result = gen.generateComposeDefaults(composeDefaults = ComposeDefaults.Common).minify()
 
         assertThat(result.trim()).isEqualTo(
             """
@@ -76,6 +77,26 @@ class ResourcesKtGeneratorComposeDefaultsTest {
             inline fun painterResource(key: PainterResourceKey): Painter = Resources.painter(key)
             @Composable
             inline fun assetPath(key: AssetResourceKey): String = Resources.assetPath(key)
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun generateSvgComposeDefaults() {
+        val gen = ComposeDefaultsKtGenerator(kClassName = "com.sample.app.K")
+        val result = gen.generateComposeDefaults(composeDefaults = ComposeDefaults.Svg).minify()
+
+        assertThat(result.trim()).isEqualTo(
+            """
+            @file:Suppress("NOTHING_TO_INLINE", "ktlint")
+            package com.sample.app
+            import androidx.compose.runtime.Composable
+            import androidx.compose.ui.graphics.painter.Painter
+            import com.jibru.kostra.PainterResourceKey
+            import com.jibru.kostra.compose.svgPainter
+            import kotlin.Suppress
+            @Composable
+            inline fun svgPainterResource(key: PainterResourceKey): Painter = Resources.svgPainter(key)
             """.trimIndent(),
         )
     }

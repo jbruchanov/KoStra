@@ -1,6 +1,7 @@
 package com.jibru.kostra.plugin
 
 import org.gradle.api.Project
+import org.gradle.configurationcache.extensions.capitalized
 import java.io.File
 
 object KostraPluginConfig {
@@ -11,14 +12,15 @@ object KostraPluginConfig {
     const val KClassName = "$PackageName.K"
     const val ResourcePropertyName = "Resources"
     const val AliasedImports = true
+    const val ComposePluginPackage = "org.jetbrains.compose"
 
     //looks like _kostra is ignored
     const val ResourceDbFolderName = "kresources"
-    const val ComposeDefaultResourceProvider = "ComposeDefaultResourceProvider"
+    const val ComposeDefaultResourceProvider_x = "Compose%sDefaultResourceProvider"
 
     fun KostraPluginExtension.analysisFile() = File(outputDir.get(), "resources.obj")
 
-    fun KostraPluginExtension.outputSourceDir() = outputDir.map { File(it, "src") }
+    fun KostraPluginExtension.outputSourceDir(variant: String = "") = outputDir.map { File(it, "src${variant.capitalized()}") }
 
     fun KostraPluginExtension.outputResourcesDir() = outputDir.map { File(it, "resources") }
 
@@ -29,7 +31,8 @@ object KostraPluginConfig {
     object Tasks {
         const val Group = "kostra"
         const val AnalyseResources = "analyseResources"
-        const val GenerateCode = "generateCode"
+        const val GenerateResources = "generateResources"
+        const val GenerateComposeDefaults_x = "generate%sComposeDefaults"
         const val GenerateDatabases = "generateDatabases"
         const val CopyResourcesForNativeTemplate_xy = "copy%sToNative%sOutput"
     }

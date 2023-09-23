@@ -6,8 +6,11 @@ package com.jibru.kostra.plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
+import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
+import com.jibru.kostra.plugin.task.ComposeDefaults
 import com.jibru.kostra.plugin.task.GenerateCodeTask
+import com.jibru.kostra.plugin.task.GenerateComposeDefaultsTask
 import com.jibru.kostra.plugin.task.GenerateDatabasesTask
 import com.jibru.kostra.plugin.task.TaskDelegate
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -38,33 +41,36 @@ class KostraPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(KostraPluginConfig) {
         val extension = target.extensions.create(DslObjectName, KostraPluginExtension::class.java)
 
-        val analyseResources = target.tasks.register(KostraPluginConfig.Tasks.AnalyseResources, AnalyseResourcesTask::class.java) {
-            it.outputFile.set(extension.analysisFile())
-            it.resourceDirs.addAll(extension.resourceDirs)
-            it.resourceDirs.addAll(extension.androidResources.resourceDirs)
-        }
+        val analyseResourcesTaskProvider = target.tasks
+            .register(KostraPluginConfig.Tasks.AnalyseResources, AnalyseResourcesTask::class.java) {
+                it.outputFile.set(extension.analysisFile())
+                it.resourceDirs.addAll(extension.resourceDirs)
+                it.resourceDirs.addAll(extension.androidResources.resourceDirs)
+            }
 
-        val generateCodeTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateCode, GenerateCodeTask::class.java) { task ->
-            task.kClassName.set(extension.className)
-            task.resources.set(analyseResources.flatMap { it.outputFile })
-            task.composeDefaults.set(extension.composeDefaults)
-            task.resDbsFolderName.set(extension.outputDatabaseDirName)
-            task.outputDir.set(extension.outputSourceDir())
-            task.dependsOn(analyseResources)
-        }
+        val generateResourcesTaskProvider = target.tasks
+            .register(KostraPluginConfig.Tasks.GenerateResources, GenerateCodeTask::class.java) { task ->
+                task.kClassName.set(extension.className)
+                task.resourcesAnalysisFile.set(analyseResourcesTaskProvider.get().outputFile)
+                task.composeDefaults.set(extension.composeDefaults)
+                task.resDbsFolderName.set(extension.outputDatabaseDirName)
+                task.outputDir.set(extension.outputSourceDir())
+                task.dependsOn(analyseResourcesTaskProvider)
+            }
 
-        val generateDatabasesTaskTaskProvider = target.tasks.register(KostraPluginConfig.Tasks.GenerateDatabases, GenerateDatabasesTask::class.java) {
-            it.resources.set(analyseResources.flatMap { it.outputFile })
-            it.databaseDir.set(extension.outputDatabaseDirName.get())
-            it.outputDir.set(extension.outputResourcesDir())
-            it.dependsOn(analyseResources)
-        }
+        val generateDatabasesTaskTaskProvider = target.tasks
+            .register(KostraPluginConfig.Tasks.GenerateDatabases, GenerateDatabasesTask::class.java) {
+                it.resourcesAnalysisFile.set(analyseResourcesTaskProvider.flatMap { v -> v.outputFile })
+                it.databaseDir.set(extension.outputDatabaseDirName.get())
+                it.outputDir.set(extension.outputResourcesDir())
+                it.dependsOn(analyseResourcesTaskProvider)
+            }
 
         target.tasks.findByName("clean")?.apply {
-            finalizedBy(generateCodeTaskProvider)
+            finalizedBy(generateResourcesTaskProvider)
         }
 
-        target.defaultTasks(generateCodeTaskProvider.name)
+        target.defaultTasks(generateResourcesTaskProvider.name)
 
         extension.apply {
             autoConfig.set(true)
@@ -78,7 +84,7 @@ class KostraPlugin : Plugin<Project> {
 
         target.afterEvaluate { project ->
             if (extension.autoConfig.get()) {
-                tryUpdateSourceSets(project, extension, generateCodeTaskProvider, generateDatabasesTaskTaskProvider)
+                tryUpdateSourceSets(project, extension, generateResourcesTaskProvider, generateDatabasesTaskTaskProvider)
                 tryAddNativeCopyTasks(project, extension, generateDatabasesTaskTaskProvider)
             }
             updateFileWatcher(target, extension)
@@ -149,7 +155,8 @@ class KostraPlugin : Plugin<Project> {
         }
 
         run KotlinMultiplatform@{
-            (project.extensions.findByType(KotlinMultiplatformExtension::class.java) ?: return@KotlinMultiplatform)
+            val kotlinMultiplatformExtension = project.extensions.findByType(KotlinMultiplatformExtension::class.java) ?: return@KotlinMultiplatform
+            kotlinMultiplatformExtension
                 .sourceSets
                 .let {
                     val commonMainSourceSet = it.findByName("commonMain")
@@ -165,6 +172,37 @@ class KostraPlugin : Plugin<Project> {
                     //let KMP know about kostra resource dir
                     commonMainSourceSet.resources.srcDir(generateDbTaskProvider)
                 }
+
+            val hasComposePlugin = project.plugins.any { it.javaClass.packageName.startsWith(KostraPluginConfig.ComposePluginPackage) }
+            if (hasComposePlugin) {
+                val filters = setOf("metadata", "jvm")
+                kotlinMultiplatformExtension
+                    .targets
+                    .filter { filters.contains(it.name) }
+                    .associateBy { it.name }
+                    .let { targets ->
+                        require(targets.containsKey("metadata")) {
+                            "Metadata kotlinTarget not found. Targets:${kotlinMultiplatformExtension.targets.joinToString { it.name }}\n" +
+                                "Isn't there KMP change?!"
+                        }
+
+                        targets.forEach { (name, ktTarget) ->
+                            val composeDefaults = when (name) {
+                                "jvm" -> ComposeDefaults.Svg
+                                else -> ComposeDefaults.Common
+                            }
+                            val taskProvider = createGenerateComposeDefaultsTask(
+                                project = project,
+                                variantName = composeDefaults.name,
+                                composeDefaults = composeDefaults,
+                                extension = extension,
+                            )
+                            ktTarget.compilations.onEach { compilation ->
+                                compilation.defaultSourceSet.kotlin.srcDir(taskProvider)
+                            }
+                        }
+                    }
+            }
         }
 
         //android plugin doesn't seem to be taking stuff from KMP common, mostlikely because "jvm resources" are not same as "android res" resources
@@ -187,6 +225,24 @@ class KostraPlugin : Plugin<Project> {
                     resources.srcDir(generateDbTaskProvider)
                 }
         }
+    }
+
+    private fun createGenerateComposeDefaultsTask(
+        project: Project,
+        variantName: String,
+        composeDefaults: ComposeDefaults,
+        extension: KostraPluginExtension,
+    ): TaskProvider<GenerateComposeDefaultsTask> {
+        val taskProvider = project.tasks.register(
+            KostraPluginConfig.Tasks.GenerateComposeDefaults_x.format(variantName),
+            GenerateComposeDefaultsTask::class.java,
+        ) {
+            it.group = KostraPluginConfig.Tasks.Group
+            it.composeDefaults.set(composeDefaults)
+            it.kClassName.set(extension.className)
+            it.outputDir.set(extension.outputSourceDir(variantName))
+        }
+        return taskProvider
     }
 
     private var fileWatcher = FileWatcher()
@@ -226,10 +282,9 @@ class KostraPlugin : Plugin<Project> {
                 resourceDirs = taskDelegateConfig.resourceDirs,
                 fileResolverConfig = taskDelegateConfig.fileResolverConfig,
             )
-            generateCode(
-                kClassName = taskDelegateConfig.kClassName,
+            generateResources(
                 items = items,
-                composeDefaults = taskDelegateConfig.composeDefaults,
+                kClassName = taskDelegateConfig.kClassName,
                 outputDir = taskDelegateConfig.outputDir,
                 resDbsFolderName = taskDelegateConfig.resDbsFolderName,
             )

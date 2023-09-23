@@ -28,7 +28,9 @@ import platform.posix.ftell
     cd appNativeConsole/build/bin/native/releaseExecutable/
     ./appNativeConsole.kexe (exe or whatever appropriate extension)
  */
-fun main(@Suppress("UNUSED_PARAMETER") args: Array<String>) {
+fun main(
+    @Suppress("UNUSED_PARAMETER") args: Array<String>,
+) {
     val test = {
         println("-".repeat(32))
         println("Current locale:${DefaultQualifiersProvider.get().locale}")
@@ -45,8 +47,8 @@ fun main(@Suppress("UNUSED_PARAMETER") args: Array<String>) {
                 Resources.plural(K.plural.bug_x, 3, 3),
                 Resources.plural(K.plural.bug_x, 4, 4),
                 Resources.plural(K.plural.bug_x, 5, 5),
-                Resources.plural(K.plural.bug_x, 10, 10)
-            ).joinToString()
+                Resources.plural(K.plural.bug_x, 10, 10),
+            ).joinToString(),
         )
         println("Ordinals:")
         println((0..5).joinToString { Resources.ordinal(K.plural.day_x, it, it) })
