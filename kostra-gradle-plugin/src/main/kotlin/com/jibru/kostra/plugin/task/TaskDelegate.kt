@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin.task
 
+import com.jibru.kostra.plugin.ComposeDefaultsKtGenerator
 import com.jibru.kostra.plugin.FileResolver
 import com.jibru.kostra.plugin.FileResolverConfig
 import com.jibru.kostra.plugin.KostraPluginConfig
@@ -24,10 +25,9 @@ object TaskDelegate {
         fileResolverConfig: FileResolverConfig,
     ): List<ResItem> = FileResolver(fileResolverConfig).resolve(resourceDirs)
 
-    fun generateCode(
+    fun generateResources(
         items: List<ResItem>,
         kClassName: String,
-        composeDefaults: Boolean,
         outputDir: File,
         resDbsFolderName: String,
         minify: Boolean = true,
@@ -41,9 +41,6 @@ object TaskDelegate {
             buildList {
                 add(it.generateKClass() to KostraPluginConfig.AliasedImports)
                 add(it.generateResources() to false)
-                if (composeDefaults) {
-                    add(it.generateComposeDefaults() to false)
-                }
             }
         }
         outputDir.deleteRecursively()
@@ -59,6 +56,29 @@ object TaskDelegate {
             } catch (t: Throwable) {
                 throw IllegalStateException("Unable to generate source code of '$file'", t)
             }
+        }
+    }
+
+    fun generateComposeDefaults(
+        kClassName: String,
+        composeDefaults: ComposeDefaults,
+        outputDir: File,
+        minify: Boolean = true,
+    ) {
+        val fileSpec = ComposeDefaultsKtGenerator(kClassName = kClassName)
+            .generateComposeDefaults(composeDefaults = composeDefaults)
+        outputDir.deleteRecursively()
+
+        val file = File(outputDir, "${fileSpec.name}.kt")
+        file.parentFile.mkdirs()
+        try {
+            if (minify) {
+                file.writeText(fileSpec.minify())
+            } else {
+                file.writeText(fileSpec.toString())
+            }
+        } catch (t: Throwable) {
+            throw IllegalStateException("Unable to generate source code of '$file'", t)
         }
     }
 }

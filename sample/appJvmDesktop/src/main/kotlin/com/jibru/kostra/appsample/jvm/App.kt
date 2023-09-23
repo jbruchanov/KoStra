@@ -23,7 +23,7 @@ object App {
         Window(
             onCloseRequest = ::exitApplication,
             title = "Kostra JVM Compose Sample App",
-            state = rememberWindowState(size = DpSize((resolution.width * 0.5).dp, (resolution.height * 0.75).dp))
+            state = rememberWindowState(size = DpSize((resolution.width * 0.5).dp, (resolution.height * 0.75).dp)),
         ) {
             MaterialTheme(colors = darkColors()) {
                 Surface(modifier = Modifier.fillMaxSize()) {

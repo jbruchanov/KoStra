@@ -20,7 +20,7 @@ import java.io.ObjectInputStream
 abstract class GenerateDatabasesTask : DefaultTask() {
 
     @get:InputFile
-    abstract val resources: RegularFileProperty
+    abstract val resourcesAnalysisFile: RegularFileProperty
 
     @get:Input
     @get:Optional
@@ -36,7 +36,7 @@ abstract class GenerateDatabasesTask : DefaultTask() {
     @TaskAction
     fun run() {
         @Suppress("UNCHECKED_CAST")
-        val items = ObjectInputStream(FileInputStream(resources.get().asFile)).readObject() as List<ResItem>
+        val items = ObjectInputStream(FileInputStream(resourcesAnalysisFile.get().asFile)).readObject() as List<ResItem>
         val processor = ResItemsProcessor(items)
         val outDir = outputDir.get()
         val dbDir = databaseDir.orNull?.let { File(outDir, it) } ?: outDir

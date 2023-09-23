@@ -2,9 +2,6 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
-import java.io.File
-import java.io.FileInputStream
-import java.io.ObjectInputStream
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -12,11 +9,14 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 
 abstract class GenerateCodeTask : DefaultTask() {
 
     @get:InputFile
-    abstract val resources: RegularFileProperty
+    abstract val resourcesAnalysisFile: RegularFileProperty
 
     @get:Input
     abstract val kClassName: Property<String>
@@ -37,14 +37,13 @@ abstract class GenerateCodeTask : DefaultTask() {
     @Suppress("UNCHECKED_CAST")
     @TaskAction
     fun run() = with(TaskDelegate) {
-        val items = ObjectInputStream(FileInputStream(resources.get().asFile)).readObject() as List<ResItem>
+        val items = ObjectInputStream(FileInputStream(resourcesAnalysisFile.get().asFile)).readObject() as List<ResItem>
         val outputDir = outputDir.get()
         outputDir.deleteRecursively()
 
-        generateCode(
-            kClassName = kClassName.get(),
+        generateResources(
             items = items,
-            composeDefaults = composeDefaults.get(),
+            kClassName = kClassName.get(),
             outputDir = outputDir,
             resDbsFolderName = resDbsFolderName.get(),
         )
