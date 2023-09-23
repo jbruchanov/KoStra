@@ -22,8 +22,8 @@ class ResourcesKtGeneratorClassTest {
                 string("str1"),
                 plurals("p2", mapOf(PluralCategory.Other to "other").toPluralList()),
                 plurals("p1", mapOf(PluralCategory.One to "one").toPluralList()),
-                file("img", group = ResItem.Painter),
-                file("icon2", group = ResItem.Painter),
+                file("img", group = "painter"),
+                file("icon2", group = "painter"),
                 file("audio1", group = "raw"),
                 file("test", group = "_"),
             ),
@@ -36,7 +36,6 @@ class ResourcesKtGeneratorClassTest {
             package com.sample.app
             import kotlin.Suppress
             import com.jibru.kostra.BinaryResourceKey as B
-            import com.jibru.kostra.PainterResourceKey as D
             import com.jibru.kostra.PluralResourceKey as P
             import com.jibru.kostra.StringResourceKey as S
             object K {
@@ -52,8 +51,8 @@ class ResourcesKtGeneratorClassTest {
                 val test: B = B(1)
               }
               object painter {
-                val icon2: D = D(2)
-                val img: D = D(3)
+                val icon2: B = B(2)
+                val img: B = B(3)
               }
               object raw {
                 val audio1: B = B(4)
@@ -85,8 +84,8 @@ class ResourcesKtGeneratorClassTest {
     fun `generateKClass WHEN drawable with unexpected extension`() {
         val gen = ResourcesKtGenerator(
             items = listOf(
-                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), KQualifiers.Undefined.key, group = ResItem.Painter, root = File(".")),
-                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), KQualifiers.Undefined.key, group = ResItem.Painter, root = File(".")),
+                ResItem.FileRes("imagePng", File("drawable/imagePng.png"), KQualifiers.Undefined.key, group = "painter", root = File(".")),
+                ResItem.FileRes("imageBin", File("drawable/imageBin.bin"), KQualifiers.Undefined.key, group = "painter", root = File(".")),
             ),
             className = "K",
         )
@@ -95,10 +94,11 @@ class ResourcesKtGeneratorClassTest {
             """
             @file:Suppress("ktlint")
             import kotlin.Suppress
+            import com.jibru.kostra.BinaryResourceKey as B
             import com.jibru.kostra.PainterResourceKey as D
             object K {
               object painter {
-                val imageBin: D = D(1)
+                val imageBin: B = B(1)
                 val imagePng: D = D(2)
               }
             }
@@ -150,7 +150,7 @@ class ResourcesKtGeneratorClassTest {
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined.key),
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
 
-            ResItem.FileRes("image", File("x.png"), KQualifiers.Undefined.key, ResItem.Painter, File("x")),
+            ResItem.FileRes("image", File("x.png"), KQualifiers.Undefined.key, "painter", File("x")),
             ResItem.FileRes("sound", File("s.mp3"), KQualifiers.Undefined.key, "sound", File("x")),
         )
 

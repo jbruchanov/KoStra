@@ -2,13 +2,18 @@
 
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.KLocale
+import com.jibru.kostra.PainterResourceKey
+import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.plugin.ext.distinctByLast
 import com.jibru.kostra.plugin.ext.setOf
+import kotlin.reflect.KClass
 
 data class ResItemKeyDbKey(
     val resItemKey: String,
     val dbRootKey: Int,
+    val type: KClass<out ResourceKey>,
 ) {
     init {
         require(resItemKey.isNotEmpty()) { "Invalid input $this, resItemKey is empty" }
@@ -26,8 +31,8 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
 
     val hasStrings by lazy { allItemsPerGroup.containsKey(ResItem.String) }
     val hasPlurals by lazy { allItemsPerGroup.containsKey(ResItem.Plural) }
-    val hasDrawables by lazy { allItemsPerGroup.containsKey(ResItem.Painter) }
-    val hasOthers by lazy { (allItemsPerGroup.keys - setOf(ResItem.String, ResItem.Plural, ResItem.Painter)).isNotEmpty() }
+    val hasPainters by lazy { allItemsPerGroup.values.any { l -> l.any { v -> (v as? ResItem.FileRes)?.image == true } } }
+    val hasOthers by lazy { allItemsPerGroup.values.any { l -> l.any { v -> (v as? ResItem.FileRes)?.image == false } } }
     val hasAnyFiles by lazy { (allItemsPerGroup.keys - setOf(ResItem.String, ResItem.Plural)).isNotEmpty() }
 
     //Map<Group, Map<Locale, List<Pair<Key, ResItem?>>>>
@@ -58,7 +63,11 @@ open class ResItemsProcessor(private val items: List<ResItem>) {
             .filterKeys { !(it == ResItem.String || it == ResItem.Plural) }
             .toSortedMap()
             .mapValues { (_, items) ->
-                items.groupBy { it.key }.mapKeys { ResItemKeyDbKey(it.key, counter++) }
+                items.groupBy { it.key }.mapKeys {
+                    val allImages = it.value.all { r -> r.isImageFile }
+                    val type = if (allImages) PainterResourceKey::class else BinaryResourceKey::class
+                    ResItemKeyDbKey(it.key, counter++, type)
+                }
             }
     }
 
