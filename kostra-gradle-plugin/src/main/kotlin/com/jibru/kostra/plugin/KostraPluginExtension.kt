@@ -1,6 +1,5 @@
 package com.jibru.kostra.plugin
 
-import com.jibru.kostra.plugin.ext.setOf
 import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.provider.ListProperty
@@ -36,9 +35,9 @@ abstract class KostraPluginExtension {
             keyMapper = keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } }
                 ?: keyMapperKt.orNull
                 ?: defaults.keyMapper,
-            stringFiles = stringFiles.orNull?.setOf { v -> v } ?: defaults.stringFiles,
-            painterGroups = painterGroups.orNull?.setOf { v -> v } ?: defaults.painterGroups,
-            imageExtensions = painterExtensions.orNull?.toSet() ?: defaults.imageExtensions,
+            stringFiles = stringFiles.get().toSet(),
+            painterGroups = painterGroups.get().toSet(),
+            imageExtensions = painterExtensions.get().toSet(),
             strictLocale = strictLocale.get(),
         )
     }
@@ -52,14 +51,11 @@ abstract class AndroidResourcesExtension {
     @get:Optional
     abstract val keyMapper: Property<Closure<String>>
 
-    @get:Optional
-    abstract val stringFiles: Property<MutableCollection<String>>
+    abstract val stringFiles: ListProperty<String>
 
-    @get:Optional
-    abstract val painterGroups: Property<MutableCollection<String>>
+    abstract val painterGroups: ListProperty<String>
 
-    @get:Optional
-    abstract val painterExtensions: Property<MutableCollection<String>>
+    abstract val painterExtensions: ListProperty<String>
 
     @get:Optional
     abstract val resourceDirs: ListProperty<File>
