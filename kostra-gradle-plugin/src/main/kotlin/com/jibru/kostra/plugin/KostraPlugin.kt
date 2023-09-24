@@ -7,6 +7,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
 import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
+import com.jibru.kostra.plugin.ext.appendLog
 import com.jibru.kostra.plugin.ext.hasComposePlugin
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.ComposeDefaults
@@ -33,7 +34,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractExecutable
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.time.LocalDateTime
 
 class KostraPlugin : Plugin<Project> {
 
@@ -259,13 +259,13 @@ class KostraPlugin : Plugin<Project> {
         return taskProvider
     }
 
-    private var fileWatcher = FileWatcher()
-    private var fileWatcherJob: Job? = null
+    private var fileWatchers = mutableMapOf<Project, FileWatcher>()
+    private var fileWatcherJobs = mutableMapOf<Project, Job?>()
 
     private fun updateFileWatcher(target: Project, extension: KostraPluginExtension) {
-        fileWatcherJob?.cancel()
-        fileWatcherJob = null
-        val folders = extension.resourceDirs.get().filter { it.isDirectory }
+        fileWatcherJobs[target]?.cancel()
+        fileWatcherJobs.remove(target)
+        val folders = extension.allResourceDirs().filter { it.isDirectory }
         if (folders.isNotEmpty() && extension.useFileWatcher.get()) {
             val taskDelegateConfig = TaskDelegate.Config(
                 resourceDirs = extension.resourceDirs.get() + extension.androidResources.resourceDirs.get(),
@@ -275,13 +275,25 @@ class KostraPlugin : Plugin<Project> {
                 resDbsFolderName = extension.outputDatabaseDirName.get(),
             )
             val log = target.fileWatcherLog()
-            fileWatcherJob = GlobalScope.launch(Dispatchers.IO) {
+            val fileWatcher = fileWatchers.getOrPut(target) {
+                FileWatcher(
+                    log = log,
+                    stringsRegexps = extension.androidResources.stringFiles.get().map { it.toRegex() },
+                )
+            }
+            log.appendLog("Start")
+            fileWatcherJobs[target] = GlobalScope.launch(Dispatchers.IO) {
+                logger.info("START filewatcher for ${target.name}, log:'${log.absolutePath}'")
                 fileWatcher.flowChanges(folders)
                     .debounce(1000L)
                     .collect {
-                        log.appendText("${LocalDateTime.now()}\n")
                         onFileWatchedNotified(log = null, taskDelegateConfig)
                     }
+            }.apply {
+                invokeOnCompletion {
+                    log.appendLog("STOP")
+                    logger.info("STOP Filewatcher for ${target.name}, log:'${log.absolutePath}'")
+                }
             }
         }
     }
@@ -303,9 +315,8 @@ class KostraPlugin : Plugin<Project> {
             )
         }.exceptionOrNull()?.also {
             log?.let { log ->
-                log.appendText((it.message ?: "null") + "\n")
-                log.appendText(it.stackTraceToString())
-                log.appendText("\n")
+                log.appendLog((it.message ?: "null"))
+                log.appendLog(it.stackTraceToString())
             }
         }
     }
