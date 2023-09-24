@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.plugin.ext.appendLog
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
@@ -11,10 +12,18 @@ import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchEvent
 import java.nio.file.WatchKey
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.name
 
 class FileWatcher(
     private val pollTimeOutMs: Long = 50L,
+    private val stringsRegexps: Collection<Regex>,
+    private val log: File? = null,
 ) {
+
+    private val watchKeys = mutableMapOf<Path, WatchKey>()
+
     suspend fun flowChanges(folders: List<File>) = callbackFlow<Path> {
         val watcher = FileSystems.getDefault().newWatchService()
         folders.forEach { folder ->
@@ -26,14 +35,20 @@ class FileWatcher(
                 StandardWatchEventKinds.ENTRY_DELETE,
             )
             Files.walk(path)
-                .filter { Files.isDirectory(it) }
-                .forEach {
-                    it.register(
-                        watcher,
-                        StandardWatchEventKinds.ENTRY_MODIFY,
-                        StandardWatchEventKinds.ENTRY_CREATE,
-                        StandardWatchEventKinds.ENTRY_DELETE,
-                    )
+                .forEach { path ->
+                    if (path.isDirectory()) {
+                        log?.appendLog("FileWatcher: regPath:$path")
+                        watchKeys[path] = path.register(
+                            watcher,
+                            StandardWatchEventKinds.ENTRY_MODIFY,
+                            StandardWatchEventKinds.ENTRY_CREATE,
+                            StandardWatchEventKinds.ENTRY_DELETE,
+                        )
+                    } else if (path.isRegularFile() && stringsRegexps.any { it.matches(path.fileName.name) }) {
+                        log?.appendLog("FileWatcher: regPath:$path")
+                        //this won't probably work when new strings file is added
+                        watchKeys[path] = path.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY)
+                    }
                 }
         }
 
@@ -55,12 +70,25 @@ class FileWatcher(
 
                 @Suppress("UNCHECKED_CAST")
                 val ev = event as WatchEvent<Path>
-                val filename = ev.context()
+                val path = ev.context()
 
-                if (kind === StandardWatchEventKinds.OVERFLOW) {
-                    continue
-                } else if (kind === StandardWatchEventKinds.ENTRY_MODIFY) {
-                    send(filename)
+                when {
+                    kind === StandardWatchEventKinds.OVERFLOW -> continue
+                    kind === StandardWatchEventKinds.ENTRY_MODIFY -> {
+                        log?.appendLog("FileWatcher: modify:'$path'")
+                        send(path)
+                    }
+
+                    kind == StandardWatchEventKinds.ENTRY_CREATE && path.isStringXmlFile() -> {
+                        log?.appendLog("FileWatcher: regPath:$path")
+                        watchKeys[path] = path.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY)
+                    }
+
+                    kind == StandardWatchEventKinds.ENTRY_DELETE && path.isStringXmlFile() -> {
+                        log?.appendLog("FileWatcher: cancel regPath:$path")
+                        watchKeys[path]?.cancel()
+                        watchKeys.remove(path)
+                    }
                 }
                 val valid = key.reset()
                 if (!valid) {
@@ -70,4 +98,6 @@ class FileWatcher(
             yield()
         }
     }
+
+    private fun Path.isStringXmlFile() = isRegularFile() && stringsRegexps.any { it.matches(fileName.name) }
 }
