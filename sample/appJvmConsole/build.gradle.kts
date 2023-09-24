@@ -39,7 +39,7 @@ dependencies {
 
 kostra {
     androidResources {
-        keyMapperKt.set { key, _ -> key.toCamelCase() }
+        keyMapper { key, _ -> key.toCamelCase() }
         resourceDirs.add(file("../shared/src/commonMain/resources_strings"))
     }
 }
@@ -50,5 +50,5 @@ fun String.toCamelCase(): String = split("_")
     .takeIf { it.isNotEmpty() }
     ?.mapIndexed { index, s -> if (index > 0) s[0].uppercase() + s.drop(1) else s }
     ?.joinToString(separator = "")
-    //just return anything original, this is naive toCamelCase implementation
+//just return anything original, this is naive toCamelCase implementation
     ?: this
