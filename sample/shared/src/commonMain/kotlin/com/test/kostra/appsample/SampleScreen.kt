@@ -72,7 +72,7 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
         ) {
             val defaultQualifiers = LocalQualifiers.current
             val locales = remember {
-                val codes = listOf("ar", "cs", "en", "enGB", "he", "hi", "ja", "ko", "ru", "th")
+                val codes = listOf("ar", "cs", "en", "enGB", "enUS", "he", "hi", "ja", "ko", "ru", "th")
                 (listOf(defaultQualifiers.locale) + codes.map { KLocale(it) }).distinct()
             }
             var localeIndex by remember { mutableStateOf(0) }
@@ -90,7 +90,7 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
 
-                    ) {
+                ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },

@@ -7,6 +7,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
 import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
+import com.jibru.kostra.plugin.ext.hasComposePlugin
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.ComposeDefaults
 import com.jibru.kostra.plugin.task.GenerateCodeTask
@@ -58,6 +59,17 @@ class KostraPlugin : Plugin<Project> {
                 task.dependsOn(analyseResourcesTaskProvider)
             }
 
+        val generateComposeDefaultsTaskProvider = if (target.hasComposePlugin()) {
+            createGenerateComposeDefaultsTask(
+                project = target,
+                variantName = ComposeDefaults.Common.name,
+                composeDefaults = ComposeDefaults.Common,
+                extension = extension,
+            )
+        } else {
+            null
+        }
+
         val generateDatabasesTaskTaskProvider = target.tasks
             .register(KostraPluginConfig.Tasks.GenerateDatabases, GenerateDatabasesTask::class.java) {
                 it.resourcesAnalysisFile.set(analyseResourcesTaskProvider.flatMap { v -> v.outputFile })
@@ -68,6 +80,9 @@ class KostraPlugin : Plugin<Project> {
 
         target.tasks.findByName("clean")?.apply {
             finalizedBy(generateResourcesTaskProvider)
+            if (generateComposeDefaultsTaskProvider != null) {
+                finalizedBy(generateComposeDefaultsTaskProvider)
+            }
         }
 
         target.defaultTasks(generateResourcesTaskProvider.name)
@@ -88,7 +103,13 @@ class KostraPlugin : Plugin<Project> {
 
         target.afterEvaluate { project ->
             if (extension.autoConfig.get()) {
-                tryUpdateSourceSets(project, extension, generateResourcesTaskProvider, generateDatabasesTaskTaskProvider)
+                tryUpdateSourceSets(
+                    project = project,
+                    extension = extension,
+                    generateCodeTaskProvider = generateResourcesTaskProvider,
+                    generateComposeDefaultsTaskProvider = generateComposeDefaultsTaskProvider,
+                    generateDbTaskProvider = generateDatabasesTaskTaskProvider,
+                )
                 tryAddNativeCopyTasks(project, extension, generateDatabasesTaskTaskProvider)
             }
             updateFileWatcher(target, extension)
@@ -135,6 +156,7 @@ class KostraPlugin : Plugin<Project> {
         project: Project,
         extension: KostraPluginExtension,
         generateCodeTaskProvider: TaskProvider<GenerateCodeTask>,
+        generateComposeDefaultsTaskProvider: TaskProvider<GenerateComposeDefaultsTask>?,
         generateDbTaskProvider: TaskProvider<GenerateDatabasesTask>,
     ) {
         run JavaPlugin@{
@@ -171,42 +193,29 @@ class KostraPlugin : Plugin<Project> {
 
                     //let java know about kostra sourceDir
                     commonMainSourceSet.kotlin.srcDir(generateCodeTaskProvider)
+                    if (generateComposeDefaultsTaskProvider != null) {
+                        commonMainSourceSet.kotlin.srcDir(generateComposeDefaultsTaskProvider)
+                    }
                     //put into kostra extension the resource folders
                     extension.resourceDirs.set(extension.resourceDirs.get() + commonMainSourceSet.resources.srcDirs)
                     //let KMP know about kostra resource dir
                     commonMainSourceSet.resources.srcDir(generateDbTaskProvider)
                 }
 
-            val hasComposePlugin = project.plugins.any { it.javaClass.packageName.startsWith(KostraPluginConfig.ComposePluginPackage) }
-            if (hasComposePlugin) {
-                val filters = setOf("metadata", "jvm")
-                kotlinMultiplatformExtension
-                    .targets
-                    .filter { filters.contains(it.name) }
-                    .associateBy { it.name }
-                    .let { targets ->
-                        require(targets.containsKey("metadata")) {
-                            "Metadata kotlinTarget not found. Targets:${kotlinMultiplatformExtension.targets.joinToString { it.name }}\n" +
-                                "Isn't there KMP change?!"
-                        }
-
-                        targets.forEach { (name, ktTarget) ->
-                            val composeDefaults = when (name) {
-                                "jvm" -> ComposeDefaults.Svg
-                                else -> ComposeDefaults.Common
-                            }
-                            val taskProvider = createGenerateComposeDefaultsTask(
-                                project = project,
-                                variantName = composeDefaults.name,
-                                composeDefaults = composeDefaults,
-                                extension = extension,
-                            )
-                            ktTarget.compilations.onEach { compilation ->
-                                compilation.defaultSourceSet.kotlin.srcDir(taskProvider)
-                            }
+            /*
+            //future template to have specific code generate per target
+            kotlinMultiplatformExtension
+                .targets
+                .filter { it.name == "metadata" }
+                .also { check(it.isNotEmpty()) { "Undefined metadata/common target in '${project.name}'" } }
+                .let { ktTargets ->
+                    ktTargets.onEach { ktTarget ->
+                        ktTarget.compilations.onEach { compilation ->
+                            compilation.defaultSourceSet.kotlin.srcDir(null)
                         }
                     }
-            }
+                }
+             */
         }
 
         //android plugin doesn't seem to be taking stuff from KMP common, mostlikely because "jvm resources" are not same as "android res" resources
