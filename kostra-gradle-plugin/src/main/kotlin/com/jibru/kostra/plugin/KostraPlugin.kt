@@ -97,8 +97,9 @@ class KostraPlugin : Plugin<Project> {
             composeDefaults.set(target.plugins.any { it.javaClass.packageName.startsWith(ComposePluginPackage) })
         }
         extension.androidResources.apply {
-            stringFiles.set(FileResolverConfig.Defaults.stringFiles.toMutableSet())
-            painterGroups.set(FileResolverConfig.Defaults.painterGroups.toMutableSet())
+            stringFiles.addAll(FileResolverConfig.Defaults.stringFiles)
+            painterGroups.set(FileResolverConfig.Defaults.painterGroups)
+            painterExtensions.set(FileResolverConfig.Defaults.imageExtensions)
         }
 
         target.afterEvaluate { project ->
@@ -165,7 +166,7 @@ class KostraPlugin : Plugin<Project> {
                 .findByName("main")
                 .let { mainSourceSet ->
                     if (mainSourceSet == null) {
-                        logger.warn("Kostra: ${project.name}:main source set not found, unable to finish auto setup!")
+                        logger.warn("Kostra: ${project.name}:main jvm source set not found, unable to finish auto setup!")
                         return@let
                     }
                     //let java know about kostra sourceDir
