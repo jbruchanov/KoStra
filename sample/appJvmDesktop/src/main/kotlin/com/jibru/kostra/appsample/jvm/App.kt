@@ -18,7 +18,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.sample.app.K
 import com.sample.app.assetPath
-import com.sample.app.svgPainterResource
+import com.sample.app.painterResource
 import com.test.kostra.appsample.SampleScreen
 import java.awt.Toolkit
 
@@ -41,7 +41,7 @@ object App {
                         Text(assetPath(K.flagssvg.country_flag))
                         val height = 64.dp
                         Image(
-                            painter = svgPainterResource(K.flagssvg.country_flag),
+                            painter = painterResource(K.flagssvg.country_flag),
                             contentDescription = null,
                             contentScale = ContentScale.FillBounds,
                             modifier = Modifier.size(height * 4 / 3f, height)

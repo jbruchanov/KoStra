@@ -179,28 +179,20 @@ class KostraPlugin : Plugin<Project> {
 
             val hasComposePlugin = project.plugins.any { it.javaClass.packageName.startsWith(KostraPluginConfig.ComposePluginPackage) }
             if (hasComposePlugin) {
-                val filters = setOf("metadata", "jvm")
                 kotlinMultiplatformExtension
                     .targets
-                    .filter { filters.contains(it.name) }
-                    .associateBy { it.name }
-                    .let { targets ->
-                        require(targets.containsKey("metadata")) {
-                            "Metadata kotlinTarget not found. Targets:${kotlinMultiplatformExtension.targets.joinToString { it.name }}\n" +
-                                "Isn't there KMP change?!"
-                        }
-
-                        targets.forEach { (name, ktTarget) ->
-                            val composeDefaults = when (name) {
-                                "jvm" -> ComposeDefaults.Svg
-                                else -> ComposeDefaults.Common
-                            }
-                            val taskProvider = createGenerateComposeDefaultsTask(
-                                project = project,
-                                variantName = composeDefaults.name,
-                                composeDefaults = composeDefaults,
-                                extension = extension,
-                            )
+                    .filter { it.name == "metadata" }
+                    .also { check(it.isNotEmpty()) { "Undefined metadata/common target in '${project.name}'" } }
+                    .let { ktTargets ->
+                        //currently SVG hidden by expect/actual, kept for potential future usage when we need to generate extra code for particular target
+                        val composeDefaults = ComposeDefaults.Common
+                        val taskProvider = createGenerateComposeDefaultsTask(
+                            project = project,
+                            variantName = composeDefaults.name,
+                            composeDefaults = composeDefaults,
+                            extension = extension,
+                        )
+                        ktTargets.onEach { ktTarget ->
                             ktTarget.compilations.onEach { compilation ->
                                 compilation.defaultSourceSet.kotlin.srcDir(taskProvider)
                             }

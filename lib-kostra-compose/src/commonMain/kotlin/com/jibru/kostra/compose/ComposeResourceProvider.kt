@@ -58,10 +58,6 @@ fun KResources.ordinal(key: PluralResourceKey, quantity: IFixedDecimal, vararg f
     plural.get(key, LocalQualifiers.current, quantity, Plurals.Type.Ordinals, *formatArgs)
 
 @Composable
-fun KResources.painter(key: PainterResourceKey): Painter =
-    org.jetbrains.compose.resources.painterResource(assetPath(key, LocalQualifiers.current))
-
-@Composable
 fun KResources.assetPath(key: AssetResourceKey): String =
     binary.get(key, LocalQualifiers.current)
 
@@ -73,3 +69,13 @@ fun KResources.assetPath(key: AssetResourceKey, qualifiers: KQualifiers): String
 
 suspend fun KResources.binaryByteArray(key: AssetResourceKey, qualifiers: KQualifiers): ByteArray =
     resource(binary.get(key, qualifiers)).readBytes()
+
+@Composable
+internal fun KResources.composePainter(key: PainterResourceKey): Painter {
+    val path = assetPath(key, LocalQualifiers.current)
+    require(!path.endsWith(".svg", ignoreCase = true)) { "Unsupported SVG on current platform, key:$key, asset:'$path'" }
+    return org.jetbrains.compose.resources.painterResource(path)
+}
+
+@Composable
+expect fun KResources.painter(key: PainterResourceKey): Painter
