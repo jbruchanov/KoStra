@@ -90,7 +90,7 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
 
-                    ) {
+                ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
@@ -133,7 +133,6 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(assetPath(K.flagsxml.country_flag))
                 Image(painterResource(K.flagsxml.country_flag), contentDescription = null, modifier = Modifier.height(64.dp))
-                Image(painterResource(K.flagssvg.country_flag), contentDescription = null, modifier = Modifier.height(64.dp))
 
                 extraContent()
 

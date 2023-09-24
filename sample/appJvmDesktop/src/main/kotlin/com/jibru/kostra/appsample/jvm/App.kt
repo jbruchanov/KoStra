@@ -44,7 +44,7 @@ object App {
                             painter = painterResource(K.flagssvg.country_flag),
                             contentDescription = null,
                             contentScale = ContentScale.FillBounds,
-                            modifier = Modifier.size(height * 4 / 3f, height)
+                            modifier = Modifier.size(height * 4 / 3f, height),
                         )
                     }
                 }

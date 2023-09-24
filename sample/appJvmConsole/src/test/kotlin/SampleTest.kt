@@ -7,7 +7,6 @@ import com.jibru.kostra.icu.FixedDecimal
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-
 class SampleTest {
     companion object {
         private const val CS = "cs"
