@@ -1,13 +1,13 @@
 package com.jibru.kostra.plugin
 
 import groovy.lang.Closure
+import java.io.File
 import org.gradle.api.Action
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
-import java.io.File
 
 abstract class KostraPluginExtension {
     abstract val className: Property<String>
@@ -32,9 +32,7 @@ abstract class KostraPluginExtension {
     fun toFileResolverConfig(): FileResolverConfig = with(androidResources) {
         val defaults = FileResolverConfig.Defaults
         return FileResolverConfig(
-            keyMapper = keyMapper.orNull?.let { closure -> { key, file -> closure.call(key, file) } }
-                ?: keyMapperKt.orNull
-                ?: defaults.keyMapper,
+            keyMapper = keyMapper.orNull ?: defaults.keyMapper,
             stringFiles = stringFiles.get().toSet(),
             painterGroups = painterGroups.get().toSet(),
             imageExtensions = painterExtensions.get().toSet(),
@@ -43,13 +41,12 @@ abstract class KostraPluginExtension {
     }
 }
 
+typealias KeyMapper = (String, File) -> String
+
 abstract class AndroidResourcesExtension {
-    //TODO: is there a way to have keyMapper working from kt/groovy ?
-    @get:Optional
-    abstract val keyMapperKt: Property<(String, File) -> String>
 
     @get:Optional
-    abstract val keyMapper: Property<Closure<String>>
+    abstract val keyMapper: Property<KeyMapper>
 
     abstract val stringFiles: ListProperty<String>
 
@@ -59,4 +56,15 @@ abstract class AndroidResourcesExtension {
 
     @get:Optional
     abstract val resourceDirs: ListProperty<File>
+
+    fun keyMapper(lambda: KeyMapper) {
+        keyMapper.set(lambda)
+    }
+
+    fun keyMapper(closure: Closure<String>) {
+        val wrapper: KeyMapper = { key, file ->
+            closure.call(key, file)
+        }
+        keyMapper.set(wrapper)
+    }
 }
