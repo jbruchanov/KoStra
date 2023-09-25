@@ -16,6 +16,10 @@ class PluralRules(val rules: List<Rule>) {
         }
         return rules.firstOrNull { it.appliesTo(n) }?.category ?: PluralCategory.Other
     }
+
+    companion object {
+        val AlwaysOther = PluralRules(rules = listOf(Rule(PluralCategory.Other, Constraint.None)))
+    }
 }
 
 class Rule(
