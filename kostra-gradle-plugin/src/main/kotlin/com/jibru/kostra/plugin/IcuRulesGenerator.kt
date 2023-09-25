@@ -12,6 +12,7 @@ import com.jibru.kostra.plugin.icu.toPluralRules
 import com.jibru.kostra.plugin.icu.toProperty
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.asTypeName
@@ -29,6 +30,7 @@ private fun generateIcuRules(data: IcuPluralsDownloader.Result, outputFile: File
     val fileSpec = IcuRulesGenerator(
         KostraPluginConfig.PackageNameIcu,
         addLocaleComments = true,
+        addDefaultValue = true,
     ).generate(data, type)
 
     outputFile.parentFile.mkdirs()
@@ -44,7 +46,10 @@ private fun generateIcuRules(data: IcuPluralsDownloader.Result, outputFile: File
 class IcuRulesGenerator(
     private val fullPackageName: String,
     private val addLocaleComments: Boolean,
+    private val addDefaultValue: Boolean,
 ) {
+
+    private val alwaysOtherPluralRuleMember = MemberName("com.jibru.kostra.icu", "PluralRules.AlwaysOther")
 
     enum class Type(val fileName: String, val privatePropertyNameTemplate: String, val publicPropertyName: String) {
         Plurals("PluralRuleSpecs", "pluralSpecs_%s", "PluralRuleSpecs"),
@@ -113,7 +118,14 @@ class IcuRulesGenerator(
                             }
                         }
                         .unindent()
-                        .addStatement("}")
+                        .add("}")
+                        .apply {
+                            if (addDefaultValue) {
+                                addStatement(".withDefault { %M }", alwaysOtherPluralRuleMember)
+                            } else {
+                                add("\n")
+                            }
+                        }
                         .build(),
                 )
                 .build(),
