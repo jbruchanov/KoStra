@@ -12,14 +12,47 @@ import org.gradle.api.tasks.Optional
 import java.io.File
 
 abstract class KostraPluginExtension {
-    abstract val kClassName: Property<String>
+    /**
+     * enable autoconfig, if disabled, the tasks run/configuration must be done manually
+     */
     abstract val autoConfig: Property<Boolean>
-    abstract val useFileWatcher: Property<Boolean>
-    abstract val resourcesDefaults: ListProperty<ResourcesDefaults>
-    abstract val strictLocale: Property<Boolean>
-    abstract val modulePrefix: Property<String>
-    abstract val internalVisibility: Property<Boolean>
+
+    /**
+     * generate for all K object records also interfaces for potential resource merging via class delegation
+     */
     abstract val interfaces: Property<Boolean>
+
+    /**
+     * mark all the generated code as internal to avoid leaking outside a module
+     */
+    abstract val internalVisibility: Property<Boolean>
+
+    /**
+     * full package name of generated K class, by default 'app.K`,
+     * `kClassName' from gradle.kts, 'KClassName' from .gradle 🙄
+     */
+    abstract val kClassName: Property<String>
+
+    /**
+     * Add a unique prefix in multi module setup to avoid reference conflicts
+     */
+    abstract val modulePrefix: Property<String>
+
+    /**
+     * Define what defaults helpers should be generated.
+     */
+    abstract val resourcesDefaults: ListProperty<ResourcesDefaults>
+
+    /**
+     * use only locale qualifiers on files known to java, so for example '-xxxx' qualifier
+     * will be ignored as it's not java known locale and will be ignored
+     */
+    abstract val strictLocale: Property<Boolean>
+
+    /**
+     * Not nicely working autoupdate, MVP, don't use IDE doesn't see the changes.
+     */
+    abstract val useFileWatcher: Property<Boolean>
 
     val outputDatabaseDirName: Provider<String>
         get() = modulePrefix.map { it.lowerCasedWith(KostraPluginConfig.ResourceDbFolderName) }.orElse(KostraPluginConfig.ResourceDbFolderName)
@@ -54,15 +87,37 @@ typealias KeyMapper = (String, File) -> String
 
 abstract class AndroidResourcesExtension {
 
+    /**
+     * lambda to convert keys, useful for example for converting snake_case to camelCase
+     * be sure to not break uniqueness of these keys
+     */
     @get:Optional
     abstract val keyMapper: Property<KeyMapper>
 
+    /**
+     * list of string regexps which will be parsed as Android strings xml.
+     * Otherwise, taken as regular file using BinaryResourceKey
+     */
     abstract val stringFiles: ListProperty<String>
 
+    /**
+     * List of string regexps to mark as "Painter" groups. Any XML file belonging to a group matching regexp
+     * will be PainterResourceKey useful for Android XML VectorDrawables to be marked as PainterResourceKey,
+     * otherwise they will be BinaryResourceKey
+     */
     abstract val painterGroups: ListProperty<String>
 
+    /**
+     * list of file extensions always marked as PainterResourceKey
+     * [KostraPluginConfig.ImageExts]
+     */
     abstract val painterExtensions: ListProperty<String>
 
+    /**
+     * list of file extensions always marked as PainterResourceKey
+     * KostraPluginConfig#ImageExts
+     * abstract val painterExtensions: ListProperty<String>
+     */
     @get:Optional
     abstract val resourceDirs: ListProperty<File>
 
