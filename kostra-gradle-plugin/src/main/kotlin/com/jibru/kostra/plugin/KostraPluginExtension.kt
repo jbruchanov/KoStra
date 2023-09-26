@@ -18,8 +18,10 @@ abstract class KostraPluginExtension {
 
     @get:Internal
     abstract val outputDir: Property<File>
+
     @get:Internal
     abstract val outputDatabaseDirName: Property<String>
+
     @get:Internal
     abstract val resourceDirs: ListProperty<File>
 

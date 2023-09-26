@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin
 
+import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.KDpi
 import com.jibru.kostra.KLocale
 import com.jibru.kostra.KQualifiers
@@ -35,6 +36,13 @@ class FileTest {
                 }
             },
         )
+    }
+
+    @Test
+    fun `groupQualifiers WHEN multiple same groups`() {
+        assertThat(f("en", "cs").groupQualifiers().qualifiers).isEqualTo(KQualifiers("en"))
+        assertThat(f("xhdpi", "xhdpi").groupQualifiers().qualifiers).isEqualTo(KQualifiers(dpi = KDpi.XHDPI))
+        assertThat(f("en", "xxhdpi", "cs", "xhdpi").groupQualifiers().qualifiers).isEqualTo(KQualifiers("en", dpi = KDpi.XXHDPI))
     }
 
     private fun f(vararg qualifiers: String): File {

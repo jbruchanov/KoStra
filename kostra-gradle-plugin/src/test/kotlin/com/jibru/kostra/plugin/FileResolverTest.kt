@@ -519,4 +519,15 @@ class FileResolverTest {
             ResItem.FileRes("file", file("images/file.png"), KQualifiers.Undefined.key, "images", root = resourcesRoot, image = true),
         )
     }
+
+    @Test
+    fun `resolve WHEN multiple same qualifiers`() = testResources {
+        addFile("images/file-en-cs.png")
+        addFile("images/file-xxhdpi-xhdpi.png")
+
+        buildResources()
+
+        val items = FileResolver().resolve(resourcesRoot)
+        println(items)
+    }
 }
