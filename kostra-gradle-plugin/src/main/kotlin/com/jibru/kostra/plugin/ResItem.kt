@@ -36,8 +36,13 @@ sealed class ResItem : Serializable {
     ) : ResItem(), StringValueResItem, Serializable {
         override val group: String get() = String
 
+
         init {
             validateInput()
+        }
+
+        override fun toString(): String {
+            return "StringRes(key='$key', value='$value', qualifiers=${KQualifiers(qualifiersKey)})"
         }
     }
 
@@ -68,6 +73,10 @@ sealed class ResItem : Serializable {
         companion object {
             val EmptyItems = List<String?>(com.jibru.kostra.icu.PluralCategory.size) { null }
         }
+
+        override fun toString(): String {
+            return "Plurals(key='$key', items=$items, qualifiers=${KQualifiers(qualifiersKey)})"
+        }
     }
 
     @Suppress("ktlint:standard:discouraged-comment-location")
@@ -83,6 +92,10 @@ sealed class ResItem : Serializable {
 
         init {
             validateInput()
+        }
+
+        override fun toString(): String {
+            return "FileRes(key='$key', file=$file, qualifiers=${KQualifiers(qualifiersKey)}, group='$group', root=$root, image=$image)"
         }
     }
 

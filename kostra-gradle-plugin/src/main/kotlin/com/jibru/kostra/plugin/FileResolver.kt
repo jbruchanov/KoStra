@@ -32,7 +32,7 @@ class FileResolver(
 ) {
 
     private val logger = LoggerFactory.getLogger(FileResolver::class.java)
-    private val tag = "FileResolver"
+    private val tag = "KostraFileResolver"
 
     fun resolve(root: File): List<ResItem> = resolve(listOf(root))
 
