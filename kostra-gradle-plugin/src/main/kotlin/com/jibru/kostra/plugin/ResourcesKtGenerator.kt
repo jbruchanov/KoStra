@@ -10,7 +10,7 @@ import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.internal.FileDatabase
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
-import com.jibru.kostra.plugin.ext.addDefaultSurpressAnnotation
+import com.jibru.kostra.plugin.ext.addDefaultSuppressAnnotation
 import com.jibru.kostra.plugin.ext.formattedDbKey
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -32,7 +32,7 @@ class ResourcesKtGenerator(
 
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)
-            .addDefaultSurpressAnnotation()
+            .addDefaultSuppressAnnotation()
             .apply {
                 if (useAliasImports) {
                     if (hasStrings) {
@@ -68,7 +68,7 @@ class ResourcesKtGenerator(
         val typeAppResources = KAppResources::class
 
         return FileSpec.builder(packageName, resourcePropertyName)
-            .addDefaultSurpressAnnotation()
+            .addDefaultSuppressAnnotation()
             .addProperty(
                 PropertySpec.builder(resourcePropertyName, typeAppResources)
                     .initializer(

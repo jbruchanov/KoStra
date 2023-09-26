@@ -6,7 +6,7 @@ import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.icu.IFixedDecimal
-import com.jibru.kostra.plugin.ext.addDefaultSurpressAnnotation
+import com.jibru.kostra.plugin.ext.addDefaultSuppressAnnotation
 import com.jibru.kostra.plugin.task.ComposeDefaults
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -66,7 +66,7 @@ class ComposeDefaultsKtGenerator(
 
         return FileSpec
             .builder(packageName, KostraPluginConfig.ComposeDefaultResourceProvider_x.format("Common"))
-            .addDefaultSurpressAnnotation("NOTHING_TO_INLINE")
+            .addDefaultSuppressAnnotation("NOTHING_TO_INLINE")
             .addComposeDefaultFunc("stringResource", StringResourceKey::class, stringClassName) {
                 addCode("return %M.%M(%L)", resourceMemberName, stringExtMember, keyArgName)
             }
@@ -87,7 +87,7 @@ class ComposeDefaultsKtGenerator(
 
     private fun generateSvgComposeDefaults() = FileSpec
         .builder(packageName, KostraPluginConfig.ComposeDefaultResourceProvider_x.format("Svg"))
-        .addDefaultSurpressAnnotation("NOTHING_TO_INLINE")
+        .addDefaultSuppressAnnotation("NOTHING_TO_INLINE")
         .addComposeDefaultFunc("svgPainterResource", PainterResourceKey::class, painterClassName) {
             addCode("return %M.%M(%L)", resourceMemberName, svgPainterExtMember, keyArgName)
         }

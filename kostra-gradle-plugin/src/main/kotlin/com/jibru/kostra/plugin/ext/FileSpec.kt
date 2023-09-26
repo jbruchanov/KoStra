@@ -8,7 +8,7 @@ fun FileSpec.minify() = toString()
     .replace("public ", "")
     .replace("\n\n", "\n")
 
-fun FileSpec.Builder.addDefaultSurpressAnnotation(vararg extras: String): FileSpec.Builder {
+fun FileSpec.Builder.addDefaultSuppressAnnotation(vararg extras: String): FileSpec.Builder {
     val items = (extras.toList() + "ktlint").toTypedArray()
     return addAnnotation(
         AnnotationSpec.builder(Suppress::class)
