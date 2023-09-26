@@ -8,7 +8,7 @@ import java.io.File
 
 private val locales = java.util.Locale.getAvailableLocales().map { it.toLanguageTag().lowercase() }.toSortedSet()
 private val dpiMap = KDpi.values().associateBy { it.qualifier }
-private val dpiValues = dpiMap.keys
+private val dpiValues = dpiMap.keys.filter { it.isNotEmpty() }.toSet()
 
 data class GroupQualifiers(
     val group: String,
@@ -28,11 +28,11 @@ internal fun File.groupQualifiers(anyLocale: Boolean = false): GroupQualifiers {
         ?.let { list ->
             val otherModifiers = list.toMutableSet()
 
-            val strDpi = dpiValues.intersect(otherModifiers)
-                .singleOrNull()
+            val strDpi = otherModifiers.intersect(dpiValues)
+                .firstOrNull()
                 ?.also { otherModifiers.remove(it) }
 
-            val strLocale = (if (anyLocale) otherModifiers.firstOrNull() else locales.intersect(otherModifiers).singleOrNull())
+            val strLocale = (if (anyLocale) otherModifiers.firstOrNull() else otherModifiers.intersect(locales).firstOrNull())
                 ?.also { otherModifiers.remove(it) }
 
             //looking for stuff like en-rUS
