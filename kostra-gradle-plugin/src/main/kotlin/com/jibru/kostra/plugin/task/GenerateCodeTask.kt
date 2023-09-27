@@ -7,6 +7,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -27,6 +28,14 @@ abstract class GenerateCodeTask : DefaultTask() {
     @get:Input
     abstract val resDbsFolderName: Property<String>
 
+    @get:Input
+    @get:Optional
+    abstract val modulePrefix: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val internalVisibility: Property<Boolean>
+
     @get:OutputDirectory
     abstract val outputDir: Property<File>
 
@@ -46,6 +55,8 @@ abstract class GenerateCodeTask : DefaultTask() {
             kClassName = kClassName.get(),
             outputDir = outputDir,
             resDbsFolderName = resDbsFolderName.get(),
+            modulePrefix = modulePrefix.getOrElse(""),
+            internalVisibility = internalVisibility.getOrElse(false),
         )
     }
 }

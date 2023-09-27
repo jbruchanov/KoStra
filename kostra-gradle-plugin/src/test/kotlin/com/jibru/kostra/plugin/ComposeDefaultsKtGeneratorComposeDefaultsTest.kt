@@ -82,6 +82,22 @@ class ComposeDefaultsKtGeneratorComposeDefaultsTest {
     }
 
     @Test
+    fun `generateCommonComposeDefaults WHEN modulePrefix defined`() {
+        val gen = ComposeDefaultsKtGenerator(kClassName = "com.sample.app.K", modulePrefix = "ModulePrefix")
+        val result = gen.generateComposeDefaults(composeDefaults = ComposeDefaults.Common).minify()
+
+        assertThat(result.trim().split("ModulePrefixResources")).hasSize(13)
+    }
+
+    @Test
+    fun `generateCommonComposeDefaults WHEN internVisibility defined`() {
+        val gen = ComposeDefaultsKtGenerator(kClassName = "com.sample.app.K", internalVisibility = true)
+        val result = gen.generateComposeDefaults(composeDefaults = ComposeDefaults.Common).minify()
+
+        assertThat(result.trim().split("internal")).hasSize(13)
+    }
+
+    @Test
     fun generateSvgComposeDefaults() {
         val gen = ComposeDefaultsKtGenerator(kClassName = "com.sample.app.K")
         val result = gen.generateComposeDefaults(composeDefaults = ComposeDefaults.Svg).minify()

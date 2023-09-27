@@ -19,11 +19,11 @@ object KostraPluginConfig {
     const val ResourceDbFolderName = "kresources"
     const val ComposeDefaultResourceProvider_x = "Compose%sDefaultResourceProvider"
 
-    fun KostraPluginExtension.analysisFile() = File(outputDir.get(), "resources.obj")
+    fun Project.analysisFile() = File(defaultOutputDir(), "resources.obj")
 
-    fun KostraPluginExtension.outputSourceDir(variant: String = "") = outputDir.map { File(it, "src${variant.capitalized()}") }
+    fun Project.outputSourceDir(variant: String = "") = File(defaultOutputDir(), "src${variant.capitalized()}")
 
-    fun KostraPluginExtension.outputResourcesDir() = outputDir.map { File(it, "resources") }
+    fun Project.outputResourcesDir() = File(defaultOutputDir(), "resources")
 
     fun Project.defaultOutputDir() = File(buildDir, "kostra")
 

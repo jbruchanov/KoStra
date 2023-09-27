@@ -63,6 +63,18 @@ class ResourcesKtGeneratorClassTest {
     }
 
     @Test
+    fun `generateKClass WHEN internal visibility`() {
+        val result = ResourcesKtGenerator(emptyList(), internalVisibility = true).generateKClass().minify()
+        assertThat(result).contains("internal object K")
+    }
+
+    @Test
+    fun `generateResources WHEN internal visibility`() {
+        val result = ResourcesKtGenerator(emptyList(), internalVisibility = true).generateResources().minify()
+        assertThat(result).contains("internal val Resources")
+    }
+
+    @Test
     fun `generateKClass no package`() {
         val gen = ResourcesKtGenerator(items = listOf(string("str1")), className = "ResQ")
         val result = gen.generateKClass().minify()

@@ -18,9 +18,11 @@ import kotlin.reflect.KClass
 
 class ComposeDefaultsKtGenerator(
     kClassName: String = KostraPluginConfig.KClassName,
+    private val modulePrefix: String = "",
+    private val internalVisibility: Boolean = false,
 ) {
     private val packageName = kClassName.substringBeforeLast(".", "")
-    private val resourcePropertyName = KostraPluginConfig.ResourcePropertyName
+    private val resourcePropertyName = modulePrefix + KostraPluginConfig.ResourcePropertyName
     private val resourceMemberName = MemberName(packageName, resourcePropertyName)
     private val stringExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "string")
     private val pluralExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "plural")
@@ -103,7 +105,7 @@ class ComposeDefaultsKtGenerator(
 
         addFunction(
             FunSpec.builder(name)
-                .addModifiers(KModifier.INLINE)
+                .addModifiers(KModifier.INLINE, if (internalVisibility) KModifier.INTERNAL else KModifier.PUBLIC)
                 .addAnnotation(composableType)
                 .addParameter("key", keyType)
                 .apply(builder)
