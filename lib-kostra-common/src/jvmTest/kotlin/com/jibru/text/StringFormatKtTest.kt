@@ -55,6 +55,12 @@ class StringFormatKtTest {
         test("%1\$s,%2\$S,%1\$S,%2\$s", "a,B,A,b", "a", "b")
     }
 
+    @Test
+    fun indexes() {
+        test("%2\$s %1\$s", "first second", "second", "first")
+        test("%1\$s %2\$S %2\$s %1\$S", "a B b a", "a", "b")
+    }
+
     private fun test(template: String, expected: String, vararg args: Any?) {
         assertEquals(expected, template.sFormat(*args))
         assertEquals(expected, template.format(*args))
