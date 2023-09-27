@@ -23,12 +23,13 @@ class ResourcesKtGenerator(
     items: List<ResItem>,
     className: String = KostraPluginConfig.KClassName,
     private val resDbsFolderName: String = KostraPluginConfig.ResourceDbFolderName,
+    private val resourcePropertyName: String = KostraPluginConfig.ResourcePropertyName,
+    private val internalVisibility: Boolean = false,
     private val useAliasImports: Boolean = true,
 ) : ResItemsProcessor(items) {
 
     private val packageName = className.substringBeforeLast(".", "")
     private val className = className.substringAfterLast(".")
-    private val resourcePropertyName = KostraPluginConfig.ResourcePropertyName
 
     fun generateKClass(): FileSpec {
         return FileSpec.builder(packageName, className)
@@ -52,6 +53,7 @@ class ResourcesKtGenerator(
             .addType(
                 TypeSpec
                     .objectBuilder(className)
+                    .addModifiers(if (internalVisibility) KModifier.INTERNAL else KModifier.PUBLIC)
                     .apply {
                         tryAddPositionIndexedObject(stringsDistinctKeys, ResItem.String, StringResourceKey::class)
                         tryAddPositionIndexedObject(pluralsDistinctKeys, ResItem.Plural, PluralResourceKey::class)
@@ -71,6 +73,7 @@ class ResourcesKtGenerator(
             .addDefaultSuppressAnnotation()
             .addProperty(
                 PropertySpec.builder(resourcePropertyName, typeAppResources)
+                    .addModifiers(if (internalVisibility) KModifier.INTERNAL else KModifier.PUBLIC)
                     .initializer(
                         CodeBlock.Builder()
                             .apply {

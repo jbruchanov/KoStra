@@ -29,7 +29,6 @@ kotlin {
 
 
 kostra {
-    outputDatabaseDirName = "kresources"
     resourceDirs.add(file("../shared/src/commonMain/resources"))
     androidResources {
         resourceDirs.add(file("../shared/src/commonMain/resources_strings"))

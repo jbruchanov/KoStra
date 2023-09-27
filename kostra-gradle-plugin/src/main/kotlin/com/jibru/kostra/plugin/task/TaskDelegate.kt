@@ -6,6 +6,7 @@ import com.jibru.kostra.plugin.FileResolverConfig
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResourcesKtGenerator
+import com.jibru.kostra.plugin.ext.lowerCasedWith
 import com.jibru.kostra.plugin.ext.minify
 import java.io.File
 
@@ -17,6 +18,7 @@ object TaskDelegate {
         val kClassName: String,
         val outputDir: File,
         val resDbsFolderName: String,
+        val modulePrefix: String,
     )
 
     fun analyseCode(
@@ -29,12 +31,16 @@ object TaskDelegate {
         kClassName: String,
         outputDir: File,
         resDbsFolderName: String,
+        modulePrefix: String = "",
+        internalVisibility: Boolean = false,
         minify: Boolean = true,
     ) {
         val result = ResourcesKtGenerator(
             items = items,
             className = kClassName,
-            resDbsFolderName = resDbsFolderName,
+            resDbsFolderName = modulePrefix.lowerCasedWith(resDbsFolderName),
+            resourcePropertyName = modulePrefix + KostraPluginConfig.ResourcePropertyName,
+            internalVisibility = internalVisibility,
             useAliasImports = KostraPluginConfig.AliasedImports,
         ).let {
             buildList {
@@ -62,9 +68,11 @@ object TaskDelegate {
         kClassName: String,
         composeDefaults: ComposeDefaults,
         outputDir: File,
+        modulePrefix: String,
+        internalVisibility: Boolean,
         minify: Boolean = true,
     ) {
-        val fileSpec = ComposeDefaultsKtGenerator(kClassName = kClassName)
+        val fileSpec = ComposeDefaultsKtGenerator(kClassName = kClassName, modulePrefix = modulePrefix, internalVisibility = internalVisibility)
             .generateComposeDefaults(composeDefaults = composeDefaults)
         outputDir.deleteRecursively()
 

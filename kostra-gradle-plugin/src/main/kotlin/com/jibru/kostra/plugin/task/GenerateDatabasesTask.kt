@@ -40,7 +40,9 @@ abstract class GenerateDatabasesTask : DefaultTask() {
         val processor = ResItemsProcessor(items)
         val outDir = outputDir.get()
         val dbDir = databaseDir.orNull?.let { File(outDir, it) } ?: outDir
+        outDir.deleteRecursively()
         dbDir.mkdirs()
+
         saveDataIntoDb(data = processor.stringsForDbs, "${ResItem.String}-%s.db", dbDir)
         saveDataIntoDb(data = processor.pluralsForDbs, "${ResItem.Plural}-%s.db", dbDir)
 
