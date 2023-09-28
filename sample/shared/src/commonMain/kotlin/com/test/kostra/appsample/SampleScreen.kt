@@ -47,6 +47,7 @@ import com.jibru.kostra.compose.LocalQualifiers
 import com.jibru.kostra.icu.FixedDecimal
 import com.sample.app.K
 import com.sample.app.assetPath
+import com.sample.app.get
 import com.sample.app.ordinalStringResource
 import com.sample.app.painterResource
 import com.sample.app.pluralStringResource
@@ -83,14 +84,13 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
             val dpi by remember { derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi } }
 
             val qualifiers by remember { derivedStateOf { KQualifiers(locale, dpi) } }
-
             CompositionLocalProvider(LocalQualifiers provides qualifiers) {
                 Text("KQualifiers:$defaultQualifiers")
                 Text("KLocale")
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
 
-                ) {
+                    ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
@@ -140,7 +140,7 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
 
                 TextField(
                     value = quantity,
-                    label = { Text(stringResource(K.string.plurals)) },
+                    label = { Text(K.string.plurals.get(1, 2, 3)) },
                     placeholder = { Text(stringResource(K.string.type_quantity)) },
                     onValueChange = { quantity = it.takeIf { it.isEmpty() || it.toFloatOrNull() != null } ?: quantity },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

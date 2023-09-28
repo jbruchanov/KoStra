@@ -44,6 +44,7 @@ abstract class KostraPluginExtension {
             painterGroups = painterGroups.get().toSet(),
             imageExtensions = painterExtensions.get().toSet(),
             strictLocale = strictLocale.get(),
+            modulePrefix = modulePrefix.getOrElse(""),
         )
     }
 }

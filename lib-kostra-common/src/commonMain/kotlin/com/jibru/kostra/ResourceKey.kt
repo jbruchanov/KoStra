@@ -1,21 +1,15 @@
 package com.jibru.kostra
 
-import kotlin.jvm.JvmInline
-
 interface ResourceKey {
     val key: Int
 }
 
 interface AssetResourceKey : ResourceKey
 
-@JvmInline
-value class StringResourceKey(override val key: Int) : ResourceKey
+interface StringResourceKey : ResourceKey
 
-@JvmInline
-value class PluralResourceKey(override val key: Int) : ResourceKey
+interface PluralResourceKey : ResourceKey
 
-@JvmInline
-value class PainterResourceKey(override val key: Int) : AssetResourceKey
+interface PainterResourceKey : AssetResourceKey
 
-@JvmInline
-value class BinaryResourceKey(override val key: Int) : AssetResourceKey
+interface BinaryResourceKey : AssetResourceKey

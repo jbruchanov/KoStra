@@ -530,4 +530,23 @@ class FileResolverTest {
         val items = FileResolver().resolve(resourcesRoot)
         println(items)
     }
+
+    @Test
+    fun `resolve WHEN modulePrefix`() = testResources {
+        addFile("prefix/grp1/image.png")
+        addFile("prefix/grp2/file-en-xxhdpi.bin")
+        addFile("test/grp1/file.bin")
+
+        buildResources()
+
+        val items = FileResolver(
+            config = FileResolverConfig(modulePrefix = "prefix"),
+        ).resolve(resourcesRoot)
+
+        assertThat(items).containsExactly(
+            ResItem.FileRes("image", file("prefix/grp1/image.png"), KQualifiers.Undefined.key, "grp1", root = resourcesRoot, image = true),
+            ResItem.FileRes("file", file("prefix/grp2/file-en-xxhdpi.bin"), KQualifiers("en", KDpi.XXHDPI).key, "grp2", root = resourcesRoot, image = false),
+            ResItem.FileRes("file", file("test/grp1/file.bin"), KQualifiers.Undefined.key, "test", root = resourcesRoot, image = false),
+        )
+    }
 }

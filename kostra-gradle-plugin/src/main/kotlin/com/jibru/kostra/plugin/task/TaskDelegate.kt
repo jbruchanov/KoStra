@@ -6,8 +6,10 @@ import com.jibru.kostra.plugin.FileResolverConfig
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResourcesKtGenerator
+import com.jibru.kostra.plugin.ext.fixAliasImports
 import com.jibru.kostra.plugin.ext.lowerCasedWith
 import com.jibru.kostra.plugin.ext.minify
+import com.squareup.kotlinpoet.FileSpec
 import java.io.File
 
 object TaskDelegate {
@@ -33,6 +35,7 @@ object TaskDelegate {
         resDbsFolderName: String,
         modulePrefix: String = "",
         internalVisibility: Boolean = false,
+        interfaces: Boolean = true,
         minify: Boolean = true,
     ) {
         val result = ResourcesKtGenerator(
@@ -44,20 +47,20 @@ object TaskDelegate {
             useAliasImports = KostraPluginConfig.AliasedImports,
         ).let {
             buildList {
-                add(it.generateKClass() to KostraPluginConfig.AliasedImports)
-                add(it.generateResources() to false)
+                add(CodeWrapper.from(it.generateKClass(interfaces = interfaces), minify, KostraPluginConfig.AliasedImports))
+                if (interfaces) {
+                    add(CodeWrapper.from(it.generateIfaces(), minify, KostraPluginConfig.AliasedImports))
+                }
+                add(CodeWrapper.from(it.generateResources(), minify, false))
+                add(CodeWrapper(KostraPluginConfig.ModuleResourceKeyName + ".kt", it.generateResourceProviders()))
             }
         }
         outputDir.deleteRecursively()
-        result.onEach { (fileSpec, fixAliasImports) ->
-            val file = File(outputDir, "${fileSpec.name}.kt")
+        result.onEach { codeWrapper ->
+            val file = File(outputDir, codeWrapper.fileName)
             file.parentFile.mkdirs()
             try {
-                if (minify) {
-                    file.writeText(fileSpec.minify().fixAliasImports(fixAliasImports))
-                } else {
-                    file.writeText(fileSpec.toString().fixAliasImports(fixAliasImports))
-                }
+                file.writeText(codeWrapper.code)
             } catch (t: Throwable) {
                 throw IllegalStateException("Unable to generate source code of '$file'", t)
             }
@@ -90,13 +93,18 @@ object TaskDelegate {
     }
 }
 
-//https://github.com/square/kotlinpoet/issues/1696
-private fun String.fixAliasImports(useAliasImports: Boolean = KostraPluginConfig.AliasedImports): String {
-    if (!useAliasImports) return this
-    var result = this
-    ResourcesKtGenerator.AliasedImports.forEach { (klass, alias) ->
-        //" " to avoid replacing imports
-        result = result.replace(" " + requireNotNull(klass.simpleName), " $alias")
+private class CodeWrapper(
+    val fileName: String,
+    val code: String,
+) {
+    companion object {
+        fun from(fileSpec: FileSpec, minify: Boolean, fixAliasedImports: Boolean): CodeWrapper {
+            val code = if (minify) {
+                fileSpec.minify(fixAliasedImports)
+            } else {
+                fileSpec.toString().fixAliasImports(fixAliasedImports)
+            }
+            return CodeWrapper("${fileSpec.name}.kt", code)
+        }
     }
-    return result
 }

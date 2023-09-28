@@ -3,8 +3,11 @@
 package com.jibru.kostra
 
 import com.jibru.kostra.icu.PluralCategory
+import test.DKey
 import test.FileMemoryReferences
+import test.PKey
 import test.PluralMemoryDatabase
+import test.SKey
 import test.StringMemoryDatabase
 
 object Fixtures {
@@ -15,24 +18,24 @@ object Fixtures {
         @Suppress("ktlint")
         object K {
             object string {
-                val test1 = StringResourceKey(1)
-                val test2 = StringResourceKey(2)
-                val test3 = StringResourceKey(3)
-                val test2Format = StringResourceKey(4)
+                val test1: StringResourceKey = SKey(1)
+                val test2: StringResourceKey = SKey(2)
+                val test3: StringResourceKey = SKey(3)
+                val test2Format: StringResourceKey = SKey(4)
             }
 
             object plural {
-                val dog = PluralResourceKey(1)
-                val bug = PluralResourceKey(2)
-                val bugX = PluralResourceKey(3)
-                val dayX = PluralResourceKey(4)
+                val dog: PluralResourceKey = PKey(1)
+                val bug: PluralResourceKey = PKey(2)
+                val bugX: PluralResourceKey = PKey(3)
+                val dayX: PluralResourceKey = PKey(4)
             }
 
             object painter {
-                val undefinedDpi = PainterResourceKey(1)
-                val xxHdpiOnly = PainterResourceKey(2)
-                val multipleDpi = PainterResourceKey(3)
-                val multipleDpiLocale = PainterResourceKey(4)
+                val undefinedDpi: PainterResourceKey = DKey(1)
+                val xxHdpiOnly: PainterResourceKey = DKey(2)
+                val multipleDpi: PainterResourceKey = DKey(3)
+                val multipleDpiLocale: PainterResourceKey = DKey(4)
             }
         }
 

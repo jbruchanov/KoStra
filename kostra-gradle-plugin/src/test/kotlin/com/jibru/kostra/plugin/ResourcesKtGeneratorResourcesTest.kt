@@ -51,10 +51,10 @@ class ResourcesKtGeneratorResourcesTest {
             @file:Suppress("ktlint")
             package com.sample.app
             import kotlin.Suppress
-            import com.jibru.kostra.BinaryResourceKey as B
-            import com.jibru.kostra.PainterResourceKey as D
-            import com.jibru.kostra.PluralResourceKey as P
-            import com.jibru.kostra.StringResourceKey as S
+            import com.sample.app.BinaryResourceKey as B
+            import com.sample.app.PainterResourceKey as D
+            import com.sample.app.PluralResourceKey as P
+            import com.sample.app.StringResourceKey as S
             object K {
               object string {
                 val item1: S = S(0)
@@ -106,12 +106,12 @@ class ResourcesKtGeneratorResourcesTest {
 
         val items = FileResolver().resolve(resourcesRoot)
         val gen = ResourcesKtGenerator(items, resDbsFolderName = "com.sample.app.K", useAliasImports = false)
-        val result = gen.generateKClass().minify()
+        val result = gen.generateKClass().minify(useAliasImports = false)
 
         assertThat(result.trim()).isEqualTo(
             """
                 @file:Suppress("ktlint")
-                package com.jibru.kostra
+                package app
                 import kotlin.Suppress
                 object K {
                   object flagsvg {

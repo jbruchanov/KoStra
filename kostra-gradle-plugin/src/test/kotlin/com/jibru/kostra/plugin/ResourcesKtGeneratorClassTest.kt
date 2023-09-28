@@ -35,9 +35,9 @@ class ResourcesKtGeneratorClassTest {
             @file:Suppress("ktlint")
             package com.sample.app
             import kotlin.Suppress
-            import com.jibru.kostra.BinaryResourceKey as B
-            import com.jibru.kostra.PluralResourceKey as P
-            import com.jibru.kostra.StringResourceKey as S
+            import com.sample.app.BinaryResourceKey as B
+            import com.sample.app.PluralResourceKey as P
+            import com.sample.app.StringResourceKey as S
             object K {
               object string {
                 val `2str`: S = S(0)
@@ -82,7 +82,7 @@ class ResourcesKtGeneratorClassTest {
             """
             @file:Suppress("ktlint")
             import kotlin.Suppress
-            import com.jibru.kostra.StringResourceKey as S
+            import StringResourceKey as S
             object ResQ {
               object string {
                 val str1: S = S(0)
@@ -106,8 +106,8 @@ class ResourcesKtGeneratorClassTest {
             """
             @file:Suppress("ktlint")
             import kotlin.Suppress
-            import com.jibru.kostra.BinaryResourceKey as B
-            import com.jibru.kostra.PainterResourceKey as D
+            import BinaryResourceKey as B
+            import PainterResourceKey as D
             object K {
               object painter {
                 val imageBin: B = B(1)
@@ -130,13 +130,14 @@ class ResourcesKtGeneratorClassTest {
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
         )
 
-        val result = ResourcesKtGenerator(items = items, className = "K").generateKClass().minify()
+        val result = ResourcesKtGenerator(items = items, className = "app.K").generateKClass().minify()
         assertThat(result).isEqualTo(
             """
             @file:Suppress("ktlint")
+            package app
             import kotlin.Suppress
-            import com.jibru.kostra.PluralResourceKey as P
-            import com.jibru.kostra.StringResourceKey as S
+            import app.PluralResourceKey as P
+            import app.StringResourceKey as S
             object K {
               object string {
                 val item1: S = S(0)
