@@ -1,8 +1,8 @@
 package com.jibru.text
 
-import java.util.Locale
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.util.Locale
 
 class StringFormatKtTest {
     @Test
@@ -58,7 +58,7 @@ class StringFormatKtTest {
     @Test
     fun indexes() {
         test("%2\$s %1\$s", "first second", "second", "first")
-        test("%1\$s %2\$S %2\$s %1\$S", "a B b a", "a", "b")
+        test("%1\$s %2\$S %2\$s %1\$S", "a B b A", "a", "b")
     }
 
     private fun test(template: String, expected: String, vararg args: Any?) {
