@@ -8,6 +8,7 @@ import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
 import com.jibru.kostra.icu.FixedDecimal
+import test.PKey
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -45,8 +46,8 @@ class PluralDatabaseTest {
         assertEquals("brouk", db.plural(K.plural.bug, "cs-CZ", 1))
         assertEquals("brouků", db.plural(K.plural.bug, "cs", 100))
 
-        assertFailsWith<MissingResourceException> { db.plural(PluralResourceKey(10), "", 0) }
-        assertFailsWith<MissingResourceException> { db.plural(PluralResourceKey(10), "de", 0) }
+        assertFailsWith<MissingResourceException> { db.plural(PKey(10), "", 0) }
+        assertFailsWith<MissingResourceException> { db.plural(PKey(10), "de", 0) }
     }
 
     @Test

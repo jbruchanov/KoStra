@@ -16,6 +16,7 @@ data class FileResolverConfig(
     val useOnlyFilesWithSize: Boolean = true,
     val parallelism: Boolean = false,
     val strictLocale: Boolean = true,
+    val modulePrefix: String = "",
 ) {
     val imageExtensionsAndXml: Set<String> = imageExtensions + "xml"
     val stringFilesRegexps = stringFiles.map { it.toRegex() }
@@ -51,7 +52,16 @@ class FileResolver(
     //extra resolveImpl due to ^ distinctByLast per root, not per file
     private fun resolveImpl(resourcesRoot: File): List<ResItem> {
         //sorting seems to be necessary on mac
-        val listFiles = resourcesRoot.listFiles()?.sorted() ?: return emptyList()
+        val listFiles = (resourcesRoot.listFiles()?.sorted() ?: return emptyList())
+            .map { f ->
+                //take 1 look deeper if folder is named as modulePrefix
+                if (f.name.equals(config.modulePrefix, ignoreCase = true)) {
+                    f.listFiles()?.sorted() ?: emptyList()
+                } else {
+                    listOf(f)
+                }
+            }
+            .flatten()
 
         val folders = fileGroups(listFiles) { it.isDirectory }
         val filesInRoot = fileGroups(listFiles) { it.isFile }.map { it.first to it.second.copy(group = "root") }

@@ -1,5 +1,6 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
 import com.jibru.kostra.KAppResources
 import com.jibru.kostra.KLocale
@@ -11,17 +12,21 @@ import com.jibru.kostra.internal.FileDatabase
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
 import com.jibru.kostra.plugin.ext.addDefaultSuppressAnnotation
+import com.jibru.kostra.plugin.ext.applyIfNotNull
+import com.jibru.kostra.plugin.ext.asLocalResourceType
 import com.jibru.kostra.plugin.ext.formattedDbKey
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
     items: List<ResItem>,
-    className: String = KostraPluginConfig.KClassName,
+    className: String = "app.K",
     private val resDbsFolderName: String = KostraPluginConfig.ResourceDbFolderName,
     private val resourcePropertyName: String = KostraPluginConfig.ResourcePropertyName,
     private val internalVisibility: Boolean = false,
@@ -30,35 +35,59 @@ class ResourcesKtGenerator(
 
     private val packageName = className.substringBeforeLast(".", "")
     private val className = className.substringAfterLast(".")
+    private val ifaceName = "I${this.className}"
 
-    fun generateKClass(): FileSpec {
+    init {
+        check(packageName != "com.jibru.kostra") { "'$packageName' package is forbidden!" }
+    }
+
+    fun generateKClass(interfaces: Boolean = false): FileSpec {
         return FileSpec.builder(packageName, className)
             .addDefaultSuppressAnnotation()
-            .apply {
-                if (useAliasImports) {
-                    if (hasStrings) {
-                        addAliasedImport(StringResourceKey::class)
-                    }
-                    if (hasPlurals) {
-                        addAliasedImport(PluralResourceKey::class)
-                    }
-                    if (hasPainters) {
-                        addAliasedImport(PainterResourceKey::class)
-                    }
-                    if (hasOthers) {
-                        addAliasedImport(BinaryResourceKey::class)
-                    }
-                }
-            }
+            .tryAddAliasedImports()
             .addType(
                 TypeSpec
                     .objectBuilder(className)
                     .addModifiers(if (internalVisibility) KModifier.INTERNAL else KModifier.PUBLIC)
                     .apply {
-                        tryAddPositionIndexedObject(stringsDistinctKeys, ResItem.String, StringResourceKey::class)
-                        tryAddPositionIndexedObject(pluralsDistinctKeys, ResItem.Plural, PluralResourceKey::class)
+                        tryAddPositionIndexedObject(
+                            items = stringsDistinctKeys,
+                            objectName = ResItem.String,
+                            type = StringResourceKey::class.asLocalResourceType(packageName),
+                            iface = ClassName(packageName, ifaceName, ResItem.String).takeIf { interfaces },
+                        )
+                        tryAddPositionIndexedObject(
+                            items = pluralsDistinctKeys,
+                            objectName = ResItem.Plural,
+                            type = PluralResourceKey::class.asLocalResourceType(packageName),
+                            iface = ClassName(packageName, ifaceName, ResItem.Plural).takeIf { interfaces },
+                        )
                         otherItemsPerGroupPerKey.onEach { (group, items) ->
-                            addLongKeyObjectWithProperties(items.keys, group)
+                            addLongKeyObjectWithProperties(
+                                items = items.keys,
+                                objectName = group,
+                                localPackageName = packageName,
+                                iface = ClassName(packageName, ifaceName, group).takeIf { interfaces },
+                            )
+                        }
+                    }
+                    .build(),
+            )
+            .build()
+    }
+
+    fun generateIfaces(): FileSpec {
+        return FileSpec.builder(packageName, ifaceName)
+            .tryAddAliasedImports()
+            .addType(
+                TypeSpec
+                    .interfaceBuilder(ifaceName)
+                    .addModifiers(if (internalVisibility) KModifier.INTERNAL else KModifier.PUBLIC)
+                    .apply {
+                        tryAddPositionIndexedIface(stringsDistinctKeys, ResItem.String, StringResourceKey::class.asLocalResourceType(packageName))
+                        tryAddPositionIndexedIface(pluralsDistinctKeys, ResItem.Plural, PluralResourceKey::class.asLocalResourceType(packageName))
+                        otherItemsPerGroupPerKey.onEach { (group, items) ->
+                            addLongKeyIface(items.keys, group, packageName)
                         }
                     }
                     .build(),
@@ -107,6 +136,41 @@ class ResourcesKtGenerator(
             .build()
     }
 
+    fun generateResourceProviders(): String {
+        //kotlin poet seems to be quite broken for value class
+        //so done fully manually
+        fun valueClass(name: String, superIfaces: List<String>) = "value class $name(override val key: Int) : ${superIfaces.joinToString()}"
+        val assertResourceKeyAlias = "A"
+        val assertResourceKeyName = AssetResourceKey::class.simpleName!!
+        return FileSpec.builder(packageName, KostraPluginConfig.ModuleResourceKeyName)
+            .addDefaultSuppressAnnotation()
+            .apply {
+                AliasedImports.onEach { (klass, alias) ->
+                    addAliasedImport(klass, alias)
+                }
+                addAliasedImport(AssetResourceKey::class, assertResourceKeyAlias)
+            }
+            .addImport("kotlin.jvm", "JvmInline")
+            .build()
+            .toString()
+            .let {
+                it + buildString {
+                    appendLine("interface $assertResourceKeyName : $assertResourceKeyAlias")
+                    AliasedImports.onEach { (klass, alias) ->
+                        appendLine("@JvmInline")
+                        val superIfaces = buildList {
+                            add(alias)
+                            if (klass == PainterResourceKey::class || klass == BinaryResourceKey::class) {
+                                add(assertResourceKeyName)
+                            }
+                        }
+
+                        appendLine(valueClass(klass.simpleName!!, superIfaces))
+                    }
+                }
+            }
+    }
+
     /**
      * ```
      * string = StringDatabase(
@@ -143,7 +207,25 @@ class ResourcesKtGenerator(
     }
 
     private fun FileSpec.Builder.addAliasedImport(kClass: KClass<out ResourceKey>): FileSpec.Builder =
-        apply { addAliasedImport(kClass, AliasedImports.getValue(kClass)) }
+        apply { addAliasedImport(kClass.asLocalResourceType(packageName), AliasedImports.getValue(kClass)) }
+
+    private fun FileSpec.Builder.tryAddAliasedImports(): FileSpec.Builder {
+        if (useAliasImports) {
+            if (hasStrings) {
+                addAliasedImport(StringResourceKey::class)
+            }
+            if (hasPlurals) {
+                addAliasedImport(PluralResourceKey::class)
+            }
+            if (hasPainters) {
+                addAliasedImport(PainterResourceKey::class)
+            }
+            if (hasOthers) {
+                addAliasedImport(BinaryResourceKey::class)
+            }
+        }
+        return this
+    }
 
     companion object {
         internal val AliasedImports = mapOf(
@@ -166,19 +248,40 @@ class ResourcesKtGenerator(
 private fun TypeSpec.Builder.tryAddPositionIndexedObject(
     items: List<String>?,
     objectName: String,
-    type: KClass<out Any>,
+    type: TypeName,
+    iface: TypeName? = null,
 ) {
     items ?: return
     addType(
         TypeSpec
             .objectBuilder(objectName)
+            .applyIfNotNull(iface) { addSuperinterface(it) }
             .apply {
                 items.forEachIndexed { index, key ->
                     addProperty(
                         PropertySpec.builder(key, type, KModifier.PUBLIC)
+                            .applyIfNotNull(iface) { addModifiers(KModifier.OVERRIDE) }
                             .initializer("%T(%L)", type, index)
                             .build(),
                     )
+                }
+            }
+            .build(),
+    )
+}
+
+private fun TypeSpec.Builder.tryAddPositionIndexedIface(
+    items: List<String>?,
+    objectName: String,
+    type: TypeName,
+) {
+    items ?: return
+    addType(
+        TypeSpec
+            .interfaceBuilder(objectName)
+            .apply {
+                items.onEach { key ->
+                    addProperty(PropertySpec.builder(key, type, KModifier.PUBLIC).build())
                 }
             }
             .build(),
@@ -196,17 +299,46 @@ private fun TypeSpec.Builder.tryAddPositionIndexedObject(
 private fun TypeSpec.Builder.addLongKeyObjectWithProperties(
     items: Set<ResItemKeyDbKey>,
     objectName: String,
+    localPackageName: String,
+    iface: TypeName? = null,
 ) {
     addType(
         TypeSpec
             .objectBuilder(objectName)
+            .applyIfNotNull(iface) { addSuperinterface(it) }
             .apply {
                 items.forEach { (resItemKey, dbRootKey, type) ->
                     addProperty(
-                        PropertySpec.builder(resItemKey, type, KModifier.PUBLIC)
-                            .initializer("%T(%L)", type, dbRootKey)
+                        PropertySpec.builder(resItemKey, type.asLocalResourceType(localPackageName), KModifier.PUBLIC)
+                            .applyIfNotNull(iface) { addModifiers(KModifier.OVERRIDE) }
+                            .initializer("%T(%L)", type.asLocalResourceType(localPackageName), dbRootKey)
                             .build(),
                     )
+                }
+            }
+            .build(),
+    )
+}
+
+/**
+ * ```
+ * interface objectName {
+ *    val resItemKey1: D
+ *    val resItemKey2: B
+ * }
+ * ```
+ */
+private fun TypeSpec.Builder.addLongKeyIface(
+    items: Set<ResItemKeyDbKey>,
+    objectName: String,
+    localPackageName: String,
+) {
+    addType(
+        TypeSpec
+            .interfaceBuilder(objectName)
+            .apply {
+                items.forEach { (resItemKey, dbRootKey, type) ->
+                    addProperty(PropertySpec.builder(resItemKey, type.asLocalResourceType(localPackageName), KModifier.PUBLIC).build())
                 }
             }
             .build(),

@@ -2,9 +2,9 @@ package com.jibru.kostra.internal
 
 import com.jibru.kostra.Fixtures
 import com.jibru.kostra.Fixtures.Resources.K
-import com.jibru.kostra.MissingResourceException
 import com.jibru.kostra.KQualifiers
-import com.jibru.kostra.StringResourceKey
+import com.jibru.kostra.MissingResourceException
+import test.SKey
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -36,7 +36,7 @@ class StringDatabaseTest {
         assertFailsWith<MissingResourceException> { db.get(K.string.test3, KQualifiers("cs")) }
         assertFailsWith<MissingResourceException> { db.get(K.string.test3, KQualifiers("cs-CZ")) }
 
-        assertFailsWith<MissingResourceException> { db.get(StringResourceKey(-1), KQualifiers.Undefined) }
+        assertFailsWith<MissingResourceException> { db.get(SKey(-1), KQualifiers.Undefined) }
     }
 
     @Test
@@ -46,6 +46,6 @@ class StringDatabaseTest {
         assertEquals("test2EN 2.0", db.get(K.string.test2Format, KQualifiers("en-GB"), 2f))
         assertEquals("test2enUS 3.0", db.get(K.string.test2Format, KQualifiers("en-US"), 3.0))
         assertEquals("test2Default [4, 5]", db.get(K.string.test2Format, KQualifiers("cs"), listOf("4", 5)))
-        assertEquals("test2Default StringResourceKey(key=5)", db.get(K.string.test2Format, KQualifiers("cs-CZ"), StringResourceKey(5)))
+        assertEquals("test2Default SKey(key=5)", db.get(K.string.test2Format, KQualifiers("cs-CZ"), SKey(5)))
     }
 }

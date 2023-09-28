@@ -12,6 +12,7 @@ object KostraPluginConfig {
     const val KClassName = "$PackageName.K"
     const val ResourcePropertyName = "Resources"
     const val AliasedImports = true
+    const val ModuleResourceKeyName = "ModuleResourceKey"
     const val ComposePluginPackage = "org.jetbrains.compose"
     val ImageExts = setOf("bmp", "jpg", "jpeg", "png", "svg", "webp")
 
