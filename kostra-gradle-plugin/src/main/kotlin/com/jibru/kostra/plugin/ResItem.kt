@@ -36,7 +36,6 @@ sealed class ResItem : Serializable {
     ) : ResItem(), StringValueResItem, Serializable {
         override val group: String get() = String
 
-
         init {
             validateInput()
         }
