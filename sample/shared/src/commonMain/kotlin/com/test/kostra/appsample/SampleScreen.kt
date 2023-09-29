@@ -52,6 +52,7 @@ import com.sample.app.ordinalStringResource
 import com.sample.app.painterResource
 import com.sample.app.pluralStringResource
 import com.sample.app.stringResource
+import com.sample.lib1.get
 
 private object SampleScreenDefaults {
     val spacing = 8.dp
@@ -124,11 +125,21 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(spacing)) {
                     Button(onClick = {}) { Text(stringResource(K.string.action_add)) }
                     Button(onClick = {}) { Text(stringResource(K.string.action_remove)) }
-                    Button(onClick = {}) { Text(stringResource(K.string.color)) }
+                    Button(onClick = {}) { Text(KM.string.color.get()) }
+                    Button(onClick = {}) { Text(KM.string.lib1_text.get()) }
+                    //Lib2 is not released with compose dependency, `get()` must be done manually
+                    Button(onClick = {}) { Text(KM.string.lib2_text.get()) }
                 }
 
                 Text(assetPath(K.images.capital_city))
                 Image(painterResource(K.images.capital_city), contentDescription = null)
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row {
+                    Image(KM.images.gear1.get(), contentDescription = null)
+                    Image(KM.images.gear2.get(), contentDescription = null)
+                }
 
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(assetPath(K.flagsxml.country_flag))

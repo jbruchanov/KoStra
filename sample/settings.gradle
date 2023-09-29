@@ -36,6 +36,8 @@ includeBuild("../") {
     }
 }
 include("shared")
+include("shared-lib1")
+include("shared-lib2")
 include("appJvmConsole")
 include("appJvmDesktop")
 include("appNativeConsole")

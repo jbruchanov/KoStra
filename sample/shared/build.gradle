@@ -9,7 +9,16 @@ plugins {
 apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 apply from: "$rootProject.projectDir/../build-android-lib.gradle"
 
+def depModules = [project(":shared-lib1"), project(":shared-lib2")]
+
 kotlin {
+    jvm {
+        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
+    }
+    jvmTest {
+
+    }
+
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -32,10 +41,6 @@ kotlin {
         }
     }
 
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
-    jvmTest
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -46,6 +51,11 @@ kotlin {
                 implementation(libs.kostra.common)
                 implementation(libs.kostra.compose)
                 implementation(libs.bundles.jetbrains.compose.app)
+
+                //api necessary for cocoapods export
+                depModules.forEach {
+                    api(it)
+                }
             }
         }
 
@@ -59,7 +69,6 @@ kotlin {
             dependsOn(commonMain)
         }
 
-
         androidMain
         androidUnitTest
 
@@ -72,6 +81,15 @@ kotlin {
             iosX64Main.dependsOn(delegate)
             iosArm64Main.dependsOn(delegate)
             iosSimulatorArm64Main.dependsOn(delegate)
+
+            sourceSets {
+                //add explicit reference to use module resources + kostra resources as part of this build
+                //output in kostra/sample/build/ios/Debug-iphonesimulator/appIos.app/compose-resources/
+                depModules.forEach {
+                    resources.srcDirs(new File(it.projectDir, "src/commonMain/resources"))
+                    resources.srcDirs(new File(it.buildDir, "kostra/resources"))
+                }
+            }
         }
 
         iosX64Test
@@ -102,3 +120,6 @@ if (plugins.findPlugin(libs.plugins.kostra.get().pluginId) != null) {
 android {
     namespace = "com.jibru.kostra.appsample"
 }
+
+tasks.getByName("generateDatabases")
+    .dependsOn(":shared-lib1:generateDatabases", ":shared-lib2:generateDatabases")

@@ -17,6 +17,10 @@ sourceSets {
             //just to reuse same resources
             srcDir("../shared/src/commonMain/resources")
         }
+
+        dependencies {
+            implementation(project(":shared-lib1"))
+        }
     }
 }
 
@@ -50,5 +54,5 @@ fun String.toCamelCase(): String = split("_")
     .takeIf { it.isNotEmpty() }
     ?.mapIndexed { index, s -> if (index > 0) s[0].uppercase() + s.drop(1) else s }
     ?.joinToString(separator = "")
-//just return anything original, this is naive toCamelCase implementation
+    //just return anything original, this is naive toCamelCase implementation
     ?: this

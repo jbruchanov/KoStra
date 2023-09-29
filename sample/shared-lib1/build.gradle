@@ -1,0 +1,48 @@
+plugins {
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
+    id("org.jetbrains.compose")
+    id("com.jibru.kostra.resources")
+}
+
+apply from: "$rootProject.projectDir/../build-ktlint.gradle"
+apply from: "$rootProject.projectDir/../build-android-lib.gradle"
+
+kotlin {
+    jvm {
+        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
+    }
+
+    androidTarget()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.kostra.common)
+                implementation(libs.kostra.compose)
+                implementation(libs.bundles.jetbrains.compose.app)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+    }
+}
+
+android {
+    namespace = "com.sample.lib1"
+}
+
+kostra {
+    modulePrefix = "Lib1"
+    className = "com.sample.lib1.KLib1"
+    androidResources {
+        resourceDirs.add(file("src/commonMain/resources_strings"))
+    }
+}

@@ -37,6 +37,7 @@ object TaskDelegate {
         internalVisibility: Boolean = false,
         interfaces: Boolean = true,
         minify: Boolean = true,
+        addJvmInline: Boolean = true
     ) {
         val result = ResourcesKtGenerator(
             items = items,
@@ -52,7 +53,7 @@ object TaskDelegate {
                     add(CodeWrapper.from(it.generateIfaces(), minify, KostraPluginConfig.AliasedImports))
                 }
                 add(CodeWrapper.from(it.generateResources(), minify, false))
-                add(CodeWrapper(KostraPluginConfig.ModuleResourceKeyName + ".kt", it.generateResourceProviders()))
+                add(CodeWrapper(KostraPluginConfig.ModuleResourceKeyName + ".kt", it.generateResourceProviders(addJvmInline)))
             }
         }
         outputDir.deleteRecursively()
@@ -83,7 +84,7 @@ object TaskDelegate {
         file.parentFile.mkdirs()
         try {
             if (minify) {
-                file.writeText(fileSpec.minify())
+                file.writeText(fileSpec.minify(useAliasImports = false/*unwanted*/))
             } else {
                 file.writeText(fileSpec.toString())
             }

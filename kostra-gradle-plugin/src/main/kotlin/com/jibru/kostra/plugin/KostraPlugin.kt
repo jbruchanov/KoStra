@@ -10,6 +10,10 @@ import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
 import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
 import com.jibru.kostra.plugin.ext.appendLog
 import com.jibru.kostra.plugin.ext.hasComposePlugin
+import com.jibru.kostra.plugin.ext.hasJvmPlugin
+import com.jibru.kostra.plugin.ext.hasKmpPlugin
+import com.jibru.kostra.plugin.ext.jvmMainSourceSet
+import com.jibru.kostra.plugin.ext.kmpMainSourceSet
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.ComposeDefaults
 import com.jibru.kostra.plugin.task.GenerateCodeTask
@@ -26,7 +30,6 @@ import kotlinx.coroutines.launch
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.configurationcache.extensions.capitalized
@@ -164,9 +167,8 @@ class KostraPlugin : Plugin<Project> {
         generateDbTaskProvider: TaskProvider<GenerateDatabasesTask>,
     ) {
         run JavaPlugin@{
-            (project.extensions.findByType(JavaPluginExtension::class.java) ?: return@JavaPlugin)
-                .sourceSets
-                .findByName("main")
+            (project.takeIf { it.hasJvmPlugin() } ?: return@JavaPlugin)
+                .jvmMainSourceSet()
                 .let { mainSourceSet ->
                     if (mainSourceSet == null) {
                         logger.warn("Kostra: ${project.name}:main jvm source set not found, unable to finish auto setup!")
@@ -185,17 +187,15 @@ class KostraPlugin : Plugin<Project> {
         }
 
         run KotlinMultiplatform@{
-            val kotlinMultiplatformExtension = project.extensions.findByType(KotlinMultiplatformExtension::class.java) ?: return@KotlinMultiplatform
-            kotlinMultiplatformExtension
-                .sourceSets
-                .let {
-                    val commonMainSourceSet = it.findByName("commonMain")
+            (project.takeIf { it.hasKmpPlugin() } ?: return@KotlinMultiplatform)
+                .kmpMainSourceSet()
+                .let { commonMainSourceSet ->
                     if (commonMainSourceSet == null) {
                         logger.warn("Kostra: ${project.name}:commonMain source set not found, unable to finish auto setup!")
                         return@let
                     }
 
-                    //let java know about kostra sourceDir
+                    //let kmp know about kostra sourceDir
                     commonMainSourceSet.kotlin.srcDir(generateCodeTaskProvider)
                     if (generateComposeDefaultsTaskProvider != null) {
                         commonMainSourceSet.kotlin.srcDir(generateComposeDefaultsTaskProvider)
@@ -319,6 +319,8 @@ class KostraPlugin : Plugin<Project> {
                 outputDir = taskDelegateConfig.outputDir,
                 resDbsFolderName = taskDelegateConfig.resDbsFolderName,
                 modulePrefix = taskDelegateConfig.modulePrefix,
+                //TODO:
+                addJvmInline = true
             )
         }.exceptionOrNull()?.also {
             log?.let { log ->
