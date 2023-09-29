@@ -1,8 +1,8 @@
-import com.jibru.kostra.K
+import app.K
+import app.Resources
 import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
-import com.jibru.kostra.Resources
 import com.jibru.kostra.icu.FixedDecimal
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -10,7 +10,6 @@ ext.createNativeTarget = { kmpExtension ->
 }
 
 kotlin {
-
     sourceSets {
         nativeMain
     }

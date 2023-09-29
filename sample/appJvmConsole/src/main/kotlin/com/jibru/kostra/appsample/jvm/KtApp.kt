@@ -1,8 +1,8 @@
 package com.jibru.kostra.appsample.jvm
 
-import com.jibru.kostra.K
+import app.K
+import app.Resources
 import com.jibru.kostra.KDpi
-import com.jibru.kostra.Resources
 import com.jibru.kostra.assetPath
 import com.jibru.kostra.binaryInputStream
 import com.jibru.kostra.defaultQualifiers
@@ -10,6 +10,8 @@ import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.ordinal
 import com.jibru.kostra.plural
 import com.jibru.kostra.string
+import com.sample.lib1.KLib1
+import com.sample.lib1.Lib1Resources
 import java.util.Locale
 import javax.imageio.ImageIO
 
@@ -18,8 +20,9 @@ fun main() {
         println("-".repeat(32))
         println("Current locale:${Locale.getDefault().toLanguageTag()}")
         println("Strings:")
-        val items = listOf(K.string.actionAdd, K.string.actionRemove, K.string.color, K.string.plurals, K.string.ordinals)
-        println(items.joinToString { Resources.string(it) })
+        val items = listOf(K.string.actionAdd, K.string.actionRemove, K.string.color, K.string.plurals, K.string.ordinals).map { { Resources.string(it) } } +
+            listOf(KLib1.string.lib1_text).map { { Lib1Resources.string(it) } }
+        println(items.map { it() })
         println("Plurals:")
         println(
             listOf(

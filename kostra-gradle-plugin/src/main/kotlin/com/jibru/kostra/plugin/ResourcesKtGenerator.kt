@@ -12,6 +12,7 @@ import com.jibru.kostra.internal.FileDatabase
 import com.jibru.kostra.internal.PluralDatabase
 import com.jibru.kostra.internal.StringDatabase
 import com.jibru.kostra.plugin.ext.addDefaultSuppressAnnotation
+import com.jibru.kostra.plugin.ext.applyIf
 import com.jibru.kostra.plugin.ext.applyIfNotNull
 import com.jibru.kostra.plugin.ext.asLocalResourceType
 import com.jibru.kostra.plugin.ext.formattedDbKey
@@ -26,7 +27,7 @@ import kotlin.reflect.KClass
 
 class ResourcesKtGenerator(
     items: List<ResItem>,
-    className: String = "app.K",
+    className: String = KostraPluginConfig.KClassName,
     private val resDbsFolderName: String = KostraPluginConfig.ResourceDbFolderName,
     private val resourcePropertyName: String = KostraPluginConfig.ResourcePropertyName,
     private val internalVisibility: Boolean = false,
@@ -136,7 +137,7 @@ class ResourcesKtGenerator(
             .build()
     }
 
-    fun generateResourceProviders(): String {
+    fun generateResourceProviders(addJvmInline: Boolean = true): String {
         //kotlin poet seems to be quite broken for value class
         //so done fully manually
         fun valueClass(name: String, superIfaces: List<String>) = "value class $name(override val key: Int) : ${superIfaces.joinToString()}"
@@ -150,14 +151,16 @@ class ResourcesKtGenerator(
                 }
                 addAliasedImport(AssetResourceKey::class, assertResourceKeyAlias)
             }
-            .addImport("kotlin.jvm", "JvmInline")
+            .applyIf(addJvmInline) { addImport("kotlin.jvm", "JvmInline") }
             .build()
             .toString()
             .let {
                 it + buildString {
                     appendLine("interface $assertResourceKeyName : $assertResourceKeyAlias")
                     AliasedImports.onEach { (klass, alias) ->
-                        appendLine("@JvmInline")
+                        if (addJvmInline) {
+                            appendLine("@JvmInline")
+                        }
                         val superIfaces = buildList {
                             add(alias)
                             if (klass == PainterResourceKey::class || klass == BinaryResourceKey::class) {

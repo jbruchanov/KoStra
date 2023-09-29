@@ -19,6 +19,7 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+    androidTarget {}
 
     sourceSets {
         commonMain {
@@ -33,6 +34,10 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
             }
+        }
+
+        androidMain {
+
         }
 
         iosX64Main

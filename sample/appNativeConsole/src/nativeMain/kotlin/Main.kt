@@ -1,11 +1,11 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
+import app.native.N
+import app.native.Resources
 import com.jibru.kostra.DefaultQualifiersProvider
 import com.jibru.kostra.IDefaultQualifiersProvider
-import com.jibru.kostra.K
 import com.jibru.kostra.KDpi
 import com.jibru.kostra.KQualifiers
-import com.jibru.kostra.Resources
 import com.jibru.kostra.assetPath
 import com.jibru.kostra.icu.FixedDecimal
 import com.jibru.kostra.ordinal
@@ -35,26 +35,26 @@ fun main(
         println("-".repeat(32))
         println("Current locale:${DefaultQualifiersProvider.get().locale}")
         println("Strings:")
-        val items = listOf(K.string.action_add, K.string.action_remove, K.string.color, K.string.plurals, K.string.ordinals)
+        val items = listOf(N.string.action_add, N.string.action_remove, N.string.color, N.string.plurals, N.string.ordinals)
         println(items.joinToString { Resources.string(it) })
         println("Plurals:")
         println(
             listOf(
-                Resources.plural(K.plural.bug_x, 0, 0),
-                Resources.plural(K.plural.bug_x, FixedDecimal(0.5), 0.5f),
-                Resources.plural(K.plural.bug_x, 1, 1),
-                Resources.plural(K.plural.bug_x, 2, 2),
-                Resources.plural(K.plural.bug_x, 3, 3),
-                Resources.plural(K.plural.bug_x, 4, 4),
-                Resources.plural(K.plural.bug_x, 5, 5),
-                Resources.plural(K.plural.bug_x, 10, 10),
+                Resources.plural(N.plural.bug_x, 0, 0),
+                Resources.plural(N.plural.bug_x, FixedDecimal(0.5), 0.5f),
+                Resources.plural(N.plural.bug_x, 1, 1),
+                Resources.plural(N.plural.bug_x, 2, 2),
+                Resources.plural(N.plural.bug_x, 3, 3),
+                Resources.plural(N.plural.bug_x, 4, 4),
+                Resources.plural(N.plural.bug_x, 5, 5),
+                Resources.plural(N.plural.bug_x, 10, 10),
             ).joinToString(),
         )
         println("Ordinals:")
-        println((0..5).joinToString { Resources.ordinal(K.plural.day_x, it, it) })
+        println((0..5).joinToString { Resources.ordinal(N.plural.day_x, it, it) })
 
         println("Images:")
-        val assetPath = Resources.assetPath(K.images.capital_city)
+        val assetPath = Resources.assetPath(N.images.capital_city)
         println("$assetPath, fileSize:${fileSize(assetPath)}")
     }
 

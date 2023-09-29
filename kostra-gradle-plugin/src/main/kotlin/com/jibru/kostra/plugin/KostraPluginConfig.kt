@@ -9,7 +9,7 @@ object KostraPluginConfig {
     const val PackageName = "com.jibru.kostra"
     const val PackageNameCompose = "$PackageName.compose"
     const val PackageNameIcu = "$PackageName.icu"
-    const val KClassName = "$PackageName.K"
+    const val KClassName = "app.K"
     const val ResourcePropertyName = "Resources"
     const val AliasedImports = true
     const val ModuleResourceKeyName = "ModuleResourceKey"
