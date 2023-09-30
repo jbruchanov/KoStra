@@ -5,11 +5,11 @@ import com.jibru.kostra.plugin.ResourcesKtGenerator
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 
-internal fun FileSpec.minify(useAliasImports: Boolean = KostraPluginConfig.AliasedImports) = toString()
+internal fun FileSpec.minify(useAliasedImports: Boolean = KostraPluginConfig.AliasedImports) = toString()
     .trim()
     .replace("public ", "")
     .replace("\n\n", "\n")
-    .applyIf(useAliasImports) { fixAliasImports(useAliasImports) }
+    .applyIf(useAliasedImports) { fixAliasImports(useAliasedImports) }
 
 //https://github.com/square/kotlinpoet/issues/1696
 internal fun String.fixAliasImports(useAliasImports: Boolean = KostraPluginConfig.AliasedImports): String {

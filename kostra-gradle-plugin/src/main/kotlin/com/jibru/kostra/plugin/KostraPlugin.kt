@@ -320,7 +320,7 @@ class KostraPlugin : Plugin<Project> {
                 resDbsFolderName = taskDelegateConfig.resDbsFolderName,
                 modulePrefix = taskDelegateConfig.modulePrefix,
                 //TODO:
-                addJvmInline = true
+                addJvmInline = true,
             )
         }.exceptionOrNull()?.also {
             log?.let { log ->
