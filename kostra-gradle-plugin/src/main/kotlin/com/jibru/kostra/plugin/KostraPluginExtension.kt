@@ -13,7 +13,7 @@ import org.gradle.api.tasks.Optional
 import java.io.File
 
 abstract class KostraPluginExtension {
-    abstract val className: Property<String>
+    abstract val kClassName: Property<String>
     abstract val autoConfig: Property<Boolean>
     abstract val useFileWatcher: Property<Boolean>
     abstract val composeDefaults: ListProperty<ComposeDefaults>

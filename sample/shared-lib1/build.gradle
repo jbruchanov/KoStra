@@ -44,7 +44,7 @@ android {
 kostra {
     modulePrefix = "Lib1"
     composeDefaults.value([ComposeDefaults.Getters])
-    className = "com.sample.lib1.KLib1"
+    KClassName = "com.sample.lib1.KLib1"
     androidResources {
         resourceDirs.add(file("src/commonMain/resources_strings"))
     }

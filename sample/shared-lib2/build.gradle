@@ -31,7 +31,7 @@ kotlin {
 
 kostra {
     modulePrefix = "Lib2"
-    className = "com.sample.lib2.KLib2"
+    KClassName = "com.sample.lib2.KLib2"
     androidResources {
         resourceDirs.add(file("src/commonMain/resources_strings"))
     }
