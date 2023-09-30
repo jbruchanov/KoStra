@@ -549,4 +549,17 @@ class FileResolverTest {
             ResItem.FileRes("file", file("test/grp1/file.bin"), KQualifiers.Undefined.key, "test", root = resourcesRoot, image = false),
         )
     }
+
+    @Test
+    fun `resolve WHEN vxml`() = testResources {
+        addFile("obrazky/pic.vxml")
+
+        buildResources()
+
+        val items = FileResolver(config = FileResolverConfig(painterGroups = emptySet())).resolve(resourcesRoot)
+
+        assertThat(items).containsExactly(
+            ResItem.FileRes("pic", file("obrazky/pic.vxml"), KQualifiers.Undefined.key, "obrazky", root = resourcesRoot, image = true),
+        )
+    }
 }
