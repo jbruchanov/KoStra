@@ -57,7 +57,7 @@ class KostraPlugin : Plugin<Project> {
 
         val generateResourcesTaskProvider = target.tasks
             .register(KostraPluginConfig.Tasks.GenerateResources, GenerateCodeTask::class.java) { task ->
-                task.kClassName.set(extension.className)
+                task.kClassName.set(extension.kClassName)
                 task.resourcesAnalysisFile.set(analyseResourcesTaskProvider.get().outputFile)
                 task.resDbsFolderName.set(ResourceDbFolderName)
                 task.modulePrefix.set(extension.modulePrefix)
@@ -97,7 +97,7 @@ class KostraPlugin : Plugin<Project> {
             autoConfig.set(true)
             useFileWatcher.set(false)
             strictLocale.set(true)
-            className.set(KClassName)
+            kClassName.set(KClassName)
             modulePrefix.set("")
             internalVisibility.set(false)
             composeDefaults.set(
@@ -260,7 +260,7 @@ class KostraPlugin : Plugin<Project> {
         ) {
             it.group = KostraPluginConfig.Tasks.Group
             it.composeDefaults.set(extension.composeDefaults)
-            it.kClassName.set(extension.className)
+            it.kClassName.set(extension.kClassName)
             it.modulePrefix.set(extension.modulePrefix)
             it.internalVisibility.set(extension.internalVisibility)
             it.outputDir.set(project.outputSourceDir(variantName))
@@ -279,7 +279,7 @@ class KostraPlugin : Plugin<Project> {
             val taskDelegateConfig = TaskDelegate.Config(
                 resourceDirs = extension.resourceDirs.get() + extension.androidResources.resourceDirs.get(),
                 fileResolverConfig = extension.toFileResolverConfig(),
-                kClassName = extension.className.get(),
+                kClassName = extension.kClassName.get(),
                 outputDir = File(target.defaultOutputDir(), "src"),
                 resDbsFolderName = extension.outputDatabaseDirName.get(),
                 modulePrefix = extension.modulePrefix.get(),

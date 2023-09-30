@@ -103,7 +103,7 @@ kotlin {
 
 if (plugins.findPlugin(libs.plugins.kostra.get().pluginId) != null) {
     kostra {
-        className = "com.sample.app.K"
+        KClassName = "com.sample.app.K"
         androidResources {
             painterGroups.add("flags.*")
             keyMapper { key, file -> key }

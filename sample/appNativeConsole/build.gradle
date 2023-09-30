@@ -29,7 +29,7 @@ kotlin {
 
 
 kostra {
-    className = "app.native.N"
+    KClassName = "app.native.N"
     resourceDirs.add(file("../shared/src/commonMain/resources"))
     androidResources {
         resourceDirs.add(file("../shared/src/commonMain/resources_strings"))
