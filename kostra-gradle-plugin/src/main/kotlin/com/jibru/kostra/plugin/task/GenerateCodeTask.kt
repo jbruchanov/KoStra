@@ -2,8 +2,7 @@ package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
-import com.jibru.kostra.plugin.ext.jvmMainSourceSet
-import com.jibru.kostra.plugin.ext.kmpMainSourceSet
+import com.jibru.kostra.plugin.ext.useJvmInline
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -23,9 +22,6 @@ abstract class GenerateCodeTask : DefaultTask() {
 
     @get:Input
     abstract val kClassName: Property<String>
-
-    @get:Input
-    abstract val composeDefaults: Property<Boolean>
 
     @get:Input
     abstract val resDbsFolderName: Property<String>
@@ -59,7 +55,7 @@ abstract class GenerateCodeTask : DefaultTask() {
             resDbsFolderName = resDbsFolderName.get(),
             modulePrefix = modulePrefix.getOrElse(""),
             internalVisibility = internalVisibility.getOrElse(false),
-            addJvmInline = project.kmpMainSourceSet() != null || project.jvmMainSourceSet() != null,
+            addJvmInline = project.useJvmInline(),
         )
     }
 }

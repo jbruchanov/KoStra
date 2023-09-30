@@ -5,6 +5,7 @@ package com.jibru.kostra.plugin
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.jibru.kostra.plugin.KostraPluginConfig.defaultOutputDir
 import com.jibru.kostra.plugin.KostraPluginConfig.fileWatcherLog
 import com.jibru.kostra.plugin.KostraPluginConfig.outputSourceDir
@@ -14,6 +15,7 @@ import com.jibru.kostra.plugin.ext.hasJvmPlugin
 import com.jibru.kostra.plugin.ext.hasKmpPlugin
 import com.jibru.kostra.plugin.ext.jvmMainSourceSet
 import com.jibru.kostra.plugin.ext.kmpMainSourceSet
+import com.jibru.kostra.plugin.ext.useJvmInline
 import com.jibru.kostra.plugin.task.AnalyseResourcesTask
 import com.jibru.kostra.plugin.task.ComposeDefaults
 import com.jibru.kostra.plugin.task.GenerateCodeTask
@@ -57,7 +59,6 @@ class KostraPlugin : Plugin<Project> {
             .register(KostraPluginConfig.Tasks.GenerateResources, GenerateCodeTask::class.java) { task ->
                 task.kClassName.set(extension.className)
                 task.resourcesAnalysisFile.set(analyseResourcesTaskProvider.get().outputFile)
-                task.composeDefaults.set(extension.composeDefaults)
                 task.resDbsFolderName.set(ResourceDbFolderName)
                 task.modulePrefix.set(extension.modulePrefix)
                 task.internalVisibility.set(extension.internalVisibility)
@@ -69,9 +70,8 @@ class KostraPlugin : Plugin<Project> {
             createGenerateComposeDefaultsTask(
                 project = target,
                 variantName = ComposeDefaults.Common.name,
-                composeDefaults = ComposeDefaults.Common,
                 extension = extension,
-            )
+            ).apply { dependsOn(generateResourcesTaskProvider) }
         } else {
             null
         }
@@ -100,7 +100,12 @@ class KostraPlugin : Plugin<Project> {
             className.set(KClassName)
             modulePrefix.set("")
             internalVisibility.set(false)
-            composeDefaults.set(target.plugins.any { it.javaClass.packageName.startsWith(ComposePluginPackage) })
+            composeDefaults.set(
+                when {
+                    target.hasComposePlugin() -> ComposeDefaults.values().toList()
+                    else -> emptyList()
+                },
+            )
         }
         extension.androidResources.apply {
             stringFiles.addAll(FileResolverConfig.Defaults.stringFiles)
@@ -247,7 +252,6 @@ class KostraPlugin : Plugin<Project> {
     private fun createGenerateComposeDefaultsTask(
         project: Project,
         variantName: String,
-        composeDefaults: ComposeDefaults,
         extension: KostraPluginExtension,
     ): TaskProvider<GenerateComposeDefaultsTask> {
         val taskProvider = project.tasks.register(
@@ -255,7 +259,7 @@ class KostraPlugin : Plugin<Project> {
             GenerateComposeDefaultsTask::class.java,
         ) {
             it.group = KostraPluginConfig.Tasks.Group
-            it.composeDefaults.set(composeDefaults)
+            it.composeDefaults.set(extension.composeDefaults)
             it.kClassName.set(extension.className)
             it.modulePrefix.set(extension.modulePrefix)
             it.internalVisibility.set(extension.internalVisibility)
@@ -279,6 +283,7 @@ class KostraPlugin : Plugin<Project> {
                 outputDir = File(target.defaultOutputDir(), "src"),
                 resDbsFolderName = extension.outputDatabaseDirName.get(),
                 modulePrefix = extension.modulePrefix.get(),
+                addJvmInline = target.useJvmInline(),
             )
             val log = target.fileWatcherLog()
             val fileWatcher = fileWatchers.getOrPut(target) {
@@ -319,8 +324,7 @@ class KostraPlugin : Plugin<Project> {
                 outputDir = taskDelegateConfig.outputDir,
                 resDbsFolderName = taskDelegateConfig.resDbsFolderName,
                 modulePrefix = taskDelegateConfig.modulePrefix,
-                //TODO:
-                addJvmInline = true,
+                addJvmInline = taskDelegateConfig.addJvmInline,
             )
         }.exceptionOrNull()?.also {
             log?.let { log ->

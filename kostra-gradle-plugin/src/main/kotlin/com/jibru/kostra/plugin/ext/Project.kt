@@ -18,3 +18,5 @@ fun Project.kmpPlugin() = extensions.findByType(KotlinMultiplatformExtension::cl
 fun Project.hasKmpPlugin() = kmpPlugin() != null
 
 fun Project.kmpMainSourceSet() = kmpPlugin()?.sourceSets?.findByName("commonMain")
+
+fun Project.useJvmInline() = kmpMainSourceSet() != null || jvmMainSourceSet() != null

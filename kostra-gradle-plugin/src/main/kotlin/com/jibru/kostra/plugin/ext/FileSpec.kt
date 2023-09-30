@@ -9,7 +9,7 @@ internal fun FileSpec.minify(useAliasedImports: Boolean = KostraPluginConfig.Ali
     .trim()
     .replace("public ", "")
     .replace("\n\n", "\n")
-    .applyIf(useAliasedImports) { fixAliasImports(useAliasedImports) }
+    .fixAliasImports(useAliasedImports)
 
 //https://github.com/square/kotlinpoet/issues/1696
 internal fun String.fixAliasImports(useAliasImports: Boolean = KostraPluginConfig.AliasedImports): String {

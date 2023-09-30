@@ -4,8 +4,8 @@ package com.test.kostra.appsample
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
+import com.jibru.kostra.compose.LocalQualifiers
 import com.jibru.kostra.compose.painter
-import com.jibru.kostra.compose.string
 import com.sample.app.IK
 import com.sample.app.K
 import com.sample.lib1.IKLib1
@@ -31,9 +31,9 @@ object KM {
 //Lib2 doesn't know anything about compose, so let's create simple getter
 //to create relation Lib2StringResourceKey -> Lib2Resources
 @Composable
-fun Lib2StringResourceKey.get(): String = Lib2Resources.string(this)
+fun Lib2StringResourceKey.get(): String = Lib2Resources.string.get(this, LocalQualifiers.current)
 
 @Composable
-fun Lib2PainterResourceKey.get(): Painter = Lib2Resources.painter(this)
+fun Lib2PainterResourceKey.get(): Painter = Lib2Resources.painter(this, LocalQualifiers.current)
 
 //more getters here with more usage like in ComposeResourceProvider.kt
