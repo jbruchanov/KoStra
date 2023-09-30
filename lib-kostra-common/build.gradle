@@ -12,6 +12,10 @@ project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
 
 kotlin {
+    androidTarget {
+        publishLibraryVariants("release")
+    }
+
     jvm {
         jvmToolchain(libs.versions.jvmtarget.get().toInteger())
     }
