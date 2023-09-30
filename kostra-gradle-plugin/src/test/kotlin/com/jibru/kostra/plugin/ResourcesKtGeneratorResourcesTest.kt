@@ -106,7 +106,7 @@ class ResourcesKtGeneratorResourcesTest {
 
         val items = FileResolver().resolve(resourcesRoot)
         val gen = ResourcesKtGenerator(items, resDbsFolderName = "com.sample.app.K", useAliasImports = false)
-        val result = gen.generateKClass().minify(useAliasImports = false)
+        val result = gen.generateKClass().minify(useAliasedImports = false)
 
         assertThat(result.trim()).isEqualTo(
             """

@@ -37,7 +37,7 @@ object TaskDelegate {
         internalVisibility: Boolean = false,
         interfaces: Boolean = true,
         minify: Boolean = true,
-        addJvmInline: Boolean = true
+        addJvmInline: Boolean = true,
     ) {
         val result = ResourcesKtGenerator(
             items = items,
@@ -84,7 +84,8 @@ object TaskDelegate {
         file.parentFile.mkdirs()
         try {
             if (minify) {
-                file.writeText(fileSpec.minify(useAliasImports = false/*unwanted*/))
+                //aliasedImports unwanted here
+                file.writeText(fileSpec.minify(useAliasedImports = false))
             } else {
                 file.writeText(fileSpec.toString())
             }

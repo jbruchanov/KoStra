@@ -15,9 +15,6 @@ kotlin {
     jvm {
         jvmToolchain(libs.versions.jvmtarget.get().toInteger())
     }
-    jvmTest {
-
-    }
 
     androidTarget {
         compilations.all {
@@ -85,9 +82,9 @@ kotlin {
             sourceSets {
                 //add explicit reference to use module resources + kostra resources as part of this build
                 //output in kostra/sample/build/ios/Debug-iphonesimulator/appIos.app/compose-resources/
-                depModules.forEach {
-                    resources.srcDirs(new File(it.projectDir, "src/commonMain/resources"))
-                    resources.srcDirs(new File(it.buildDir, "kostra/resources"))
+                depModules.forEach { Project p ->
+                    resources.srcDirs(new File(p.projectDir, "src/commonMain/resources"))
+                    resources.srcDirs(new File(p.buildDir, "kostra/resources"))
                 }
             }
         }
@@ -121,5 +118,6 @@ android {
     namespace = "com.jibru.kostra.appsample"
 }
 
+//just ensure that lib DBs are created with 'shared' module DB
 tasks.getByName("generateDatabases")
     .dependsOn(":shared-lib1:generateDatabases", ":shared-lib2:generateDatabases")

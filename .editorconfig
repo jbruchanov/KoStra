@@ -8,6 +8,7 @@ ktlint_standard_import-ordering = disabled
 ktlint_standard_import-ordering = disabled
 ktlint_standard_no-blank-line-in-list = disabled
 ktlint_standard_no-single-line-block-comment = disabled
+# necessary for if-else-wrapping
 ktlint_standard_discouraged-comment-location = enabled
 ktlint_standard_no-empty-first-line-in-class-body = disabled
 ktlint_standard_multiline-expression-wrapping = disabled

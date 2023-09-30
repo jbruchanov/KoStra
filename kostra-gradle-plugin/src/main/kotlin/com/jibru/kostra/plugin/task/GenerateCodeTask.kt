@@ -59,7 +59,7 @@ abstract class GenerateCodeTask : DefaultTask() {
             resDbsFolderName = resDbsFolderName.get(),
             modulePrefix = modulePrefix.getOrElse(""),
             internalVisibility = internalVisibility.getOrElse(false),
-            addJvmInline = project.kmpMainSourceSet() != null || project.jvmMainSourceSet() != null
+            addJvmInline = project.kmpMainSourceSet() != null || project.jvmMainSourceSet() != null,
         )
     }
 }
