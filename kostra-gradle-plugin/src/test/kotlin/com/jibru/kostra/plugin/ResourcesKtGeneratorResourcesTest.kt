@@ -126,8 +126,119 @@ class ResourcesKtGeneratorResourcesTest {
     }
 
     @Test
+    fun `generateKClass WHEN interfaces = true`() = testResources {
+        addStrings(
+            "values/strings.xml",
+            strings = mapOf("item" to "src1Item1"),
+            plurals = mapOf("dog" to mapOf("other" to "dogs")),
+        )
+        addFile("drawable/image.png")
+        addFile("binary/test.bin")
+
+        buildResources()
+
+        val items = FileResolver().resolve(resourcesRoot)
+        val gen = ResourcesKtGenerator(items, useAliasImports = true)
+        val result = gen.generateKClass(interfaces = true).minify(useAliasedImports = true)
+        assertThat(result).isEqualTo(
+            """
+            @file:Suppress("ktlint")
+            package app
+            import kotlin.Suppress
+            import app.BinaryResourceKey as B
+            import app.PainterResourceKey as D
+            import app.PluralResourceKey as P
+            import app.StringResourceKey as S
+            object K {
+              object string : IK.string {
+                override val item: S = S(0)
+              }
+              object plural : IK.plural {
+                override val dog: P = P(0)
+              }
+              object binary : IK.binary {
+                override val test: B = B(1)
+              }
+              object drawable : IK.drawable {
+                override val image: D = D(2)
+              }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun generateIfaces() = testResources {
+        addStrings(
+            "values/strings.xml",
+            strings = mapOf("item" to "src1Item1"),
+            plurals = mapOf("dog" to mapOf("other" to "dogs")),
+        )
+        addFile("drawable/image.png")
+        addFile("binary/test.bin")
+
+        buildResources()
+
+        val items = FileResolver().resolve(resourcesRoot)
+        val gen = ResourcesKtGenerator(items, useAliasImports = true)
+        val result = gen.generateIfaces().minify()
+        assertThat(result).isEqualTo(
+            """
+            @file:Suppress("ktlint")
+            package app
+            import kotlin.Suppress
+            import app.BinaryResourceKey as B
+            import app.PainterResourceKey as D
+            import app.PluralResourceKey as P
+            import app.StringResourceKey as S
+            interface IK {
+              interface string {
+                val item: S
+              }
+              interface plural {
+                val dog: P
+              }
+              interface binary {
+                val test: B
+              }
+              interface drawable {
+                val image: D
+              }
+            }
+            """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun `generateIfaces WHEN different kClass`() = testResources {
+        val gen = ResourcesKtGenerator(emptyList(), className = "app.Res")
+        val result = gen.generateIfaces().minify()
+        assertThat(result).contains("interface IRes")
+    }
+
+    @Test
+    fun `generateIfaces WHEN internal`() = testResources {
+        val gen = ResourcesKtGenerator(emptyList(), className = "app.Res", internalVisibility = true)
+        val result = gen.generateIfaces().minify()
+        assertThat(result).contains("internal interface IRes")
+    }
+
+    @Test
+    fun `generateKClass WHEN different kClass`() = testResources {
+        addStrings(
+            "values/strings.xml",
+            strings = mapOf("item" to "src1Item1"),
+        )
+        buildResources()
+        val items = FileResolver().resolve(resourcesRoot)
+        val gen = ResourcesKtGenerator(items, className = "app.Res")
+        val result = gen.generateKClass(interfaces = true).minify()
+        assertThat(result).contains("object string : IRes.string {")
+    }
+
+    @Test
     @EnabledIf("hasRealProjectLocation")
-    fun test() {
+    fun testRealProject() {
         val items = FileResolver().resolve(RealProjectRef.resources()!!)
         val gen = ResourcesKtGenerator(items, resDbsFolderName = "com.sample.app.K")
 

@@ -21,6 +21,7 @@ object TaskDelegate {
         val outputDir: File,
         val resDbsFolderName: String,
         val modulePrefix: String,
+        val addJvmInline: Boolean,
     )
 
     fun analyseCode(
@@ -70,14 +71,14 @@ object TaskDelegate {
 
     fun generateComposeDefaults(
         kClassName: String,
-        composeDefaults: ComposeDefaults,
+        composeDefaults: List<ComposeDefaults>,
         outputDir: File,
         modulePrefix: String,
         internalVisibility: Boolean,
         minify: Boolean = true,
     ) {
         val fileSpec = ComposeDefaultsKtGenerator(kClassName = kClassName, modulePrefix = modulePrefix, internalVisibility = internalVisibility)
-            .generateComposeDefaults(composeDefaults = composeDefaults)
+            .generateComposeDefaults(*composeDefaults.toTypedArray())
         outputDir.deleteRecursively()
 
         val file = File(outputDir, "${fileSpec.name}.kt")

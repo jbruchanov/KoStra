@@ -15,12 +15,11 @@ private fun KResources.svgPainter(key: PainterResourceKey, qualifiers: KQualifie
     loadSvgPainter(inputStream = binaryInputStream(key, qualifiers), density = LocalDensity.current)
 
 @Composable
-actual fun KResources.painter(key: PainterResourceKey): Painter {
-    val qualifiers = LocalQualifiers.current
+actual fun KResources.painter(key: PainterResourceKey, qualifiers: KQualifiers): Painter {
     val path = assetPath(key, qualifiers)
     return if (path.endsWith(".svg", ignoreCase = true)) {
         svgPainter(key, qualifiers)
     } else {
-        composePainter(key)
+        composePainter(key, qualifiers)
     }
 }

@@ -1,12 +1,16 @@
+@file:Suppress("ktlint:standard:argument-list-wrapping")
+
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
+import com.jibru.kostra.Plurals
 import com.jibru.kostra.ResourceKey
 import com.jibru.kostra.StringResourceKey
 import com.jibru.kostra.icu.IFixedDecimal
 import com.jibru.kostra.plugin.ext.addDefaultSuppressAnnotation
+import com.jibru.kostra.plugin.ext.applyIf
 import com.jibru.kostra.plugin.ext.asLocalResourceType
 import com.jibru.kostra.plugin.task.ComposeDefaults
 import com.squareup.kotlinpoet.ClassName
@@ -14,6 +18,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.asClassName
 import kotlin.reflect.KClass
 
@@ -26,109 +31,121 @@ class ComposeDefaultsKtGenerator(
     private val packageName = kClassName.substringBeforeLast(".", "")
     private val resourcePropertyName = modulePrefix + KostraPluginConfig.ResourcePropertyName
     private val resourceMemberName = MemberName(packageName, resourcePropertyName)
-    private val stringExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "string")
-    private val pluralExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "plural")
-    private val ordinalExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "ordinal")
-    private val painterExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "painter")
-    private val assetExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "assetPath")
+    private val stringProperty = "string"
+    private val pluralProperty = "plural"
+    private val painterPropertyMember = MemberName(KostraPluginConfig.PackageNameCompose, "painter")
+    private val binaryProperty = "binary"
+
+    private val localQualifierMember = MemberName(KostraPluginConfig.PackageNameCompose, "LocalQualifiers")
 
     private val stringClassName = String::class.asClassName()
     private val painterClassName = ClassName("androidx.compose.ui.graphics.painter", "Painter")
-    private val svgPainterExtMember = MemberName(KostraPluginConfig.PackageNameCompose, "svgPainter")
     private val composableType = ClassName("androidx.compose.runtime", "Composable")
     private val keyArgName = "key"
 
-    fun generateComposeDefaults(composeDefaults: ComposeDefaults): FileSpec = when (composeDefaults) {
-        ComposeDefaults.Common -> generateCommonComposeDefaults()
-        ComposeDefaults.Svg -> generateSvgComposeDefaults()
-    }
-
-    private fun generateCommonComposeDefaults(): FileSpec {
+    fun generateComposeDefaults(vararg composeDefaults: ComposeDefaults): FileSpec {
         val quantityArgName = "quantity"
         val formatArgName = "formatArgs"
 
-        fun FileSpec.Builder.addPlurals(funName: String, extMember: MemberName): FileSpec.Builder {
-            val getterFunName = if (funName.contains("plural")) "getPlural" else "getOrdinal"
+        fun FileSpec.Builder.addPlurals(
+            funName: String,
+            pluralType: MemberName,
+        ): FileSpec.Builder {
+            val getterFunName = if (funName.contains("plural")) "get" else "getOrdinal"
             return this
-                .addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
-                    addParameter(quantityArgName, IFixedDecimal::class)
-                    addCode("return %M.%M(%L, %L)", resourceMemberName, extMember, keyArgName, quantityArgName)
+                .applyIf(composeDefaults.contains(ComposeDefaults.Common)) {
+                    addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
+                        addParameter(quantityArgName, IFixedDecimal::class)
+                        addCode("return %M.%L.get(%L, %M.current, %L, %M)", resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType)
+                    }
+                    addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
+                        addParameter(quantityArgName, Int::class)
+                        addCode("return %M.%L.get(%L, %M.current, %L, %M)", resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType)
+                    }
+                    addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
+                        addParameter(quantityArgName, IFixedDecimal::class)
+                        addParameter(formatArgName, Any::class, KModifier.VARARG)
+                        addCode(
+                            "return %M.%L.get(%L, %M.current, %L, %M, *%L)",
+                            resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType, formatArgName,
+                        )
+                    }
+                    addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
+                        addParameter(quantityArgName, Int::class)
+                        addParameter(formatArgName, Any::class, KModifier.VARARG)
+                        addCode(
+                            "return %M.%L.get(%L, %M.current, %L, %M, *%L)",
+                            resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType, formatArgName,
+                        )
+                    }
                 }
-                .addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
-                    addParameter(quantityArgName, IFixedDecimal::class)
-                    addCode("return %M.%M(this, %L)", resourceMemberName, extMember, quantityArgName)
-                }
-                .addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
-                    addParameter(quantityArgName, Int::class)
-                    addCode("return %M.%M(%L, %L)", resourceMemberName, extMember, keyArgName, quantityArgName)
-                }
-                .addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
-                    addParameter(quantityArgName, Int::class)
-                    addCode("return %M.%M(this, %L)", resourceMemberName, extMember, quantityArgName)
-                }
-                .addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
-                    addParameter(quantityArgName, IFixedDecimal::class)
-                    addParameter(formatArgName, Any::class, KModifier.VARARG)
-                    addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, extMember, keyArgName, quantityArgName, formatArgName)
-                }
-                .addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
-                    addParameter(quantityArgName, IFixedDecimal::class)
-                    addParameter(formatArgName, Any::class, KModifier.VARARG)
-                    addCode("return %M.%M(this, %L, *%L)", resourceMemberName, extMember, quantityArgName, formatArgName)
-                }
-                .addComposeDefaultFunc(funName, PluralResourceKey::class, stringClassName) {
-                    addParameter(quantityArgName, Int::class)
-                    addParameter(formatArgName, Any::class, KModifier.VARARG)
-                    addCode("return %M.%M(%L, %L, *%L)", resourceMemberName, extMember, keyArgName, quantityArgName, formatArgName)
-                }
-                .addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
-                    addParameter(quantityArgName, Int::class)
-                    addParameter(formatArgName, Any::class, KModifier.VARARG)
-                    addCode("return %M.%M(this, %L, *%L)", resourceMemberName, extMember, quantityArgName, formatArgName)
+                .applyIf(composeDefaults.contains(ComposeDefaults.Getters)) {
+                    val keyArgName = "this"
+                    addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
+                        addParameter(quantityArgName, IFixedDecimal::class)
+                        addCode("return %M.%L.get(%L, %M.current, %L, %M)", resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType)
+                    }
+                    addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
+                        addParameter(quantityArgName, Int::class)
+                        addCode("return %M.%L.get(%L, %M.current, %L, %M)", resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType)
+                    }
+                    addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
+                        addParameter(quantityArgName, IFixedDecimal::class)
+                        addParameter(formatArgName, Any::class, KModifier.VARARG)
+                        addCode(
+                            "return %M.%L.get(%L, %M.current, %L, %M, *%L)",
+                            resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType, formatArgName,
+                        )
+                    }
+                    addComposeDefaultGet(PluralResourceKey::class, stringClassName, getterFunName) {
+                        addParameter(quantityArgName, Int::class)
+                        addParameter(formatArgName, Any::class, KModifier.VARARG)
+                        addCode(
+                            "return %M.%L.get(%L, %M.current, %L, %M, *%L)",
+                            resourceMemberName, pluralProperty, keyArgName, localQualifierMember, quantityArgName, pluralType, formatArgName,
+                        )
+                    }
                 }
         }
 
         return FileSpec
             .builder(packageName, KostraPluginConfig.ComposeDefaultResourceProvider_x.format("Common"))
             .addDefaultSuppressAnnotation("NOTHING_TO_INLINE")
-            .addComposeDefaultFunc("stringResource", StringResourceKey::class, stringClassName) {
-                addCode("return %M.%M(%L)", resourceMemberName, stringExtMember, keyArgName)
+            .applyIf(composeDefaults.contains(ComposeDefaults.Common)) {
+                addComposeDefaultFunc("stringResource", StringResourceKey::class, stringClassName) {
+                    addCode("return %M.%L.get(%L, %M.current)", resourceMemberName, stringProperty, keyArgName, localQualifierMember)
+                }
+                addComposeDefaultFunc("stringResource", StringResourceKey::class, stringClassName) {
+                    addParameter(formatArgName, Any::class, KModifier.VARARG)
+                    addCode("return %M.%L.get(%L, %M.current, *%L)", resourceMemberName, stringProperty, keyArgName, localQualifierMember, formatArgName)
+                }
+                addComposeDefaultFunc("painterResource", PainterResourceKey::class, painterClassName) {
+                    addCode("return %M.%M(%L, %M.current)", resourceMemberName, painterPropertyMember, keyArgName, localQualifierMember)
+                }
+                addComposeDefaultFunc("assetPath", AssetResourceKey::class, stringClassName) {
+                    addCode("return %M.%L.get(%L, %M.current)", resourceMemberName, binaryProperty, keyArgName, localQualifierMember)
+                }
             }
-            .addComposeDefaultGet(StringResourceKey::class, stringClassName) {
-                addCode("return %M.%M(this)", resourceMemberName, stringExtMember)
+            .applyIf(composeDefaults.contains(ComposeDefaults.Getters)) {
+                val keyArgName = "this"
+                addComposeDefaultGet(StringResourceKey::class, stringClassName) {
+                    addCode("return %M.%L.get(%L, %M.current)", resourceMemberName, stringProperty, keyArgName, localQualifierMember)
+                }
+                addComposeDefaultGet(StringResourceKey::class, stringClassName) {
+                    addParameter(formatArgName, Any::class, KModifier.VARARG)
+                    addCode("return %M.%L.get(%L, %M.current, *%L)", resourceMemberName, stringProperty, keyArgName, localQualifierMember, formatArgName)
+                }
+                addComposeDefaultGet(PainterResourceKey::class, painterClassName) {
+                    addCode("return %M.%M(%L, %M.current)", resourceMemberName, painterPropertyMember, keyArgName, localQualifierMember)
+                }
+                addComposeDefaultGet(AssetResourceKey::class, stringClassName) {
+                    addCode("return %M.%L.get(%L, %M.current)", resourceMemberName, binaryProperty, keyArgName, localQualifierMember)
+                }
             }
-            .addComposeDefaultFunc("stringResource", StringResourceKey::class, stringClassName) {
-                addParameter(formatArgName, Any::class, KModifier.VARARG)
-                addCode("return %M.%M(%L, *%L)", resourceMemberName, stringExtMember, keyArgName, formatArgName)
-            }
-            .addComposeDefaultGet(StringResourceKey::class, stringClassName) {
-                addParameter(formatArgName, Any::class, KModifier.VARARG)
-                addCode("return %M.%M(this, *%L)", resourceMemberName, stringExtMember, formatArgName)
-            }
-            .addPlurals("pluralStringResource", pluralExtMember)
-            .addPlurals("ordinalStringResource", ordinalExtMember)
-            .addComposeDefaultFunc("painterResource", PainterResourceKey::class, painterClassName) {
-                addCode("return %M.%M(%L)", resourceMemberName, painterExtMember, keyArgName)
-            }
-            .addComposeDefaultGet(PainterResourceKey::class, painterClassName) {
-                addCode("return %M.%M(this)", resourceMemberName, painterExtMember)
-            }
-            .addComposeDefaultFunc("assetPath", AssetResourceKey::class, stringClassName) {
-                addCode("return %M.%M(%L)", resourceMemberName, assetExtMember, keyArgName)
-            }
-            .addComposeDefaultGet(AssetResourceKey::class, stringClassName) {
-                addCode("return %M.%M(this)", resourceMemberName, assetExtMember)
-            }
+            .addPlurals("pluralStringResource", Plurals.Type::class.asClassName().member(Plurals.Type.Plurals.name))
+            .addPlurals("ordinalStringResource", Plurals.Type::class.asClassName().member(Plurals.Type.Ordinals.name))
             .build()
     }
-
-    private fun generateSvgComposeDefaults() = FileSpec
-        .builder(packageName, KostraPluginConfig.ComposeDefaultResourceProvider_x.format("Svg"))
-        .addDefaultSuppressAnnotation("NOTHING_TO_INLINE")
-        .addComposeDefaultFunc("svgPainterResource", PainterResourceKey::class, painterClassName) {
-            addCode("return %M.%M(%L)", resourceMemberName, svgPainterExtMember, keyArgName)
-        }
-        .build()
 
     private fun FileSpec.Builder.addComposeDefaultFunc(
         name: String,

@@ -79,6 +79,7 @@ class ResourcesKtGenerator(
 
     fun generateIfaces(): FileSpec {
         return FileSpec.builder(packageName, ifaceName)
+            .addDefaultSuppressAnnotation()
             .tryAddAliasedImports()
             .addType(
                 TypeSpec
@@ -140,7 +141,13 @@ class ResourcesKtGenerator(
     fun generateResourceProviders(addJvmInline: Boolean = true): String {
         //kotlin poet seems to be quite broken for value class
         //so done fully manually
-        fun valueClass(name: String, superIfaces: List<String>) = "value class $name(override val key: Int) : ${superIfaces.joinToString()}"
+        fun valueClass(name: String, superIfaces: List<String>) = buildString {
+            if (internalVisibility) {
+                append("internal ")
+            }
+            append("value class $name(override val key: Int) : ${superIfaces.joinToString()}")
+        }
+
         val assertResourceKeyAlias = "A"
         val assertResourceKeyName = AssetResourceKey::class.simpleName!!
         return FileSpec.builder(packageName, KostraPluginConfig.ModuleResourceKeyName)

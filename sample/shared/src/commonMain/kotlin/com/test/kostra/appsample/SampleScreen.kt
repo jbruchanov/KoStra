@@ -90,8 +90,7 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                 Text("KLocale")
                 FlowRow(
                     verticalArrangement = Arrangement.Center,
-
-                    ) {
+                ) {
                     locales.forEachIndexed { index, locale ->
                         TextCheckBox(
                             onCheckedChange = { if (it) localeIndex = index else Unit },
