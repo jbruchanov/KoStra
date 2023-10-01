@@ -34,6 +34,9 @@ abstract class GenerateCodeTask : DefaultTask() {
     @get:Optional
     abstract val internalVisibility: Property<Boolean>
 
+    @get:Input
+    abstract val interfaces: Property<Boolean>
+
     @get:OutputDirectory
     abstract val outputDir: Property<File>
 
@@ -55,6 +58,7 @@ abstract class GenerateCodeTask : DefaultTask() {
             resDbsFolderName = resDbsFolderName.get(),
             modulePrefix = modulePrefix.getOrElse(""),
             internalVisibility = internalVisibility.getOrElse(false),
+            interfaces = interfaces.get(),
             addJvmInline = project.useJvmInline(),
         )
     }

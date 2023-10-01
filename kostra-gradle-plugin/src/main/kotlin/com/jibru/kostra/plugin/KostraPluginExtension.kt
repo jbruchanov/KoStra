@@ -1,7 +1,6 @@
 package com.jibru.kostra.plugin
 
 import com.jibru.kostra.plugin.ext.lowerCasedWith
-import com.jibru.kostra.plugin.task.ComposeDefaults
 import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.provider.ListProperty
@@ -16,10 +15,11 @@ abstract class KostraPluginExtension {
     abstract val kClassName: Property<String>
     abstract val autoConfig: Property<Boolean>
     abstract val useFileWatcher: Property<Boolean>
-    abstract val composeDefaults: ListProperty<ComposeDefaults>
+    abstract val resourcesDefaults: ListProperty<ResourcesDefaults>
     abstract val strictLocale: Property<Boolean>
     abstract val modulePrefix: Property<String>
     abstract val internalVisibility: Property<Boolean>
+    abstract val interfaces: Property<Boolean>
 
     val outputDatabaseDirName: Provider<String>
         get() = modulePrefix.map { it.lowerCasedWith(KostraPluginConfig.ResourceDbFolderName) }.orElse(KostraPluginConfig.ResourceDbFolderName)

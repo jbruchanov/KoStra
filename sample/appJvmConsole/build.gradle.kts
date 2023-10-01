@@ -19,7 +19,7 @@ sourceSets {
         }
 
         dependencies {
-            implementation(project(":shared-lib1"))
+            implementation(project(":shared-lib2"))
         }
     }
 }

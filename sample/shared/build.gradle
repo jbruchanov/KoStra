@@ -1,3 +1,5 @@
+import com.jibru.kostra.plugin.ResourcesDefaults
+
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
@@ -101,16 +103,16 @@ kotlin {
     }
 }
 
-if (plugins.findPlugin(libs.plugins.kostra.get().pluginId) != null) {
-    kostra {
-        KClassName = "com.sample.app.K"
-        androidResources {
-            painterGroups.add("flags.*")
-            keyMapper { key, file -> key }
-            //just to let plugin know about extra resources,
-            //strings are transformed to own DB and don't need to be part of APK as xmls
-            resourceDirs.add(file("src/commonMain/resources_strings"))
-        }
+kostra {
+    KClassName = "com.sample.app.K"
+    interfaces = true
+    resourcesDefaults.value(ResourcesDefaults.values().toList())
+    androidResources {
+        painterGroups.add("flags.*")
+        keyMapper { key, file -> key }
+        //just to let plugin know about extra resources,
+        //strings are transformed to own DB and don't need to be part of APK as xmls
+        resourceDirs.add(file("src/commonMain/resources_strings"))
     }
 }
 

@@ -1,6 +1,7 @@
 package com.jibru.kostra.plugin.task
 
 import com.jibru.kostra.plugin.KostraPluginConfig
+import com.jibru.kostra.plugin.ResourcesDefaults
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -10,12 +11,10 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-enum class ComposeDefaults { Common, Getters }
-
-abstract class GenerateComposeDefaultsTask : DefaultTask() {
+abstract class GenerateDefaultsTask : DefaultTask() {
 
     @get:Input
-    abstract val composeDefaults: ListProperty<ComposeDefaults>
+    abstract val resourcesDefaults: ListProperty<ResourcesDefaults>
 
     @get:Input
     abstract val kClassName: Property<String>
@@ -42,7 +41,7 @@ abstract class GenerateComposeDefaultsTask : DefaultTask() {
 
         generateComposeDefaults(
             kClassName = kClassName.get(),
-            composeDefaults = composeDefaults.get(),
+            resourcesDefaults = resourcesDefaults.get(),
             outputDir = outputDir,
             modulePrefix = modulePrefix.getOrElse(""),
             internalVisibility = internalVisibility.getOrElse(false),

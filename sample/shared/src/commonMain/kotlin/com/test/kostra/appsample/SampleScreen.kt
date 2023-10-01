@@ -46,13 +46,13 @@ import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.compose.LocalQualifiers
 import com.jibru.kostra.icu.FixedDecimal
 import com.sample.app.K
-import com.sample.app.assetPath
-import com.sample.app.get
-import com.sample.app.ordinalStringResource
-import com.sample.app.painterResource
-import com.sample.app.pluralStringResource
-import com.sample.app.stringResource
-import com.sample.lib1.get
+import com.sample.app.compose.assetPath
+import com.sample.app.compose.get
+import com.sample.app.compose.ordinalResource
+import com.sample.app.compose.painterResource
+import com.sample.app.compose.pluralResource
+import com.sample.app.compose.stringResource
+import com.sample.lib1.compose.get
 
 private object SampleScreenDefaults {
     val spacing = 8.dp
@@ -156,8 +156,8 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 )
 
-                Text(stringResource(K.string.plurals) + ": " + (quantity.toDoubleOrNull()?.let { pluralStringResource(K.plural.bug_x, FixedDecimal(it), quantity) } ?: ""))
-                Text(stringResource(K.string.ordinals) + ": " + (quantity.toDoubleOrNull()?.let { ordinalStringResource(K.plural.day_x, FixedDecimal(it), quantity) } ?: ""))
+                Text(stringResource(K.string.plurals) + ": " + (quantity.toDoubleOrNull()?.let { pluralResource(K.plural.bug_x, FixedDecimal(it), quantity) } ?: ""))
+                Text(stringResource(K.string.ordinals) + ": " + (quantity.toDoubleOrNull()?.let { ordinalResource(K.plural.day_x, FixedDecimal(it), quantity) } ?: ""))
             }
         }
     }
