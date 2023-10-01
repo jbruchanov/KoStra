@@ -18,7 +18,7 @@ object KostraPluginConfig {
 
     //looks like _kostra is ignored
     const val ResourceDbFolderName = "kresources"
-    const val ComposeDefaultResourceProvider_x = "Compose%sDefaultResourceProvider"
+    const val ComposeDefaultResourceProvider_x = "%sDefaultResourceProvider"
 
     fun Project.analysisFile() = File(defaultOutputDir(), "resources.obj")
 
@@ -34,7 +34,7 @@ object KostraPluginConfig {
         const val Group = "kostra"
         const val AnalyseResources = "analyseResources"
         const val GenerateResources = "generateResources"
-        const val GenerateComposeDefaults_x = "generate%sComposeDefaults"
+        const val GenerateDefaults = "generateDefaults"
         const val GenerateDatabases = "generateDatabases"
         const val CopyResourcesForNativeTemplate_xy = "copy%sToNative%sOutput"
     }

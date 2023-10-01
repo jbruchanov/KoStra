@@ -1,4 +1,4 @@
-import com.jibru.kostra.plugin.task.ComposeDefaults
+import com.jibru.kostra.plugin.ResourcesDefaults
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -43,7 +43,7 @@ android {
 
 kostra {
     modulePrefix = "Lib1"
-    composeDefaults.value([ComposeDefaults.Getters])
+    resourcesDefaults.value([ResourcesDefaults.ComposeGetters])
     KClassName = "com.sample.lib1.KLib1"
     androidResources {
         resourceDirs.add(file("src/commonMain/resources_strings"))

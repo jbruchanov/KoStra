@@ -29,7 +29,7 @@ object KM {
 }
 
 //Lib2 doesn't know anything about compose, so let's create simple getter
-//to create relation Lib2StringResourceKey -> Lib2Resources
+//to create simple relation Lib2StringResourceKey -> Lib2Resources, so consumer doesn't have to care what's the correct Resources source
 @Composable
 fun Lib2StringResourceKey.get(): String = Lib2Resources.string.get(this, LocalQualifiers.current)
 

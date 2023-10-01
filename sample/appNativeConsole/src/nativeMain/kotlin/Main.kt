@@ -1,16 +1,15 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
 import app.native.N
-import app.native.Resources
+import app.native.get
+import app.native.getAssetPath
+import app.native.getOrdinal
+import app.native.pluralResource
 import com.jibru.kostra.DefaultQualifiersProvider
 import com.jibru.kostra.IDefaultQualifiersProvider
 import com.jibru.kostra.KDpi
 import com.jibru.kostra.KQualifiers
-import com.jibru.kostra.assetPath
 import com.jibru.kostra.icu.FixedDecimal
-import com.jibru.kostra.ordinal
-import com.jibru.kostra.plural
-import com.jibru.kostra.string
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
@@ -33,28 +32,28 @@ fun main(
 ) {
     val test = {
         println("-".repeat(32))
-        println("Current locale:${DefaultQualifiersProvider.get().locale}")
+        println("Current locale:${DefaultQualifiersProvider.current.locale}")
         println("Strings:")
         val items = listOf(N.string.action_add, N.string.action_remove, N.string.color, N.string.plurals, N.string.ordinals)
-        println(items.joinToString { Resources.string(it) })
+        println(items.joinToString { it.get() })
         println("Plurals:")
         println(
             listOf(
-                Resources.plural(N.plural.bug_x, 0, 0),
-                Resources.plural(N.plural.bug_x, FixedDecimal(0.5), 0.5f),
-                Resources.plural(N.plural.bug_x, 1, 1),
-                Resources.plural(N.plural.bug_x, 2, 2),
-                Resources.plural(N.plural.bug_x, 3, 3),
-                Resources.plural(N.plural.bug_x, 4, 4),
-                Resources.plural(N.plural.bug_x, 5, 5),
-                Resources.plural(N.plural.bug_x, 10, 10),
+                pluralResource(N.plural.bug_x, 0, 0),
+                pluralResource(N.plural.bug_x, FixedDecimal(0.5), 0.5f),
+                pluralResource(N.plural.bug_x, 1, 1),
+                pluralResource(N.plural.bug_x, 2, 2),
+                pluralResource(N.plural.bug_x, 3, 3),
+                pluralResource(N.plural.bug_x, 4, 4),
+                pluralResource(N.plural.bug_x, 5, 5),
+                pluralResource(N.plural.bug_x, 10, 10),
             ).joinToString(),
         )
         println("Ordinals:")
-        println((0..5).joinToString { Resources.ordinal(N.plural.day_x, it, it) })
+        println((0..5).joinToString { N.plural.day_x.getOrdinal(it, it) })
 
         println("Images:")
-        val assetPath = Resources.assetPath(N.images.capital_city)
+        val assetPath = N.images.capital_city.getAssetPath()
         println("$assetPath, fileSize:${fileSize(assetPath)}")
     }
 
@@ -78,5 +77,5 @@ private fun fileSize(name: String): Int {
 }
 
 private fun kQualifiers(locale: String, dpi: KDpi) = object : IDefaultQualifiersProvider {
-    override fun get(): KQualifiers = KQualifiers(locale = locale, dpi = dpi)
+    override val current: KQualifiers get() = KQualifiers(locale = locale, dpi = dpi)
 }

@@ -17,8 +17,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.sample.app.K
-import com.sample.app.assetPath
-import com.sample.app.painterResource
+import com.sample.app.compose.assetPath
+import com.sample.app.compose.painterResource
 import com.test.kostra.appsample.SampleScreen
 import java.awt.Toolkit
 

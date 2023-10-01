@@ -1,10 +1,11 @@
 package com.jibru.kostra.plugin.task
 
-import com.jibru.kostra.plugin.ComposeDefaultsKtGenerator
+import com.jibru.kostra.plugin.DefaultsKtGenerator
 import com.jibru.kostra.plugin.FileResolver
 import com.jibru.kostra.plugin.FileResolverConfig
 import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
+import com.jibru.kostra.plugin.ResourcesDefaults
 import com.jibru.kostra.plugin.ResourcesKtGenerator
 import com.jibru.kostra.plugin.ext.fixAliasImports
 import com.jibru.kostra.plugin.ext.lowerCasedWith
@@ -21,6 +22,7 @@ object TaskDelegate {
         val outputDir: File,
         val resDbsFolderName: String,
         val modulePrefix: String,
+        val interfaces: Boolean,
         val addJvmInline: Boolean,
     )
 
@@ -71,27 +73,29 @@ object TaskDelegate {
 
     fun generateComposeDefaults(
         kClassName: String,
-        composeDefaults: List<ComposeDefaults>,
+        resourcesDefaults: List<ResourcesDefaults>,
         outputDir: File,
         modulePrefix: String,
         internalVisibility: Boolean,
         minify: Boolean = true,
     ) {
-        val fileSpec = ComposeDefaultsKtGenerator(kClassName = kClassName, modulePrefix = modulePrefix, internalVisibility = internalVisibility)
-            .generateComposeDefaults(*composeDefaults.toTypedArray())
+        val fileSpecs = DefaultsKtGenerator(kClassName = kClassName, modulePrefix = modulePrefix, internalVisibility = internalVisibility)
+            .generateComposeDefaults(*resourcesDefaults.toTypedArray())
         outputDir.deleteRecursively()
 
-        val file = File(outputDir, "${fileSpec.name}.kt")
-        file.parentFile.mkdirs()
-        try {
-            if (minify) {
-                //aliasedImports unwanted here
-                file.writeText(fileSpec.minify(useAliasedImports = false))
-            } else {
-                file.writeText(fileSpec.toString())
+        fileSpecs.onEach { fileSpec ->
+            val file = File(outputDir, "${fileSpec.name}.kt")
+            file.parentFile.mkdirs()
+            try {
+                if (minify) {
+                    //aliasedImports unwanted here
+                    file.writeText(fileSpec.minify(useAliasedImports = false))
+                } else {
+                    file.writeText(fileSpec.toString())
+                }
+            } catch (t: Throwable) {
+                throw IllegalStateException("Unable to generate source code of '$file'", t)
             }
-        } catch (t: Throwable) {
-            throw IllegalStateException("Unable to generate source code of '$file'", t)
         }
     }
 }
