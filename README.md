@@ -199,7 +199,7 @@ kostra {
     kClassName /*String*/
     // Add a unique prefix in multi module setup to avoid resource file conflicts
     modulePrefix /*String*/
-    // Define what defaults helpers should be generated: [ComposeCommon, ComposeGetters, Common, Getters]
+    // Define what defaults helpers should be generated: [ComposeCommon, ComposeGetters, Common, Getters, ExplicitGetters]
     resourcesDefaults /*List<com.jibru.kostra.plugin.ResourcesDefaults>*/
     // use only locale qualifiers on files known to java, so for example '-xxxx' qualifier
     // will be ignored as it's not java known locale and will be ignored
@@ -327,6 +327,11 @@ fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal, vararg formatArgs: Any
 fun PluralResourceKey.getOrdinal(quantity: Int, vararg formatArgs: Any): String
 fun StringResourceKey.get(vararg formatArgs: Any): String
 
+//explict getters
+//same as getters with explicit qualifiers: KQualifiers argument
+//useful in case of  in remember { buildAnnotatedString { ... }}
+fun StringResourceKey.get(qualifiers: KQualifiers, vararg formatArgs: Any): String
+
 //and extra compose defaults
 fun painterResource(key: PainterResourceKey): Painter
 fun PainterResourceKey.get(): Painter
@@ -379,6 +384,10 @@ fun composeExample() {
         Text(pluralResource(key = K.plural.books, quantity = 5, /*formatArgs = */5))
         //2nd Day
         Text(ordinalResource(key = K.plural.day, quantity = 2, /*formatArgs = */2))
+        //extra builder living outside compose context
+        val qualifiers = LocalQualifiers.current
+        val someText = remember(qualifiers) { customText(qualifiers) }
+        Text(someText)
         //relative path to the binary asset
         Image(
             painter = painterResource(K.images.flag),
@@ -386,6 +395,13 @@ fun composeExample() {
         )
     }
 }
+
+//be sure ExplicitGetters enabled via kostra.resourcesDefaults
+private fun customTextBuilderForCompose(qualifiers: KQualifiers) = buildAnnotatedString {
+    append(K.string.action_add.get(qualifiers))
+    append(K.string.color.get(qualifiers))
+}
+
 ```
 
 Locale & DPI can be easily overridden from code. Have a look

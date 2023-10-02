@@ -4,6 +4,7 @@ package com.jibru.kostra.plugin
 
 import com.jibru.kostra.AssetResourceKey
 import com.jibru.kostra.BinaryResourceKey
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.PluralResourceKey
 import com.jibru.kostra.Plurals
@@ -71,7 +72,6 @@ class DefaultsKtGenerator(
     }
 
     private fun FileSpec.Builder.addComposeDefaults(defaults: ResourcesDefaults): FileSpec.Builder {
-        addKostraDefault(defaults, keyType = StringResourceKey::class, useVarArg = false)
         addKostraDefault(defaults, keyType = StringResourceKey::class, useVarArg = true)
         addKostraDefault(defaults, keyType = PainterResourceKey::class)
         addKostraDefault(defaults, keyType = PainterResourceKey::class, returnType = byteArrayType)
@@ -79,9 +79,7 @@ class DefaultsKtGenerator(
         addKostraDefault(defaults, keyType = BinaryResourceKey::class)
         listOf(Int::class, IFixedDecimal::class).onEach { argType ->
             listOf(pluralType, ordinalType).onEach { pType ->
-                listOf(true, false).onEach { useVarArg ->
-                    addKostraDefault(defaults, keyType = PluralResourceKey::class, useVarArg = useVarArg, extraArg = "quantity" to argType.asTypeName(), extraParam = pType)
-                }
+                addKostraDefault(defaults, keyType = PluralResourceKey::class, useVarArg = true, extraArg = "quantity" to argType.asTypeName(), extraParam = pType)
             }
         }
         return this
@@ -101,7 +99,6 @@ class DefaultsKtGenerator(
             keyType == PainterResourceKey::class && !resourcesDefaults.composable && returnType == null -> return
             resourcesDefaults.isGetter && extraParam == ordinalType -> "getOrdinal"
             resourcesDefaults.isGetter && keyType == PainterResourceKey::class && returnType == byteArrayType -> "getByteArray"
-            keyType == PainterResourceKey::class && returnType == byteArrayType -> "byteArray"
             resourcesDefaults.isGetter && keyType == AssetResourceKey::class -> "getAssetPath"
             keyType == AssetResourceKey::class -> "assetPath"
             resourcesDefaults.isGetter -> "get"
@@ -144,6 +141,7 @@ class DefaultsKtGenerator(
                 .addModifiers(KModifier.INLINE, if (internalVisibility) KModifier.INTERNAL else KModifier.PUBLIC)
                 .applyIf(resourcesDefaults.composable) { addAnnotation(composableType) }
                 .applyIf(resourcesDefaults.isGetter) { receiver(keyType.asLocalResourceType(kClassPackageName)) }
+                .applyIf(!resourcesDefaults.useQualifierProvider) { addParameter("qualifiers", KQualifiers::class.asTypeName()) }
                 .applyIf(resourcesDefaults.isCommon) { addParameter("key", keyType.asLocalResourceType(kClassPackageName)) }
                 .applyIfNotNull(extraArg) { (name, type) -> addParameter(name, type) }
                 .applyIf(useVarArg) { addParameter(formatArgName, Any::class, KModifier.VARARG) }
@@ -161,7 +159,12 @@ class DefaultsKtGenerator(
                         .add("(")
                         .add("%L", if (resourcesDefaults.isGetter) "this" else "key")
                         .add(", ")
-                        .add("%M.current", if (resourcesDefaults.composable) localQualifierMember else defaultQualifiersProviderMember)
+                        .apply {
+                            when {
+                                resourcesDefaults == ResourcesDefaults.ExplicitGetters -> add("qualifiers")
+                                else -> add("%M.current", if (resourcesDefaults.composable) localQualifierMember else defaultQualifiersProviderMember)
+                            }
+                        }
                         .applyIfNotNull(extraArg) { (name, _) -> add(", %L", name) }
                         .applyIfNotNull(extraParam) { add(", %M", it) }
                         .applyIf(useVarArg) { add(", *%L", formatArgName) }

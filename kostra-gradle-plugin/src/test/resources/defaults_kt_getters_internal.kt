@@ -13,9 +13,6 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 
-internal inline fun StringResourceKey.`get`(): String = Resources.string.get(this,
-    DefaultQualifiersProvider.current)
-
 internal inline fun StringResourceKey.`get`(vararg formatArgs: Any): String =
     Resources.string.get(this, DefaultQualifiersProvider.current, *formatArgs)
 
@@ -31,24 +28,12 @@ internal inline fun BinaryResourceKey.`get`(): ByteArray = Resources.binaryByteA
 internal inline fun PluralResourceKey.`get`(quantity: Int, vararg formatArgs: Any): String =
     Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Plurals, *formatArgs)
 
-internal inline fun PluralResourceKey.`get`(quantity: Int): String = Resources.plural.get(this,
-    DefaultQualifiersProvider.current, quantity, Plurals)
-
 internal inline fun PluralResourceKey.getOrdinal(quantity: Int, vararg formatArgs: Any): String =
     Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Ordinals, *formatArgs)
-
-internal inline fun PluralResourceKey.getOrdinal(quantity: Int): String = Resources.plural.get(this,
-    DefaultQualifiersProvider.current, quantity, Ordinals)
 
 internal inline fun PluralResourceKey.`get`(quantity: IFixedDecimal, vararg formatArgs: Any): String
     = Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Plurals, *formatArgs)
 
-internal inline fun PluralResourceKey.`get`(quantity: IFixedDecimal): String =
-    Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Plurals)
-
 internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal, vararg formatArgs: Any):
     String = Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Ordinals,
     *formatArgs)
-
-internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal): String =
-    Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Ordinals)
