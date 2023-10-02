@@ -1,7 +1,7 @@
 package com.jibru.kostra.plugin
 
+import com.jibru.kostra.plugin.ext.capitalize
 import org.gradle.api.Project
-import org.gradle.configurationcache.extensions.capitalized
 import java.io.File
 
 object KostraPluginConfig {
@@ -22,7 +22,7 @@ object KostraPluginConfig {
 
     fun Project.analysisFile() = File(defaultOutputDir(), "resources.obj")
 
-    fun Project.outputSourceDir(variant: String = "") = File(defaultOutputDir(), "src${variant.capitalized()}")
+    fun Project.outputSourceDir(variant: String = "") = File(defaultOutputDir(), "src${variant.capitalize()}")
 
     fun Project.outputResourcesDir() = File(defaultOutputDir(), "resources")
 
