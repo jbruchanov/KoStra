@@ -23,10 +23,6 @@ import kotlin.String
 import kotlin.Suppress
 
 @Composable
-internal inline fun stringResource(key: StringResourceKey): String = Resources.string.get(key,
-    LocalQualifiers.current)
-
-@Composable
 internal inline fun stringResource(key: StringResourceKey, vararg formatArgs: Any): String =
     Resources.string.get(key, LocalQualifiers.current, *formatArgs)
 
@@ -50,19 +46,11 @@ internal inline fun pluralResource(
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals, *formatArgs)
 
 @Composable
-internal inline fun pluralResource(key: PluralResourceKey, quantity: Int): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals)
-
-@Composable
 internal inline fun ordinalResource(
   key: PluralResourceKey,
   quantity: Int,
   vararg formatArgs: Any,
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals, *formatArgs)
-
-@Composable
-internal inline fun ordinalResource(key: PluralResourceKey, quantity: Int): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals)
 
 @Composable
 internal inline fun pluralResource(
@@ -72,23 +60,11 @@ internal inline fun pluralResource(
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals, *formatArgs)
 
 @Composable
-internal inline fun pluralResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals)
-
-@Composable
 internal inline fun ordinalResource(
   key: PluralResourceKey,
   quantity: IFixedDecimal,
   vararg formatArgs: Any,
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals, *formatArgs)
-
-@Composable
-internal inline fun ordinalResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals)
-
-@Composable
-internal inline fun StringResourceKey.`get`(): String = Resources.string.get(this,
-    LocalQualifiers.current)
 
 @Composable
 internal inline fun StringResourceKey.`get`(vararg formatArgs: Any): String =
@@ -111,32 +87,16 @@ internal inline fun PluralResourceKey.`get`(quantity: Int, vararg formatArgs: An
     Resources.plural.get(this, LocalQualifiers.current, quantity, Plurals, *formatArgs)
 
 @Composable
-internal inline fun PluralResourceKey.`get`(quantity: Int): String = Resources.plural.get(this,
-    LocalQualifiers.current, quantity, Plurals)
-
-@Composable
 internal inline fun PluralResourceKey.getOrdinal(quantity: Int, vararg formatArgs: Any): String =
     Resources.plural.get(this, LocalQualifiers.current, quantity, Ordinals, *formatArgs)
-
-@Composable
-internal inline fun PluralResourceKey.getOrdinal(quantity: Int): String = Resources.plural.get(this,
-    LocalQualifiers.current, quantity, Ordinals)
 
 @Composable
 internal inline fun PluralResourceKey.`get`(quantity: IFixedDecimal, vararg formatArgs: Any): String
     = Resources.plural.get(this, LocalQualifiers.current, quantity, Plurals, *formatArgs)
 
 @Composable
-internal inline fun PluralResourceKey.`get`(quantity: IFixedDecimal): String =
-    Resources.plural.get(this, LocalQualifiers.current, quantity, Plurals)
-
-@Composable
 internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal, vararg formatArgs: Any):
     String = Resources.plural.get(this, LocalQualifiers.current, quantity, Ordinals, *formatArgs)
-
-@Composable
-internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal): String =
-    Resources.plural.get(this, LocalQualifiers.current, quantity, Ordinals)
 
 ----
 @file:Suppress("NOTHING_TO_INLINE", "ktlint")
@@ -144,6 +104,7 @@ internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal): Strin
 package com.sample.app
 
 import com.jibru.kostra.DefaultQualifiersProvider
+import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.Plurals.Type.Ordinals
 import com.jibru.kostra.Plurals.Type.Plurals
 import com.jibru.kostra.binaryByteArray
@@ -154,14 +115,11 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 
-internal inline fun stringResource(key: StringResourceKey): String = Resources.string.get(key,
-    DefaultQualifiersProvider.current)
-
 internal inline fun stringResource(key: StringResourceKey, vararg formatArgs: Any): String =
     Resources.string.get(key, DefaultQualifiersProvider.current, *formatArgs)
 
-internal inline fun byteArray(key: PainterResourceKey): ByteArray = Resources.binaryByteArray(key,
-    DefaultQualifiersProvider.current)
+internal inline fun painterResource(key: PainterResourceKey): ByteArray =
+    Resources.binaryByteArray(key, DefaultQualifiersProvider.current)
 
 internal inline fun assetPath(key: AssetResourceKey): String = Resources.binary.get(key,
     DefaultQualifiersProvider.current)
@@ -176,18 +134,12 @@ internal inline fun pluralResource(
 ): String = Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Plurals,
     *formatArgs)
 
-internal inline fun pluralResource(key: PluralResourceKey, quantity: Int): String =
-    Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Plurals)
-
 internal inline fun ordinalResource(
   key: PluralResourceKey,
   quantity: Int,
   vararg formatArgs: Any,
 ): String = Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Ordinals,
     *formatArgs)
-
-internal inline fun ordinalResource(key: PluralResourceKey, quantity: Int): String =
-    Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Ordinals)
 
 internal inline fun pluralResource(
   key: PluralResourceKey,
@@ -196,21 +148,12 @@ internal inline fun pluralResource(
 ): String = Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Plurals,
     *formatArgs)
 
-internal inline fun pluralResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Plurals)
-
 internal inline fun ordinalResource(
   key: PluralResourceKey,
   quantity: IFixedDecimal,
   vararg formatArgs: Any,
 ): String = Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Ordinals,
     *formatArgs)
-
-internal inline fun ordinalResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    Resources.plural.get(key, DefaultQualifiersProvider.current, quantity, Ordinals)
-
-internal inline fun StringResourceKey.`get`(): String = Resources.string.get(this,
-    DefaultQualifiersProvider.current)
 
 internal inline fun StringResourceKey.`get`(vararg formatArgs: Any): String =
     Resources.string.get(this, DefaultQualifiersProvider.current, *formatArgs)
@@ -227,24 +170,48 @@ internal inline fun BinaryResourceKey.`get`(): ByteArray = Resources.binaryByteA
 internal inline fun PluralResourceKey.`get`(quantity: Int, vararg formatArgs: Any): String =
     Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Plurals, *formatArgs)
 
-internal inline fun PluralResourceKey.`get`(quantity: Int): String = Resources.plural.get(this,
-    DefaultQualifiersProvider.current, quantity, Plurals)
-
 internal inline fun PluralResourceKey.getOrdinal(quantity: Int, vararg formatArgs: Any): String =
     Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Ordinals, *formatArgs)
 
-internal inline fun PluralResourceKey.getOrdinal(quantity: Int): String = Resources.plural.get(this,
-    DefaultQualifiersProvider.current, quantity, Ordinals)
-
 internal inline fun PluralResourceKey.`get`(quantity: IFixedDecimal, vararg formatArgs: Any): String
     = Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Plurals, *formatArgs)
-
-internal inline fun PluralResourceKey.`get`(quantity: IFixedDecimal): String =
-    Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Plurals)
 
 internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal, vararg formatArgs: Any):
     String = Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Ordinals,
     *formatArgs)
 
-internal inline fun PluralResourceKey.getOrdinal(quantity: IFixedDecimal): String =
-    Resources.plural.get(this, DefaultQualifiersProvider.current, quantity, Ordinals)
+internal inline fun StringResourceKey.`get`(qualifiers: KQualifiers, vararg formatArgs: Any): String
+    = Resources.string.get(this, qualifiers, *formatArgs)
+
+internal inline fun PainterResourceKey.getByteArray(qualifiers: KQualifiers): ByteArray =
+    Resources.binaryByteArray(this, qualifiers)
+
+internal inline fun AssetResourceKey.getAssetPath(qualifiers: KQualifiers): String =
+    Resources.binary.get(this, qualifiers)
+
+internal inline fun BinaryResourceKey.`get`(qualifiers: KQualifiers): ByteArray =
+    Resources.binaryByteArray(this, qualifiers)
+
+internal inline fun PluralResourceKey.`get`(
+  qualifiers: KQualifiers,
+  quantity: Int,
+  vararg formatArgs: Any,
+): String = Resources.plural.get(this, qualifiers, quantity, Plurals, *formatArgs)
+
+internal inline fun PluralResourceKey.getOrdinal(
+  qualifiers: KQualifiers,
+  quantity: Int,
+  vararg formatArgs: Any,
+): String = Resources.plural.get(this, qualifiers, quantity, Ordinals, *formatArgs)
+
+internal inline fun PluralResourceKey.`get`(
+  qualifiers: KQualifiers,
+  quantity: IFixedDecimal,
+  vararg formatArgs: Any,
+): String = Resources.plural.get(this, qualifiers, quantity, Plurals, *formatArgs)
+
+internal inline fun PluralResourceKey.getOrdinal(
+  qualifiers: KQualifiers,
+  quantity: IFixedDecimal,
+  vararg formatArgs: Any,
+): String = Resources.plural.get(this, qualifiers, quantity, Ordinals, *formatArgs)

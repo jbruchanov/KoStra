@@ -52,7 +52,7 @@ class DefaultsKtGeneratorTest : IOTestTools {
             .map { it.minify() }
             .map { it.trim().split("ModulePrefixResources").size }
 
-        assertThat(results).containsExactly(28, 27)
+        assertThat(results).containsExactly(18, 25)
     }
 }
 
@@ -65,16 +65,16 @@ private class ComposeDefaultsArgsProvider : ArgumentsProvider {
         val Items = arrayOf(
             Arguments.of("defaults_compose_common_public.kt", listOf(ResourcesDefaults.ComposeCommon), false),
             Arguments.of("defaults_compose_getters_public.kt", listOf(ResourcesDefaults.ComposeGetters), false),
-            Arguments.of("defaults_compose_all_public.kt", listOf(ResourcesDefaults.ComposeCommon, ResourcesDefaults.ComposeGetters), false),
+            Arguments.of("defaults_compose_all_public.kt", ResourcesDefaults.AllCompose, false),
             Arguments.of("defaults_compose_common_internal.kt", listOf(ResourcesDefaults.ComposeCommon), true),
             Arguments.of("defaults_compose_getters_internal.kt", listOf(ResourcesDefaults.ComposeGetters), true),
-            Arguments.of("defaults_compose_all_internal.kt", listOf(ResourcesDefaults.ComposeCommon, ResourcesDefaults.ComposeGetters), true),
+            Arguments.of("defaults_compose_all_internal.kt", ResourcesDefaults.AllCompose, true),
             Arguments.of("defaults_kt_common_public.kt", listOf(ResourcesDefaults.Common), false),
             Arguments.of("defaults_kt_getters_public.kt", listOf(ResourcesDefaults.Getters), false),
-            Arguments.of("defaults_kt_all_public.kt", listOf(ResourcesDefaults.Common, ResourcesDefaults.Getters), false),
+            Arguments.of("defaults_kt_all_public.kt", ResourcesDefaults.AllBasic, false),
             Arguments.of("defaults_kt_common_internal.kt", listOf(ResourcesDefaults.Common), true),
             Arguments.of("defaults_kt_getters_internal.kt", listOf(ResourcesDefaults.Getters), true),
-            Arguments.of("defaults_kt_all_internal.kt", listOf(ResourcesDefaults.Common, ResourcesDefaults.Getters), true),
+            Arguments.of("defaults_kt_all_internal.kt", ResourcesDefaults.AllBasic, true),
             Arguments.of("defaults_all.kt", ResourcesDefaults.values().toList(), false),
             Arguments.of("defaults_all_internal.kt", ResourcesDefaults.values().toList(), true),
         )

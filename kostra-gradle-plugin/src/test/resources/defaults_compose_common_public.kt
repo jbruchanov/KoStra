@@ -22,10 +22,6 @@ import kotlin.String
 import kotlin.Suppress
 
 @Composable
-public inline fun stringResource(key: StringResourceKey): String = Resources.string.get(key,
-    LocalQualifiers.current)
-
-@Composable
 public inline fun stringResource(key: StringResourceKey, vararg formatArgs: Any): String =
     Resources.string.get(key, LocalQualifiers.current, *formatArgs)
 
@@ -49,19 +45,11 @@ public inline fun pluralResource(
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals, *formatArgs)
 
 @Composable
-public inline fun pluralResource(key: PluralResourceKey, quantity: Int): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals)
-
-@Composable
 public inline fun ordinalResource(
   key: PluralResourceKey,
   quantity: Int,
   vararg formatArgs: Any,
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals, *formatArgs)
-
-@Composable
-public inline fun ordinalResource(key: PluralResourceKey, quantity: Int): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals)
 
 @Composable
 public inline fun pluralResource(
@@ -71,16 +59,8 @@ public inline fun pluralResource(
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals, *formatArgs)
 
 @Composable
-public inline fun pluralResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Plurals)
-
-@Composable
 public inline fun ordinalResource(
   key: PluralResourceKey,
   quantity: IFixedDecimal,
   vararg formatArgs: Any,
 ): String = Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals, *formatArgs)
-
-@Composable
-public inline fun ordinalResource(key: PluralResourceKey, quantity: IFixedDecimal): String =
-    Resources.plural.get(key, LocalQualifiers.current, quantity, Ordinals)
