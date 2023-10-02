@@ -1,9 +1,9 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version(libs.versions.kotlin)
-    id("maven-publish")
     id("java-gradle-plugin")
 }
 apply from: "$rootProject.projectDir/build-ktlint.gradle"
+apply from: "$rootProject.projectDir/build-publish.gradle"
 
 project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
@@ -31,23 +31,8 @@ compileTestKotlin {
 }
 
 java {
-    withSourcesJar()
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmtarget.get()))
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri(githubPackagesUrl)
-            credentials {
-                //defined in ~/.gradle/gradle.properties
-                username = project.hasProperty("githubKostraUser") ? project.githubKostraUser : ""
-                password = project.hasProperty("githubKostraPwdToken") ? project.githubKostraPwdToken : ""
-            }
-        }
     }
 }
 
