@@ -18,6 +18,7 @@ fun sFormat(template: String, vararg args: Any?) = _sFormat(template, *args)
 
 @Suppress("FunctionName")
 private fun _sFormat(s: String, vararg args: Any?): String {
+    if (args.isEmpty()) return s
     val al = mutableListOf<Formatter>()
     var i = 0
     val len: Int = s.length
