@@ -34,6 +34,7 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.configurationcache.extensions.capitalized
+import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractExecutable
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -45,6 +46,13 @@ class KostraPlugin : Plugin<Project> {
     private val logger = LoggerFactory.getLogger(KostraPlugin::class.java)
 
     override fun apply(target: Project) = with(KostraPluginConfig) {
+        if (GradleVersion.current() < GradleVersion.version("8.0")) {
+            logger.warn(
+                "Kostra gradle plugin isn't tested on plugins < 8.0, in case of any error, try latest gradle, run:\n" +
+                    "./gradlew wrapper --gradle-version latest or ./gradlew wrapper --gradle-version 8.3",
+            )
+        }
+
         val extension = target.extensions.create(DslObjectName, KostraPluginExtension::class.java)
 
         val analyseResourcesTaskProvider = target.tasks
