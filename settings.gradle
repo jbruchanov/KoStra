@@ -31,8 +31,12 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kostra"
 //for testing the app-sample, open the sample as root of the project
+
+rootProject.name = "kostra"
 include("kostra-gradle-plugin")
-include("lib-kostra-common")
-include("lib-kostra-compose")
+//to avoid having lib- as prefix for each KMP variant, artifact is changing just main one
+["kostra-common", "kostra-compose"].forEach {
+    include(it)
+    project(":$it").projectDir = file("lib-$it")
+}

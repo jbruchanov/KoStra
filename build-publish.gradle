@@ -4,9 +4,10 @@ def isKmpProject = { Project project ->
     project.plugins.findPlugin("org.jetbrains.kotlin.multiplatform") != null
 }
 
-println(project.name + " " + isKmpProject(project))
-
-if (!isKmpProject(project)) {
+if (isKmpProject(project)) {
+    //https://kotlinlang.org/docs/multiplatform-publish-lib.html#structure-of-publications
+    //withSourcesJar(publish = false)
+} else {
     java {
         //jdoc ignored for now, probably needs dokka for kotlin
         //withJavadocJar()
@@ -14,23 +15,21 @@ if (!isKmpProject(project)) {
     }
 }
 
-
 publishing {
+    publications {
+        withType(MavenPublication).configureEach {
+            artifactId = artifactId.replace("lib-", "")
+        }
+    }
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri(githubPackagesUrl)
             credentials {
-                //defined in ~/.gradle/gradle.properties
-                username = project.hasProperty("githubKostraUser") ? project.githubKostraUser : ""
-                password = project.hasProperty("githubKostraPwdToken") ? project.githubKostraPwdToken : ""
+                //defined in local.properties, assigned in build.gradle
+                username = project.localProperties.get("githubKostraUser") ?: ""
+                password = project.localProperties.get("githubKostraPwdToken") ?: ""
             }
-        }
-    }
-
-    publications {
-        withType(MavenPublication).configureEach {
-            artifactId = artifactId.replace("lib-", "")
         }
     }
 }

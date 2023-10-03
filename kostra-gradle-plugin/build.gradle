@@ -9,7 +9,7 @@ project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
 
 dependencies {
-    implementation(project(":lib-kostra-common"))
+    implementation(project(":kostra-common"))
 
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.poet)
