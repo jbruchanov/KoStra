@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.ArgumentsProvider
 import org.junit.jupiter.params.provider.ArgumentsSource
 import test.IOTestTools
+import java.io.File
 import java.util.stream.Stream
 
 class DefaultsKtGeneratorTest : IOTestTools {
@@ -42,7 +43,7 @@ class DefaultsKtGeneratorTest : IOTestTools {
         val results = gen.generateComposeDefaults(*defaults.toTypedArray())
 
         val result = results.joinToString(separator = separator) { it.toString() }
-        assertThat(result).isEqualTo(testResourceFile(fileName).readText())
+        assertThat(result).isEqualTo(testResourceFile(fileName).readTextLfOnly())
     }
 
     @Test
@@ -54,6 +55,10 @@ class DefaultsKtGeneratorTest : IOTestTools {
 
         assertThat(results).containsExactly(18, 25)
     }
+
+    //git is changing text files from LF to CRLF, kt poet is using simply "\n",
+    //so committing test outputs will breaks the test due to LF vs CRLF
+    private fun File.readTextLfOnly() = this.readText().replace("\r\n", "\n")
 }
 
 private class ComposeDefaultsArgsProvider : ArgumentsProvider {
@@ -63,20 +68,20 @@ private class ComposeDefaultsArgsProvider : ArgumentsProvider {
 
     companion object {
         val Items = arrayOf(
-            Arguments.of("defaults_compose_common_public.kt", listOf(ResourcesDefaults.ComposeCommon), false),
-            Arguments.of("defaults_compose_getters_public.kt", listOf(ResourcesDefaults.ComposeGetters), false),
-            Arguments.of("defaults_compose_all_public.kt", ResourcesDefaults.AllCompose, false),
-            Arguments.of("defaults_compose_common_internal.kt", listOf(ResourcesDefaults.ComposeCommon), true),
-            Arguments.of("defaults_compose_getters_internal.kt", listOf(ResourcesDefaults.ComposeGetters), true),
-            Arguments.of("defaults_compose_all_internal.kt", ResourcesDefaults.AllCompose, true),
-            Arguments.of("defaults_kt_common_public.kt", listOf(ResourcesDefaults.Common), false),
-            Arguments.of("defaults_kt_getters_public.kt", listOf(ResourcesDefaults.Getters), false),
-            Arguments.of("defaults_kt_all_public.kt", ResourcesDefaults.AllBasic, false),
-            Arguments.of("defaults_kt_common_internal.kt", listOf(ResourcesDefaults.Common), true),
-            Arguments.of("defaults_kt_getters_internal.kt", listOf(ResourcesDefaults.Getters), true),
-            Arguments.of("defaults_kt_all_internal.kt", ResourcesDefaults.AllBasic, true),
-            Arguments.of("defaults_all.kt", ResourcesDefaults.values().toList(), false),
-            Arguments.of("defaults_all_internal.kt", ResourcesDefaults.values().toList(), true),
+            Arguments.of("defaults_compose_common_public.txt", listOf(ResourcesDefaults.ComposeCommon), false),
+            Arguments.of("defaults_compose_getters_public.txt", listOf(ResourcesDefaults.ComposeGetters), false),
+            Arguments.of("defaults_compose_all_public.txt", ResourcesDefaults.AllCompose, false),
+            Arguments.of("defaults_compose_common_internal.txt", listOf(ResourcesDefaults.ComposeCommon), true),
+            Arguments.of("defaults_compose_getters_internal.txt", listOf(ResourcesDefaults.ComposeGetters), true),
+            Arguments.of("defaults_compose_all_internal.txt", ResourcesDefaults.AllCompose, true),
+            Arguments.of("defaults_kt_common_public.txt", listOf(ResourcesDefaults.Common), false),
+            Arguments.of("defaults_kt_getters_public.txt", listOf(ResourcesDefaults.Getters), false),
+            Arguments.of("defaults_kt_all_public.txt", ResourcesDefaults.AllBasic, false),
+            Arguments.of("defaults_kt_common_internal.txt", listOf(ResourcesDefaults.Common), true),
+            Arguments.of("defaults_kt_getters_internal.txt", listOf(ResourcesDefaults.Getters), true),
+            Arguments.of("defaults_kt_all_internal.txt", ResourcesDefaults.AllBasic, true),
+            Arguments.of("defaults_all.txt", ResourcesDefaults.values().toList(), false),
+            Arguments.of("defaults_all_internal.txt", ResourcesDefaults.values().toList(), true),
         )
     }
 }
