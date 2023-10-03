@@ -1,5 +1,7 @@
 # Kostra
 
+[![](https://jitpack.io/v/jbruchanov/kostra.svg)](https://jitpack.io/#jbruchanov/kostra)
+
 A library trying to help with resources in [KMP](https://blog.jetbrains.com/kotlin/2023/07/update-on-the-name-of-kotlin-multiplatform/)
 project, currently supported platforms are `JVM`, `Android`, `iOS`, and experimentally `Native`.
 Kostra is basically trying to do same what Android does with resources. It generates an object having references to actual resources for easy
@@ -140,17 +142,29 @@ resources/images/flag - xxhdpi.png
 
 ```groovy
 //build.gradle (root)
-plugins {
-    alias("com.jibru.kostra.resources").version("version").apply(false)
+buildscript {
+    repositories {
+        maven("https://jitpack.io")
+    }
+    dependencies {
+        classpath("com.github.jbruchanov.kostra:com.jibru.kostra.resources.gradle.plugin:version")
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        //...
+        maven("https://jitpack.io")
+    }
 }
 ```
 
 ```groovy
 //shared/build.gradle (project module)
 plugins {
-    //apply plugin
-    id("com.jibru.kostra.resources")
+    //...
 }
+apply(plugin = "com.jibru.kostra.resources")
 
 //KMP example
 kotlin {
@@ -158,9 +172,9 @@ kotlin {
         commonMain {
             //or whatever correct 'dependencies' definition is in your project
             dependencies {
-                implementation("com.jibru.kostra:kostra-common:version")
+                implementation("com.github.jbruchanov.kostra:kostra-common:version")
                 //optionally add compose lib as well, if you are using compose
-                implementation("com.jibru.kostra:kostra-compose:version")
+                implementation("com.github.jbruchanov.kostra:kostra-compose:version")
             }
         }
     }
@@ -276,7 +290,7 @@ Main object having a reference to your device locale and display category. There
 //avoid using this directly
 val qualifiers = com.jibru.kostra.defaultQualifiers()
 
-//access the value via DefaultQualifiersProvider is preferred way how to get the value in any general
+//access the value via DefaultQualifiersProvider is preferred way how to get the value in any general case
 //DefaultQualifiersProvider has property delegate where you can define your own provider for the value,
 //if undefined, it falls back to defaultQualifiers()
 val ktQualifiers = com.jibru.kostra.DefaultQualifiersProvider.current
@@ -300,11 +314,10 @@ println(app.Resources.string.get(key, qualifiers))
 
 #### Defaults
 
-Any mentioning of **defaults**, it's meant a set of following functions to work more easily with kostra resources.
-In your project/module you should prefer using defaults (or define your own similar structure what helps your use case) to prevent any misuse of
-`KQualifiers` origin and resource keys/dbs in a multimodule setup. They are automatically referencing correct `Resources` object and `KQualifiers` provider.<br/>
-Based on your current use case, you can have generated from `None`, to `All` variants via KGP `kostra.resourcesDefaults`.
-Signature is same for default & compose, annotated using `@Composable` if necessary
+Any mentioning of **defaults**, it's meant a set of following functions to work more easily with kostra resources. They are not part of kostra-common library.
+The defaults are created based on `kostra.resourcesDefaults` and referencing created `Resources` object. In your project/module you should prefer using defaults
+(or define your own similar structure what helps your use case) to prevent any misuse of `KQualifiers` origin and resource keys/dbs in a multi module setup.<br/>
+Based on your current use case, you can have generated from `None`, to `All`. Signature is same for default & compose, annotated using `@Composable` if necessary.
 
 ```kotlin
 //common
