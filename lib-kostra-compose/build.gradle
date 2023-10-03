@@ -29,7 +29,7 @@ kotlin {
                 implementation(libs.jetbrains.compose.ui)
                 implementation(libs.jetbrains.compose.runtime)
                 implementation(compose.components.resources)
-                implementation(project(":lib-kostra-common"))
+                implementation(project(":kostra-common"))
             }
         }
         commonTest {
