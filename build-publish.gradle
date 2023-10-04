@@ -21,15 +21,4 @@ publishing {
             artifactId = artifactId.replace("lib-", "")
         }
     }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri(githubPackagesUrl)
-            credentials {
-                //defined in local.properties, assigned in build.gradle
-                username = project.localProperties.get("githubKostraUser") ?: ""
-                password = project.localProperties.get("githubKostraPwdToken") ?: ""
-            }
-        }
-    }
 }

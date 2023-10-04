@@ -1,9 +1,9 @@
 pluginManagement {
     repositories {
         mavenLocal()
-        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
         gradlePluginPortal()
         google()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     }
 }
 
@@ -21,10 +21,6 @@ refreshVersions {
 dependencyResolutionManagement {
     repositories {
         mavenLocal()
-        maven {
-            name = "GitHubPackages"
-            url = uri(githubPackagesUrl)
-        }
         maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
         google()
         mavenCentral()
