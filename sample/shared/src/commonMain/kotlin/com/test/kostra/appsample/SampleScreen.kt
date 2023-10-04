@@ -38,7 +38,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jibru.kostra.KDpi
 import com.jibru.kostra.KLocale
@@ -108,10 +114,15 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     dpis.forEachIndexed { index, dpi ->
-                        var text = dpi?.name ?: "Dev:${defaultQualifiers.dpi.name}"
-                        if (dpi == KDpi.XXHDPI) {
-                            text += "\n(CS/EN-GB for capital_city asset)"
+                        val text = buildAnnotatedString {
+                            append(dpi?.name ?: "Dev:${defaultQualifiers.dpi.name}")
+                            if (dpi == KDpi.XXHDPI) {
+                                withStyle(SpanStyle(fontSize = TextUnit(0.5f, TextUnitType.Em))) {
+                                    append("\n(most of capital_city asset)")
+                                }
+                            }
                         }
+
                         TextCheckBox(
                             onCheckedChange = { if (it) dpiIndex = index else Unit },
                             checked = index == dpiIndex,
@@ -164,7 +175,7 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
 }
 
 @Composable
-private fun TextCheckBox(onCheckedChange: (Boolean) -> Unit, checked: Boolean, text: String, modifier: Modifier = Modifier) = with(SampleScreenDefaults) {
+private fun TextCheckBox(onCheckedChange: (Boolean) -> Unit, checked: Boolean, text: CharSequence, modifier: Modifier = Modifier) = with(SampleScreenDefaults) {
     @Suppress("NAME_SHADOWING")
     val checked by rememberUpdatedState(checked)
     Row(
@@ -177,6 +188,11 @@ private fun TextCheckBox(onCheckedChange: (Boolean) -> Unit, checked: Boolean, t
             .padding(end = spacing),
     ) {
         Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+        @Suppress("NAME_SHADOWING")
+        val text = when {
+            text is AnnotatedString -> text
+            else -> AnnotatedString(text.toString())
+        }
         Text(text)
     }
 }
