@@ -14,17 +14,6 @@ plugins {
     //alias(libs.plugins.gradle.plugin).apply(false)
 }
 
-def localProperties = new Properties().tap {
-    def f = file("local.properties")
-    if (f.exists()) {
-        load(new FileInputStream(file("local.properties")))
-    }
-}
-
-allprojects {
-    ext.localProperties = localProperties
-}
-
 subprojects {
     afterEvaluate {
         if (projectDir.name.startsWith("lib")) {
