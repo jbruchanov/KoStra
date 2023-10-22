@@ -33,3 +33,11 @@ subprojects {
         }
     }
 }
+
+def localProperties = new Properties().tap {
+    load(new FileInputStream(file("local.properties")))
+}
+
+allprojects {
+    ext.localProperties = localProperties
+}

@@ -21,4 +21,16 @@ publishing {
             artifactId = artifactId.replace("lib-", "")
         }
     }
+
+    repositories {
+        maven {
+            name "dyno"
+            allowInsecureProtocol true
+            url "http://192.168.168.250:8089/snapshots"
+            credentials {
+                username = localProperties.get("dyno.username").toString()
+                password = localProperties.get("dyno.password").toString()
+            }
+        }
+    }
 }
