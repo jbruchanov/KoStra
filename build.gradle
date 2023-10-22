@@ -34,8 +34,10 @@ subprojects {
     }
 }
 
-def localProperties = new Properties().tap {
-    load(new FileInputStream(file("local.properties")))
+def localProperties = new Properties().tap { props ->
+    file("local.properties").tap { f ->
+        if (f.exists()) props.load(new FileInputStream(f))
+    }
 }
 
 allprojects {
