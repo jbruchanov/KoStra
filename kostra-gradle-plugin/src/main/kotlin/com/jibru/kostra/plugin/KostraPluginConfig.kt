@@ -26,7 +26,7 @@ object KostraPluginConfig {
 
     fun Project.outputResourcesDir() = File(defaultOutputDir(), "resources")
 
-    fun Project.defaultOutputDir() = File(buildDir, "kostra")
+    fun Project.defaultOutputDir() = File(buildDir, "generated/kostra")
 
     fun Project.fileWatcherLog() = File(defaultOutputDir(), "filewatcher.log")
 
