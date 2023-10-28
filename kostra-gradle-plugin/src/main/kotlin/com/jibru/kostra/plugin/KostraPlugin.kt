@@ -244,9 +244,22 @@ class KostraPlugin : Plugin<Project> {
                     //add kostra resources part of android resources (not res <- android resources, just "jar" resources)
                     //we don't want androidResources.resourceDirs here, those are parsed and converted into own db
                     resources.srcDir(extension.resourceDirs.get())
-                    //add kostra db as part of android resources
-                    resources.srcDir(generateDbsTaskProvider)
                 }
+
+            /*
+                previous
+                resources.srcDir(generateDbsTaskProvider)
+                didn't work, for simply assembleDebug, it didn't have the generateDatabases tasks part of the pipeline.
+                It was also causing this in other project, not in the sample app project
+                https://github.com/JetBrains/compose-multiplatform/issues/3850
+                Hooking up the generateDbsTaskProvider to variants processJavaResourcesProvider seems to be solving both issues.
+             */
+            val variants = project.extensions.findByType(LibraryExtension::class.java)?.libraryVariants
+                ?: project.extensions.findByType(AppExtension::class.java)?.applicationVariants
+
+            variants?.forEach {
+                it.processJavaResourcesProvider.dependsOn(generateDbsTaskProvider)
+            }
         }
     }
 
