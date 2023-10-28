@@ -3,7 +3,7 @@ name: Dyno Maven Publish
 on: workflow_dispatch
 
 jobs:
-  androidPublishAppTester:
+  dynoMavenPublish:
     runs-on: self-hosted
 
     steps:
