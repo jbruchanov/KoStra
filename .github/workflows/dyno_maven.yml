@@ -1,4 +1,4 @@
-name: Android APK AppTester
+name: Dyno Maven Publish
 
 on: workflow_dispatch
 
