@@ -9,13 +9,14 @@ import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.KResources
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.assetPath
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
 internal fun KResources.composePainter(key: PainterResourceKey, qualifiers: KQualifiers): Painter {
     val path = assetPath(key, qualifiers)
     require(!path.endsWith(".svg", ignoreCase = true)) { "Unsupported SVG on current platform, key:$key, asset:'$path'" }
-    return org.jetbrains.compose.resources.painterResource(path)
+    return org.jetbrains.compose.resources.painterResource(DrawableResource(path))
 }
 
 @Composable
