@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -338,6 +338,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"appIos/Preview Content\"";
+				DEVELOPMENT_TEAM = XV23VKUG35;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = appIos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
