@@ -46,6 +46,8 @@ Simply follow [Android Strings](https://developer.android.com/guide/topics/resou
 Similarly like for strings, just follow [Android Strings](https://developer.android.com/guide/topics/resources/string-resource) rules. The library has own support for plurals &
 ordinals generated via [CLDR](https://cldr.unicode.org/) rules similarly what is being used in Android/iOS.
 
+To update to the latest CLDR rules, run `./gradlew kostra-gradle-plugin:generateRuleSpecsForKostraCommonLib`
+
 #### Painters
 
 In general, this is special case of binary resource for better safety support of compose `painterResourse` function. You will get what your platform supports.
