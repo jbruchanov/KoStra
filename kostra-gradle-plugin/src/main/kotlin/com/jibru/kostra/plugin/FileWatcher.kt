@@ -27,14 +27,14 @@ class FileWatcher(
     suspend fun flowChanges(folders: List<File>) = callbackFlow<Path> {
         val watcher = FileSystems.getDefault().newWatchService()
         folders.forEach { folder ->
-            val path = folder.toPath()
-            path.register(
+            val rootPath = folder.toPath()
+            rootPath.register(
                 watcher,
                 StandardWatchEventKinds.ENTRY_MODIFY,
                 StandardWatchEventKinds.ENTRY_CREATE,
                 StandardWatchEventKinds.ENTRY_DELETE,
             )
-            Files.walk(path)
+            Files.walk(rootPath)
                 .forEach { path ->
                     if (path.isDirectory()) {
                         log?.appendLog("FileWatcher: regPath:$path")
