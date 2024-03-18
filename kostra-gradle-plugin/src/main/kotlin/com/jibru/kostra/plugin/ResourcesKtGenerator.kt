@@ -347,7 +347,7 @@ private fun TypeSpec.Builder.addLongKeyIface(
         TypeSpec
             .interfaceBuilder(objectName)
             .apply {
-                items.forEach { (resItemKey, dbRootKey, type) ->
+                items.forEach { (resItemKey, _, type) ->
                     addProperty(PropertySpec.builder(resItemKey, type.asLocalResourceType(localPackageName), KModifier.PUBLIC).build())
                 }
             }

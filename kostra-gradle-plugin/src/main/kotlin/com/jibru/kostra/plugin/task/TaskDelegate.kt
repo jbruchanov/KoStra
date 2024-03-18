@@ -7,7 +7,6 @@ import com.jibru.kostra.plugin.KostraPluginConfig
 import com.jibru.kostra.plugin.ResItem
 import com.jibru.kostra.plugin.ResourcesDefaults
 import com.jibru.kostra.plugin.ResourcesKtGenerator
-import com.jibru.kostra.plugin.ext.fixAliasImports
 import com.jibru.kostra.plugin.ext.lowerCasedWith
 import com.jibru.kostra.plugin.ext.minify
 import com.squareup.kotlinpoet.FileSpec
@@ -51,11 +50,11 @@ object TaskDelegate {
             useAliasImports = KostraPluginConfig.AliasedImports,
         ).let {
             buildList {
-                add(CodeWrapper.from(it.generateKClass(interfaces = interfaces), minify, KostraPluginConfig.AliasedImports))
+                add(CodeWrapper.from(it.generateKClass(interfaces = interfaces), minify))
                 if (interfaces) {
-                    add(CodeWrapper.from(it.generateIfaces(), minify, KostraPluginConfig.AliasedImports))
+                    add(CodeWrapper.from(it.generateIfaces(), minify))
                 }
-                add(CodeWrapper.from(it.generateResources(), minify, false))
+                add(CodeWrapper.from(it.generateResources(), minify))
                 add(CodeWrapper(KostraPluginConfig.ModuleResourceKeyName + ".kt", it.generateResourceProviders(addJvmInline)))
             }
         }
@@ -89,7 +88,7 @@ object TaskDelegate {
             try {
                 if (minify) {
                     //aliasedImports unwanted here
-                    file.writeText(fileSpec.minify(useAliasedImports = false))
+                    file.writeText(fileSpec.minify())
                 } else {
                     file.writeText(fileSpec.toString())
                 }
@@ -105,11 +104,11 @@ private class CodeWrapper(
     val code: String,
 ) {
     companion object {
-        fun from(fileSpec: FileSpec, minify: Boolean, fixAliasedImports: Boolean): CodeWrapper {
+        fun from(fileSpec: FileSpec, minify: Boolean): CodeWrapper {
             val code = if (minify) {
-                fileSpec.minify(fixAliasedImports)
+                fileSpec.minify()
             } else {
-                fileSpec.toString().fixAliasImports(fixAliasedImports)
+                fileSpec.toString()
             }
             return CodeWrapper("${fileSpec.name}.kt", code)
         }

@@ -106,7 +106,7 @@ class ResourcesKtGeneratorResourcesTest {
 
         val items = FileResolver().resolve(resourcesRoot)
         val gen = ResourcesKtGenerator(items, resDbsFolderName = "com.sample.app.K", useAliasImports = false)
-        val result = gen.generateKClass().minify(useAliasedImports = false)
+        val result = gen.generateKClass().minify()
 
         assertThat(result.trim()).isEqualTo(
             """
@@ -139,7 +139,7 @@ class ResourcesKtGeneratorResourcesTest {
 
         val items = FileResolver().resolve(resourcesRoot)
         val gen = ResourcesKtGenerator(items, useAliasImports = true)
-        val result = gen.generateKClass(interfaces = true).minify(useAliasedImports = true)
+        val result = gen.generateKClass(interfaces = true).minify()
         assertThat(result).isEqualTo(
             """
             @file:Suppress("ktlint")
