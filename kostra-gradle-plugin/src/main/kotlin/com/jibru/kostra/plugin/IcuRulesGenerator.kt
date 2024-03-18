@@ -18,6 +18,9 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.asTypeName
 import java.io.File
 
+/**
+ * Entry point for `generateRuleSpecsForKostraCommonLib` gradle task
+ */
 fun main(args: Array<String>) {
     require(args.size == 1) { "Invalid args:${args.joinToString()}, must be size 1" }
 
