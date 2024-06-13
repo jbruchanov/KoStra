@@ -3,7 +3,7 @@ import com.jibru.kostra.plugin.ResourcesDefaults
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.jibru.kostra.resources")
 }
 
@@ -11,9 +11,7 @@ apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 apply from: "$rootProject.projectDir/../build-android-lib.gradle"
 
 kotlin {
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
+    jvm()
 
     androidTarget()
     iosX64()

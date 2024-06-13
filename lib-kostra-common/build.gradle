@@ -16,9 +16,7 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
+    jvm()
 
     createNativeTarget(delegate)
 

@@ -3,6 +3,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     id("org.jetbrains.kotlin.jvm").version(libs.versions.kotlin)
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 apply from: "$rootProject.projectDir/../build-ktlint.gradle"

@@ -3,7 +3,11 @@ import com.jibru.kostra.plugin.ResourcesDefaults
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose")
+    //disabled because of 'Cannot change hierarchy of dependency configuration ':shared:jvmCompilationApi' after it has been included in dependency resolution'
+    //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html#migrating-a-compose-multiplatform-project says
+    //looks like both should be used
+    //id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.native.cocoapods")
     id("com.jibru.kostra.resources")
 }
@@ -14,18 +18,7 @@ apply from: "$rootProject.projectDir/../build-android-lib.gradle"
 def depModules = [project(":shared-lib1"), project(":shared-lib2")]
 
 kotlin {
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
-
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = libs.versions.jvmtarget.get()
-            }
-        }
-    }
-
+    jvm()
     cocoapods {
         version = "1.0.0"
         summary = "Some description for the Shared Module"

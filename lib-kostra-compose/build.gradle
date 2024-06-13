@@ -1,6 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
 }
 
@@ -12,9 +13,7 @@ project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
 
 kotlin {
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
+    jvm()
 
     iosX64()
     iosArm64()
