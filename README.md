@@ -39,7 +39,7 @@ into a release product. The strings DB has `O(1)` access time, the painters/bina
 
 #### Strings
 
-Simply follow [Android Strings](https://developer.android.com/guide/topics/resources/string-resource) rules. See [limitations](https://github.com/jbruchanov/kostra/tree/KS-70_docs#limitations) for few exceptions.
+Simply follow [Android Strings](https://developer.android.com/guide/topics/resources/string-resource) rules. See [limitations](https://github.com/jbruchanov/kostra?tab=readme-ov-file#limitations) for few exceptions.
 
 #### Plurals/Ordinals
 
@@ -198,7 +198,7 @@ KGP analyses and generates code based on defined resources. Workflow is split in
 - Create internal DBs (`generateDatabases`) for strings/plurals and any file references.
 
 All wiring up is done automatically (`kostra.autoConfig` if enabled) for `JVM` & `KotlinMultiplatform` gradle plugins. In case of any bug
-or usage outside of these 2 use cases, code is written into `build/kostra/src*` and DBs into `build/kostra/resources`, those 2 outputs must be incorporated
+or usage outside of these 2 use cases, code is written into `build/generated/kostra/src*` and DBs into `build/generated/kostra/resources`, those 2 outputs must be incorporated
 into your own build setup.
 
 ```groovy
