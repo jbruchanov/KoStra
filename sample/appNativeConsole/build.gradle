@@ -22,7 +22,6 @@ kotlin {
             }
         }
         nativeMain {
-            dependsOn(commonMain)
         }
     }
 }

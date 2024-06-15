@@ -1,6 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.android.library")
 }
 
@@ -12,9 +13,7 @@ project.group = libs.versions.project.group.get()
 project.version = libs.versions.project.version.get()
 
 kotlin {
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
+    jvm()
 
     iosX64()
     iosArm64()
@@ -22,7 +21,7 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
-
+    applyDefaultHierarchyTemplate()
     sourceSets {
         commonMain {
             dependencies {
@@ -38,30 +37,15 @@ kotlin {
             }
         }
 
-        androidMain {
-
-        }
-
+        androidMain
         iosX64Main
         iosArm64Main
         iosSimulatorArm64Main
-
-        iosMain {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(delegate)
-            iosArm64Main.dependsOn(delegate)
-            iosSimulatorArm64Main.dependsOn(delegate)
-        }
-
+        iosMain
         iosX64Test
         iosArm64Test
         iosSimulatorArm64Test
-        iosTest {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(delegate)
-            iosArm64Test.dependsOn(delegate)
-            iosSimulatorArm64Test.dependsOn(delegate)
-        }
+        iosTest
     }
 }
 

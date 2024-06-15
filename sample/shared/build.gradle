@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.native.cocoapods")
     id("com.jibru.kostra.resources")
 }
@@ -14,18 +15,7 @@ apply from: "$rootProject.projectDir/../build-android-lib.gradle"
 def depModules = [project(":shared-lib1"), project(":shared-lib2")]
 
 kotlin {
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
-
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = libs.versions.jvmtarget.get()
-            }
-        }
-    }
-
+    jvm()
     cocoapods {
         version = "1.0.0"
         summary = "Some description for the Shared Module"
@@ -43,6 +33,8 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         commonMain {
@@ -64,10 +56,7 @@ kotlin {
             }
         }
 
-        jvmMain {
-            dependsOn(commonMain)
-        }
-
+        jvmMain
         androidMain
         androidUnitTest
 
@@ -76,7 +65,6 @@ kotlin {
         iosSimulatorArm64Main
 
         iosMain {
-            dependsOn(commonMain)
             iosX64Main.dependsOn(delegate)
             iosArm64Main.dependsOn(delegate)
             iosSimulatorArm64Main.dependsOn(delegate)
@@ -85,8 +73,16 @@ kotlin {
                 //add explicit reference to use module resources + kostra resources as part of this build
                 //output in kostra/sample/build/ios/Debug-iphonesimulator/appIos.app/compose-resources/
                 depModules.forEach { Project p ->
-                    resources.srcDirs(new File(p.projectDir, "src/commonMain/resources"))
-                    resources.srcDirs(new File(p.buildDir, "kostra/resources"))
+                    def srcResources = new File(p.projectDir, "src/commonMain/resources")
+                    def genResources = new File(p.layout.getBuildDirectory().get().asFile, "generated/kostra/resources")
+                    if (!srcResources.exists()) {
+                        throw new IllegalStateException("IOS shared depends on ${p.name} resources, but ${srcResources.absolutePath} doesn't exist!")
+                    }
+                    if (!genResources.exists()) {
+                        throw new IllegalStateException("IOS shared depends on ${p.name} resources, but ${genResources.absolutePath} doesn't exist!")
+                    }
+                    resources.srcDirs(srcResources)
+                    resources.srcDirs(genResources)
                 }
             }
         }
@@ -94,12 +90,7 @@ kotlin {
         iosX64Test
         iosArm64Test
         iosSimulatorArm64Test
-        iosTest {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(delegate)
-            iosArm64Test.dependsOn(delegate)
-            iosSimulatorArm64Test.dependsOn(delegate)
-        }
+        iosTest
     }
 }
 
