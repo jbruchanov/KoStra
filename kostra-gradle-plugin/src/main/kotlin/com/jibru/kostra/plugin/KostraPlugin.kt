@@ -137,6 +137,8 @@ class KostraPlugin : Plugin<Project> {
         val otherTaskDeps = { task: Task, linkNativeVariant: String ->
             project.tasks.getByName("link${linkNativeVariant}Native").dependsOn(task)
             project.tasks.getByName("nativeProcessResources").mustRunAfter(task)
+            println("link${linkNativeVariant}Native")
+            println("nativeProcessResources")
         }
 
         project.extensions.findByType(KotlinMultiplatformExtension::class.java)
@@ -152,6 +154,7 @@ class KostraPlugin : Plugin<Project> {
                     it.group = KostraPluginConfig.Tasks.Group
                     it.from(extension.resourceDirs)
                     it.into(outputDir)
+
                     otherTaskDeps(it, name)
                 }
 
@@ -172,27 +175,7 @@ class KostraPlugin : Plugin<Project> {
         generateDefaultsTaskProvider: TaskProvider<GenerateDefaultsTask>,
         generateDbsTaskProvider: TaskProvider<GenerateDatabasesTask>,
     ) {
-        run JavaPlugin@{
-            (project.takeIf { it.hasJvmPlugin() } ?: return@JavaPlugin)
-                .jvmMainSourceSet()
-                .let { mainSourceSet ->
-                    if (mainSourceSet == null) {
-                        logger.warn("Kostra: ${project.name}:main jvm source set not found, unable to finish auto setup!")
-                        return@let
-                    }
-                    //let java know about kostra sourceDir
-                    mainSourceSet.java.srcDir(generateCodeTaskProvider)
-                    mainSourceSet.java.srcDir(generateDefaultsTaskProvider)
-
-                    //put into kostra extension the resource folders, to let KGP know what we currently have
-                    extension.resourceDirs.set(extension.resourceDirs.get() + mainSourceSet.resources.srcDirs)
-
-                    //let java know about kostra resource dir
-                    mainSourceSet.resources.srcDir(generateDbsTaskProvider)
-                    logger.info("Java updated resourceDirs:${mainSourceSet.resources.srcDirs.joinToString()}")
-                }
-        }
-
+        var updatedKmpSourceSets = false
         run KotlinMultiplatform@{
             (project.takeIf { it.hasKmpPlugin() } ?: return@KotlinMultiplatform)
                 .kmpMainSourceSet()
@@ -202,6 +185,7 @@ class KostraPlugin : Plugin<Project> {
                         return@let
                     }
 
+                    updatedKmpSourceSets = true
                     //let kmp know about kostra sourceDir
                     commonMainSourceSet.kotlin.srcDir(generateCodeTaskProvider)
                     commonMainSourceSet.kotlin.srcDir(generateDefaultsTaskProvider)
@@ -226,6 +210,31 @@ class KostraPlugin : Plugin<Project> {
                     }
                 }
              */
+        }
+
+        run JavaPlugin@{
+            (project.takeIf { it.hasJvmPlugin() } ?: return@JavaPlugin)
+                .jvmMainSourceSet()
+                .let { mainSourceSet ->
+                    if (updatedKmpSourceSets) {
+                        logger.warn("Kostra: ${project.name}:main jvm skipped, sourceset updated for KMP!")
+                        return@let
+                    }
+                    if (mainSourceSet == null) {
+                        logger.warn("Kostra: ${project.name}:main jvm source set not found, unable to finish auto setup!")
+                        return@let
+                    }
+                    //let java know about kostra sourceDir
+                    mainSourceSet.java.srcDir(generateCodeTaskProvider)
+                    mainSourceSet.java.srcDir(generateDefaultsTaskProvider)
+
+                    //put into kostra extension the resource folders, to let KGP know what we currently have
+                    extension.resourceDirs.set(extension.resourceDirs.get() + mainSourceSet.resources.srcDirs)
+
+                    //let java know about kostra resource dir
+                    mainSourceSet.resources.srcDir(generateDbsTaskProvider)
+                    logger.info("Java updated resourceDirs:${mainSourceSet.resources.srcDirs.joinToString()}")
+                }
         }
 
         //android plugin doesn't seem to be taking stuff from KMP common, mostlikely because "jvm resources" are not same as "android res" resources

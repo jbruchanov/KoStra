@@ -3,10 +3,7 @@ import com.jibru.kostra.plugin.ResourcesDefaults
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    //disabled because of 'Cannot change hierarchy of dependency configuration ':shared:jvmCompilationApi' after it has been included in dependency resolution'
-    //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html#migrating-a-compose-multiplatform-project says
-    //looks like both should be used
-    //id("org.jetbrains.compose")
+    id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.native.cocoapods")
     id("com.jibru.kostra.resources")
