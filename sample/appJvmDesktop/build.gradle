@@ -1,23 +1,44 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    id("org.jetbrains.kotlin.jvm").version(libs.versions.kotlin)
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
+    //can't be simple jvm plugin because of broken resources
+    //https://youtrack.jetbrains.com/issue/KTIJ-16582/Consumer-Kotlin-JVM-library-cannot-access-a-Kotlin-Multiplatform-JVM-target-resources-in-multi-module-Gradle-project
+    id("org.jetbrains.kotlin.multiplatform")
 }
 
 apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 
-java {
-    sourceCompatibility = libs.versions.jvmtarget.get()
-    targetCompatibility = libs.versions.jvmtarget.get()
-}
 
-compileKotlin {
-    kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
-}
+kotlin {
+    jvm {
+        withJava()
+    }
 
-compileTestKotlin {
-    kotlinOptions.jvmTarget = libs.versions.jvmtarget.get()
+    applyDefaultHierarchyTemplate()
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(project(":shared"))
+                implementation(libs.kostra.common)
+                implementation(libs.kostra.compose)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.bundles.jetbrains.compose.app)
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation(libs.bundles.unittest.jvm)
+            }
+        }
+    }
 }
 
 compose.desktop {
@@ -31,16 +52,13 @@ compose.desktop {
     }
 }
 
-test {
+
+
+tasks.jvmTest {
     useJUnitPlatform()
-}
-
-dependencies {
-    implementation(project(":shared"))
-    implementation(libs.kostra.common)
-    implementation(libs.kostra.compose)
-    implementation(compose.desktop.currentOs)
-    implementation(libs.bundles.jetbrains.compose.app)
-
-    implementation(libs.bundles.unittest.jvm)
+    //mockk uses logback configured via src/jvmTest/resources/logback.xml
+    testLogging {
+        showExceptions = true
+        showStandardStreams = false
+    }
 }

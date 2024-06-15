@@ -6,9 +6,7 @@ plugins {
 apply from: "$rootProject.projectDir/../build-ktlint.gradle"
 
 kotlin {
-    jvm {
-        jvmToolchain(libs.versions.jvmtarget.get().toInteger())
-    }
+    jvm()
 
     iosX64()
     iosArm64()

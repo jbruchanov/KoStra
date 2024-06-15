@@ -1,9 +1,10 @@
-@file:OptIn(ExperimentalResourceApi::class)
+@file:OptIn(InternalResourceApi::class)
 @file:Suppress("unused")
 
 package com.jibru.kostra.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -12,7 +13,8 @@ import com.jibru.kostra.KResources
 import com.jibru.kostra.PainterResourceKey
 import com.jibru.kostra.assetPath
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.InternalResourceApi
+import org.jetbrains.compose.resources.ResourceItem
 import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -23,12 +25,15 @@ internal fun KResources.composePainter(key: PainterResourceKey, qualifiers: KQua
     val isXml = path.endsWith(".xml") || path.endsWith(".vxml")
     //imageResources is caching stuff internally
     //it's a copy of org.jetbrains.compose.resources.painterResource, just using also vxml for the vector drawables
-    if (isXml) {
-        return rememberVectorPainter(vectorResource(DrawableResource(path)))
+    return if (isXml) {
+        rememberVectorPainter(vectorResource(path.toDrawableResource()))
     } else {
-        return BitmapPainter(imageResource(DrawableResource(path)))
+        val imageResource = imageResource(path.toDrawableResource())
+        remember(imageResource) { BitmapPainter(imageResource) }
     }
 }
+
+private fun String.toDrawableResource() = DrawableResource(this, setOf(ResourceItem(path = this, qualifiers = emptySet(), offset = 0L, size = -1)))
 
 @Composable
 expect fun KResources.painter(key: PainterResourceKey, qualifiers: KQualifiers): Painter
