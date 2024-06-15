@@ -34,6 +34,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain {
             dependencies {
@@ -54,10 +56,7 @@ kotlin {
             }
         }
 
-        jvmMain {
-            dependsOn(commonMain)
-        }
-
+        jvmMain
         androidMain
         androidUnitTest
 
@@ -66,7 +65,6 @@ kotlin {
         iosSimulatorArm64Main
 
         iosMain {
-            dependsOn(commonMain)
             iosX64Main.dependsOn(delegate)
             iosArm64Main.dependsOn(delegate)
             iosSimulatorArm64Main.dependsOn(delegate)
@@ -83,9 +81,6 @@ kotlin {
                     if (!genResources.exists()) {
                         throw new IllegalStateException("IOS shared depends on ${p.name} resources, but ${genResources.absolutePath} doesn't exist!")
                     }
-                    println("-".repeat(60))
-                    println(srcResources)
-                    println(genResources)
                     resources.srcDirs(srcResources)
                     resources.srcDirs(genResources)
                 }
@@ -95,12 +90,7 @@ kotlin {
         iosX64Test
         iosArm64Test
         iosSimulatorArm64Test
-        iosTest {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(delegate)
-            iosArm64Test.dependsOn(delegate)
-            iosSimulatorArm64Test.dependsOn(delegate)
-        }
+        iosTest
     }
 }
 

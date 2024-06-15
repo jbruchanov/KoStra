@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 class IcuRulesGeneratorTest {
     @Test
-    fun genereate() {
+    fun generate() {
         val f = IcuRulesGenerator("com.test.icu", addLocaleComments = false, addDefaultValue = false)
             .generate(testResult(), type = IcuRulesGenerator.Type.Plurals)
         assertThat(f.minify()).isEqualTo(
@@ -36,7 +36,6 @@ class IcuRulesGeneratorTest {
                     Constraint.Range(0, true, Operand.v, true, 0.0, 0.0))),
               )
             )}
-
             val PluralRuleSpecs: Map<KLocale, PluralRules> = buildMap(1) {
               put(KLocale(5_14_00_00), pluralSpecs_01)
             }
