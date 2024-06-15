@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -83,11 +84,11 @@ fun SampleScreen(extraContent: @Composable ColumnScope.() -> Unit = {}) = with(S
                 val codes = listOf("ar", "cs", "en", "enGB", "enUS", "he", "hi", "ja", "ko", "ru", "th")
                 (listOf(defaultQualifiers.locale) + codes.map { KLocale(it) }).distinct()
             }
-            var localeIndex by remember { mutableStateOf(0) }
+            var localeIndex by remember { mutableIntStateOf(0) }
             val locale by remember { derivedStateOf { KLocale(locales[localeIndex].languageRegion) } }
 
             val dpis = remember { listOf(null, KDpi.Undefined, KDpi.XHDPI, KDpi.XXHDPI) }
-            var dpiIndex by remember { mutableStateOf(0) }
+            var dpiIndex by remember { mutableIntStateOf(0) }
             val dpi by remember { derivedStateOf { dpis[dpiIndex] ?: defaultQualifiers.dpi } }
 
             val qualifiers by remember { derivedStateOf { KQualifiers(locale, dpi) } }

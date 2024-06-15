@@ -75,8 +75,19 @@ kotlin {
                 //add explicit reference to use module resources + kostra resources as part of this build
                 //output in kostra/sample/build/ios/Debug-iphonesimulator/appIos.app/compose-resources/
                 depModules.forEach { Project p ->
-                    resources.srcDirs(new File(p.projectDir, "src/commonMain/resources"))
-                    resources.srcDirs(new File(p.buildDir, "kostra/resources"))
+                    def srcResources = new File(p.projectDir, "src/commonMain/resources")
+                    def genResources = new File(p.layout.getBuildDirectory().get().asFile, "generated/kostra/resources")
+                    if (!srcResources.exists()) {
+                        throw new IllegalStateException("IOS shared depends on ${p.name} resources, but ${srcResources.absolutePath} doesn't exist!")
+                    }
+                    if (!genResources.exists()) {
+                        throw new IllegalStateException("IOS shared depends on ${p.name} resources, but ${genResources.absolutePath} doesn't exist!")
+                    }
+                    println("-".repeat(60))
+                    println(srcResources)
+                    println(genResources)
+                    resources.srcDirs(srcResources)
+                    resources.srcDirs(genResources)
                 }
             }
         }

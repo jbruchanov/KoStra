@@ -137,8 +137,6 @@ class KostraPlugin : Plugin<Project> {
         val otherTaskDeps = { task: Task, linkNativeVariant: String ->
             project.tasks.getByName("link${linkNativeVariant}Native").dependsOn(task)
             project.tasks.getByName("nativeProcessResources").mustRunAfter(task)
-            println("link${linkNativeVariant}Native")
-            println("nativeProcessResources")
         }
 
         project.extensions.findByType(KotlinMultiplatformExtension::class.java)
@@ -150,7 +148,7 @@ class KostraPlugin : Plugin<Project> {
             ?.map { it.name.capitalized() to it.outputDirectory }
             ?.onEach { (name, outputDir) ->
                 //copy predefined resources
-                project.tasks.register(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("Resources", name), Copy::class.java) {
+                project.tasks.create(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("Resources", name), Copy::class.java) {
                     it.group = KostraPluginConfig.Tasks.Group
                     it.from(extension.resourceDirs)
                     it.into(outputDir)
@@ -159,7 +157,7 @@ class KostraPlugin : Plugin<Project> {
                 }
 
                 //copy generated string dbs
-                project.tasks.register(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("DBs", name), Copy::class.java) {
+                project.tasks.create(KostraPluginConfig.Tasks.CopyResourcesForNativeTemplate_xy.format("DBs", name), Copy::class.java) {
                     it.group = KostraPluginConfig.Tasks.Group
                     it.from(generateDbTaskProvider)
                     it.into(outputDir)
