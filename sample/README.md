@@ -131,7 +131,7 @@ Just enable it via `kostra.interfaces = true`, it's being enabled automatically 
 
 #### Class delegation
 
-With interfaces generated, a global `K` object can be made simply using class delegation.
+With interfaces generated, a global `KM` object can be made simply using class delegation.
 ```kotlin
 object KM {
     object string :
@@ -186,7 +186,7 @@ kotlin {
             //kostra/sample/build/ios/Debug-iphonesimulator/appIos.app/compose-resources/
             depModules.forEach { Project p ->
                 resources.srcDirs(new File(p.projectDir, "src/commonMain/resources"))
-                resources.srcDirs(new File(p.buildDir, "kostra/resources"))
+                resources.srcDirs(new File(p.buildDir, "generated/kostra/resources"))
             }
         }
     }
