@@ -103,7 +103,6 @@ private class StrictGroupQualifiersArgsProvider : ArgumentsProvider {
             //mixed
             Arguments.of(null, "group1-en-xxhdpi", GroupQualifiers("group1", KQualifiers("en", KDpi.XXHDPI))),
             Arguments.of(null, "group2-xhdpi-en-rGB", GroupQualifiers("group2", KQualifiers("enGB", KDpi.XHDPI))),
-
             //somehow invalid
             Arguments.of(true, "group-en-xhdpi-rUS", GroupQualifiers("group", KQualifiers("en", KDpi.XHDPI))),
             Arguments.of(true, "group-ab-vvhdpi", GroupQualifiers("group", KQualifiers.Undefined)),
@@ -122,7 +121,6 @@ private class StrictGroupQualifiersArgsProvider : ArgumentsProvider {
             Arguments.of(false, "xyz-ab-cd", GroupQualifiers("xyz", KQualifiers("abcd"))),
             Arguments.of(false, "xyz-ab-rCD", GroupQualifiers("xyz", KQualifiers("abcd"))),
             Arguments.of(false, "xyz-ab-rCDE", GroupQualifiers("xyz", KQualifiers("ab"))),
-
             Arguments.of(false, "group-tvdpi-ab-rCDE", GroupQualifiers("group", KQualifiers("ab", KDpi.TVDPI))),
             Arguments.of(false, "group-ab-rCDE-ldpi", GroupQualifiers("group", KQualifiers("ab", KDpi.LDPI))),
             Arguments.of(false, "group-xxxhdpi-abcd", GroupQualifiers("group", KQualifiers("abcd", KDpi.XXXHDPI))),

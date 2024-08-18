@@ -254,13 +254,10 @@ class FileResolverTest {
         assertThat(items).containsExactly(
             ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined.key),
             ResItem.StringRes("item2", "src2Item2", KQualifiers.Undefined.key),
-
             ResItem.StringRes("item1", "src1Item1En", KQualifiers(locale = KLocale("en")).key),
             ResItem.StringRes("item2", "src1Item2En", KQualifiers(locale = KLocale("en")).key),
-
             ResItem.StringRes("item1", "src2Item1De", KQualifiers(locale = KLocale("de")).key),
             ResItem.StringRes("item2", "src2Item2De", KQualifiers(locale = KLocale("de")).key),
-
             ResItem.StringRes("item1", "src2Item1EnGb", KQualifiers(locale = KLocale("en", "GB")).key),
             ResItem.StringRes("item2", "src2Item2EnGb", KQualifiers(locale = KLocale("en", "GB")).key),
         )
@@ -287,7 +284,6 @@ class FileResolverTest {
         assertThat(items).containsExactly(
             ResItem.StringRes("item1", "item1", KQualifiers.Undefined.key),
             ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs")).key),
-
             ResItem.Plurals("dog", mapOf(PluralCategory.Other to "dogs", PluralCategory.One to "dog").toPluralList(), KQualifiers.Undefined.key),
             ResItem.Plurals(
                 "dog",

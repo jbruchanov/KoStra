@@ -197,7 +197,7 @@ class BinaryDatabase internal constructor(private var data: ByteArray = ByteArra
     }
 
     companion object {
-        private const val HeaderBytes = 1 /*version*/ + 1 /*type*/
+        private const val HeaderBytes = 1 /*version*/ + 1 // type
         private const val BytesPerLong = Long.SIZE_BYTES
     }
 }

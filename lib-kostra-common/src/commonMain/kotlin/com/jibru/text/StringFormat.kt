@@ -181,7 +181,9 @@ private class FormatSpecifierParser(format: String, startIdx: Int) {
         val next = format.getOrNull(cursor + 1)
         return peek.isDigit() ||
             //start of negative number
-            pos == 0 && peek == '-' && next?.isDigit() == true
+            pos == 0 &&
+            peek == '-' &&
+            next?.isDigit() == true
     }
 
     private fun peek(): Char = requireNotEnd { format[cursor] }
