@@ -39,7 +39,8 @@ into a release product. The strings DB has `O(1)` access time, the painters/bina
 
 #### Strings
 
-Simply follow [Android Strings](https://developer.android.com/guide/topics/resources/string-resource) rules. See [limitations](https://github.com/jbruchanov/kostra?tab=readme-ov-file#limitations) for few exceptions.
+Simply follow [Android Strings](https://developer.android.com/guide/topics/resources/string-resource) rules.
+See [limitations](https://github.com/jbruchanov/kostra?tab=readme-ov-file#limitations) for few exceptions.
 
 #### Plurals/Ordinals
 
@@ -206,6 +207,8 @@ into your own build setup.
 kostra {
     // enable autoconfig, if disabled, the tasks run/configuration must be done manually
     autoConfig /*Boolean*/
+    // fail analyseResources task when a duplicated key found
+    failOnDuplicates /*Boolean*/
     // generate for all K object records also interfaces for potential resource merging via class delegation
     interfaces /*Boolean*/
     // mark all the generated code as internal to avoid leaking outside a module
@@ -252,7 +255,9 @@ kostra {
     }
 }
 ```
+
 #### Project files
+
 `shared/src/commonMain/resources_strings/strings.xml`
 
 ```xml
@@ -286,7 +291,9 @@ kostra {
 ```
 
 #### KQualifiers
+
 Main object having a reference to your device locale and display category. There are 3 ways how to get the value of KQualifiers
+
 ```kotlin
 //default top level getter
 //avoid using this directly
@@ -308,9 +315,10 @@ Main source of resources is generated as a property `app.Resources` (package mat
 The object has 3 properties, `string`, `plural`, `binary`.
 
 Getting values directly without any defaults can be done as following
+
 ```kotlin
-val key : StringResourceKey = K.string.myText
-val qualifiers : KQualifiers = ...
+val key: StringResourceKey = K.string.myText
+val qualifiers: KQualifiers = ...
 println(app.Resources.string.get(key, qualifiers))
 ```
 
@@ -361,7 +369,9 @@ Be careful of potentially 2 different sources of truth `DefaultQualifiersProvide
 **Always pass `KQualifiers` provided from `LocalQualifiers.current` in compose app**
 
 #### App Usage
+
 For more complex examples how to handle multiple modules, please have a look [sample project](https://github.com/jbruchanov/kostra/tree/develop/sample)
+
 ```kotlin
 //package depends on plugin DSL kostra.className = "com.sample.app.K"
 import app.*
@@ -423,7 +433,6 @@ Locale & DPI can be easily overridden from code. Have a look
 [kotlin example](https://github.com/jbruchanov/kostra/blob/develop/sample/appNativeConsole/src/nativeMain/kotlin/Main.kt#L63) &
 [compose example](https://github.com/jbruchanov/kostra/blob/develop/sample/shared/src/commonMain/kotlin/com/test/kostra/appsample/SampleScreen.kt#L87).
 
-
 ## Limitations
 
 #### Android resources
@@ -432,6 +441,7 @@ Other string compatible tags like `string-array`, `array` are ignored and in gen
 ignored or taken simply as raw XML files if they are part of the project resources (not only as kostra android resources). <br />
 
 #### Android resources references
+
 Kostra doesn't support any references so following example won't work as an Android dev would expect.
 It will be just `Add` and `@string/add` as values.
 
@@ -442,9 +452,11 @@ It will be just `Add` and `@string/add` as values.
     <string name="ref">@string/add</string>
 </resources>
 ```
+
 Similarly, having e.g. `@android:color/white` in VectorDrawable XML won't work and will crash most likely with cryptic error message.
 
 #### Android Resources BestMatch
+
 [BestMatch](https://developer.android.com/guide/topics/resources/providing-resources#BestMatch) for DPIs is not supported.
 If a device falls into `XXHDPI` category, kostra will try to search a resource in order  `XXHDPI` then `Default` only.
 
@@ -469,6 +481,7 @@ sFormat("%1\$s %2\$S %2\$s %1\$S", "a", "b") // "a B b A"
 ```
 
 #### SVG Support
+
 SVG support is only for **JVM Desktop**. Compose for Android or iOS has no support for SVGs. Kostra itself has nothing to do with it.
 SVG files are always marked with PainterResourceKey as they are images no matter platform you use.
 

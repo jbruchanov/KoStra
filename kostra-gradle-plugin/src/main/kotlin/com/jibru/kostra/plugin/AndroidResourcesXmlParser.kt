@@ -55,7 +55,9 @@ class AndroidResourcesXmlParser(
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
                             try {
-                                result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers.key))
+                                result.add(ResItem.StringRes(keyMapper(key, file), text, qualifiers.key).also {
+                                    it.origin = file.takeIf { it != noFile }
+                                })
                             } catch (t: Throwable) {
                                 throwParsingException(TagString, file, xmlReader, t)
                             }
@@ -74,7 +76,9 @@ class AndroidResourcesXmlParser(
                             }
                             logger.info("[$TagStringArray]: '$key'=[${items.joinToString(prefix = "[", postfix = "]") { "'$it'" }}]")
                             try {
-                                result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers.key))
+                                result.add(ResItem.StringArray(keyMapper(key, file), items, qualifiers.key).also {
+                                    it.origin = file.takeIf { it != noFile }
+                                })
                             } catch (t: Throwable) {
                                 throwParsingException(TagStringArray, file, xmlReader, t)
                             }
@@ -94,7 +98,9 @@ class AndroidResourcesXmlParser(
                             }
                             logger.info("[$TagPlurals]: '$key'=[$items]")
                             try {
-                                result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers.key))
+                                result.add(ResItem.Plurals(keyMapper(key, file), items.toPluralList(), qualifiers.key).also {
+                                    it.origin = file.takeIf { it != noFile }
+                                })
                             } catch (t: Throwable) {
                                 throwParsingException(TagPlurals, file, xmlReader, t)
                             }

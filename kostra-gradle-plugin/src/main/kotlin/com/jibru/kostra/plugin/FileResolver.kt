@@ -17,6 +17,7 @@ data class FileResolverConfig(
     val parallelism: Boolean = false,
     val strictLocale: Boolean = true,
     val modulePrefix: String = "",
+    val failOnDuplicates: Boolean = true
 ) {
     val imageExtensionsAndXml: Set<String> = imageExtensions + "xml"
     val stringFilesRegexps = stringFiles.map { it.toRegex() }
@@ -38,12 +39,28 @@ class FileResolver(
     fun resolve(root: File): List<ResItem> = resolve(listOf(root))
 
     fun resolve(roots: List<File>): List<ResItem> {
-        val resources = roots
+        val allValues = roots
             .tryParallelStream()
             .map { resolveImpl(it) }
             .asSequence()
             .toList()
             .flatten()
+        if (config.failOnDuplicates) {
+            val duplicates = allValues.groupBy { it.distinctKey }
+                .filterValues { it.size > 1 }
+            if (duplicates.isNotEmpty()) {
+                val log = duplicates.map { (keyItem, items) ->
+                    val (key) = keyItem
+                    buildString {
+                        append("Key:'$key'\n")
+                        append(items.joinToString("\n") { it.origin?.absolutePath ?: "null" })
+                        append("\n")
+                    }
+                }.joinToString("\n") { it }
+                throw IllegalStateException("Duplicate keys found!\n${log}\nTo ignore this error, use `failOnDuplicates = false`")
+            }
+        }
+        val resources = allValues
             .distinctByLast { it.distinctKey }
 
         return resources
