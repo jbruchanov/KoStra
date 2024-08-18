@@ -43,22 +43,44 @@ abstract class GenerateDatabasesTask : DefaultTask() {
         outDir.deleteRecursively()
         dbDir.mkdirs()
 
-        saveDataIntoDb(data = processor.stringsForDbs, "${ResItem.String}-%s.db", dbDir)
-        saveDataIntoDb(data = processor.pluralsForDbs, "${ResItem.Plural}-%s.db", dbDir)
+        saveDataIntoDb(type = "strings", data = processor.stringsForDbs, "${ResItem.String}-%s.db", dbDir)
+        saveDataIntoDb(type = "plurals", data = processor.pluralsForDbs, "${ResItem.Plural}-%s.db", dbDir)
 
         run {
             val db = File(dbDir, "${ResItem.Binary}.db")
             val data = BinaryDatabase().apply { setPairs(processor.otherForDbs) }.save()
             db.writeBytes(data)
+            if (logger.isInfoEnabled) {
+                logger.info(buildString {
+                    append("Saving kostra binary database:'${db.absolutePath}'\n")
+                    append("Items:${processor.otherForDbs.size}, ")
+                    append("Size:${data.size}b")
+                })
+            }
         }
     }
 
-    private fun saveDataIntoDb(data: Map<KLocale, List<String?>>, fileNameTemplate: String, location: File) {
+    private fun saveDataIntoDb(type: String, data: Map<KLocale, List<String?>>, fileNameTemplate: String, location: File) {
         data.forEach { (locale, items) ->
             val tag = if (locale == KLocale.Undefined) "default" else locale.languageRegion
             val db = File(location, fileNameTemplate.format(tag))
             val dbData = BinaryDatabase().apply { setList(items) }.save()
             db.writeBytes(dbData)
+
+            if (logger.isInfoEnabled) {
+                logger.info(buildString {
+                    append("Saving kostra $type database:'${db.absolutePath}'\n")
+                    append("Locale:$locale, ")
+                    append("Items:${items.size}, ")
+                    append("Size:${dbData.size}b")
+                    if (logger.isDebugEnabled) {
+                        append("\nData:\n")
+                        items.forEachIndexed { index, s ->
+                            append("${index.toString().padStart(3)}:'$s'\n")
+                        }
+                    }
+                })
+            }
         }
     }
 }
