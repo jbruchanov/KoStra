@@ -4,12 +4,11 @@ import com.google.common.truth.Truth.assertThat
 import com.jibru.kostra.KQualifiers
 import com.jibru.kostra.icu.PluralCategory
 import com.jibru.kostra.icu.PluralCategory.Companion.toPluralList
-import javax.xml.stream.XMLStreamException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.EnabledIf
-import java.lang.IllegalStateException
+import javax.xml.stream.XMLStreamException
 
 internal class AndroidResourcesXmlParserTest {
 
@@ -293,6 +292,88 @@ internal class AndroidResourcesXmlParserTest {
             Line number = 3
             Column number = 35
             """.trimIndent(),
+        )
+    }
+
+    @Test
+    fun `findStrings WHEN trimIndent`() {
+        val stringXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <resources>
+            <string name="test" trimIndent="true">
+            Text1
+            Text2
+            </string>
+            <string name="sample">
+                Sample
+            </string>
+        </resources>
+        """.trimIndent()
+        val xmlParser = AndroidResourcesXmlParser()
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
+        val item = result[0] as ResItem.StringRes
+        assertThat(item.key).isEqualTo("test")
+        assertThat(item.value).isEqualTo(
+            """
+            Text1
+            Text2
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `findStrings WHEN trimMargin`() {
+        val stringXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <resources>
+            <string name="test" trimMargin="|">
+            |Text1
+            |Text2
+            </string>
+        </resources>
+        """.trimIndent()
+        val xmlParser = AndroidResourcesXmlParser()
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
+        val item = result[0] as ResItem.StringRes
+        assertThat(item.key).isEqualTo("test")
+        assertThat(item.value).isEqualTo(
+            """
+            |Text1
+            |Text2
+        """.trimMargin("|")
+        )
+    }
+
+    @Test
+    fun `findStrings WHEN trims on plurals`() {
+        val stringXml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <resources>
+            <plurals name="plural_test">
+                <item quantity="zero">zero</item>
+                <item quantity="one" trimIndent="true">
+                    one
+                </item>
+                <item quantity="other" trimMargin="|">
+                    |other
+                </item>
+            </plurals>
+        </resources>
+        """.trimIndent()
+        val xmlParser = AndroidResourcesXmlParser()
+        val result = xmlParser.findStrings(stringXml, KQualifiers.Undefined)
+        val item = result[0] as ResItem.Plurals
+        assertThat(item.key).isEqualTo("plural_test")
+        assertThat(item.items[0]).isEqualTo("zero")
+        assertThat(item.items[1]).isEqualTo(
+            """
+            one
+            """.trimIndent()
+        )
+        assertThat(item.items[5]).isEqualTo(
+            """
+            |other
+        """.trimMargin("|")
         )
     }
 

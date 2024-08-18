@@ -40,7 +40,7 @@ into a release product. The strings DB has `O(1)` access time, the painters/bina
 #### Strings
 
 Simply follow [Android Strings](https://developer.android.com/guide/topics/resources/string-resource) rules.
-See [limitations](https://github.com/jbruchanov/kostra?tab=readme-ov-file#limitations) for few exceptions.
+See [limitations](https://github.com/jbruchanov/kostra?tab=readme-ov-file#limitations--differences) for few exceptions.
 
 #### Plurals/Ordinals
 
@@ -433,7 +433,7 @@ Locale & DPI can be easily overridden from code. Have a look
 [kotlin example](https://github.com/jbruchanov/kostra/blob/develop/sample/appNativeConsole/src/nativeMain/kotlin/Main.kt#L63) &
 [compose example](https://github.com/jbruchanov/kostra/blob/develop/sample/shared/src/commonMain/kotlin/com/test/kostra/appsample/SampleScreen.kt#L87).
 
-## Limitations
+## Limitations / Differences
 
 #### Android resources
 
@@ -454,6 +454,42 @@ It will be just `Add` and `@string/add` as values.
 ```
 
 Similarly, having e.g. `@android:color/white` in VectorDrawable XML won't work and will crash most likely with cryptic error message.
+
+Processing of texts is slightly different, android is preprocessing strings so for example `\n` is interpreted as new-line character etc. Kostra takes the text as is in XML, which
+might be slightly annoying in same cases. Therefore, there are two extra attributes `trimMargin` and `trimIndent` which are being used in resources processor.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="text1">
+        Text1
+    </string>
+    <string name="text2" marginIndent="true">
+        Text2Row1
+        Text2Row2
+    </string>
+    <string name="text3" trimMargin="|">
+        |Text2Row1
+        |Text2Row2
+    </string>
+
+    <plurals name="plural_test">
+        <item quantity="zero">none</item>
+        <item quantity="one" trimIndent="true">
+            one
+            item
+        </item>
+        <item quantity="other" trimMargin="|">
+            |other
+            |items
+        </item>
+    </plurals>
+</resources>
+```
+
+Kostra takes the text as it's coming from XmlParser, so text for `text1` looks like this `|\n        Sample\n    |`. Due to this reason, kostra introduced `trimMargin`
+and `trimIndent` attributes which are calling kotlin variant of these methods on the string.
+
 
 #### Android Resources BestMatch
 

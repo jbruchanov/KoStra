@@ -51,6 +51,7 @@ class AndroidResourcesXmlParser(
 
                     level == 2 && androidResourcesFile && part == TagString -> {
                         val key = xmlReader.attrName()
+
                         if (key != null) {
                             val text = xmlReader.text()
                             logger.info("[$TagString]: '$key'='$text'")
@@ -152,6 +153,8 @@ class AndroidResourcesXmlParser(
     }
 
     private fun XMLStreamReader.attrName() = attr("name")
+    private fun XMLStreamReader.trimIndent() = attr("trimIndent") == "true"
+    private fun XMLStreamReader.trimMargin() = attr("trimMargin")
 
     private fun XMLStreamReader.attrQuantity() = attr("quantity")?.let { PluralCategory.of(it) }
 
@@ -159,7 +162,17 @@ class AndroidResourcesXmlParser(
         .firstOrNull { getAttributeLocalName(it) == name }
         ?.let { getAttributeValue(it) }
 
-    private fun XMLStreamReader.text() = elementText
+    private fun XMLStreamReader.text(): String {
+        val trimMargin = trimMargin()
+        val trimIndent = trimIndent()
+        return elementText.let { text ->
+            when {
+                trimMargin != null -> text.trimMargin(trimMargin)
+                trimIndent -> text.trimIndent()
+                else -> text
+            }
+        }
+    }
 
     companion object {
         private const val TagResources = "resources"
