@@ -39,8 +39,10 @@ sealed class Constraint : IConstraint {
         //copy of com.ibm.icu.text.PluralRules.RangeConstraint.isFulfilled
         override fun isFulfilled(number: IFixedDecimal): Boolean {
             var n: Double = number.getPluralOperand(operand)
-            if (integersOnly && n - n.toLong() != 0.0 ||
-                operand == Operand.j && number.getPluralOperand(Operand.v) != 0.0
+            if (integersOnly &&
+                n - n.toLong() != 0.0 ||
+                operand == Operand.j &&
+                number.getPluralOperand(Operand.v) != 0.0
             ) {
                 return !inRange
             }

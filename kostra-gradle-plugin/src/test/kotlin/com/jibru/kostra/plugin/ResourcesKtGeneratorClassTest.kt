@@ -125,7 +125,6 @@ class ResourcesKtGeneratorClassTest {
             ResItem.StringRes("item2", "item2", KQualifiers.Undefined.key),
             ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs")).key),
             ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en")).key),
-
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined.key),
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
         )
@@ -159,10 +158,8 @@ class ResourcesKtGeneratorClassTest {
             ResItem.StringRes("item1", "item1Cs", KQualifiers(locale = KLocale("cs")).key),
             ResItem.StringRes("item2", "item2En", KQualifiers(locale = KLocale("en")).key),
             ResItem.StringRes("item2", "item2EnGb", KQualifiers(locale = KLocale("en-GB")).key),
-
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers.Undefined.key),
             ResItem.Plurals("dog", ResItem.Plurals.EmptyItems, KQualifiers(locale = KLocale("cs")).key),
-
             ResItem.FileRes("image", File("x.png"), KQualifiers.Undefined.key, "painter", File("x")),
             ResItem.FileRes("sound", File("s.mp3"), KQualifiers.Undefined.key, "sound", File("x")),
         )

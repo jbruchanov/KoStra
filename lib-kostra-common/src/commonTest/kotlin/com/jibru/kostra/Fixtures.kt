@@ -81,7 +81,6 @@ object Fixtures {
                     KLocale("en-GB") to mapOf(
                         K.plural.dog to mapOf(PluralCategory.Other to "dogs-en-gb", PluralCategory.One to "dog-en-gb"),
                     ),
-
                     KLocale("cs") to mapOf(
                         K.plural.bug to mapOf(
                             PluralCategory.One to "brouk",
