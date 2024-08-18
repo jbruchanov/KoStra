@@ -23,6 +23,7 @@ sealed class ResItem : Serializable {
     val qualifiers get() = KQualifiers(qualifiersKey)
 
     val isImageFile: Boolean get() = (this as? FileRes)?.image == true
+    var origin: File? = null
 
     protected fun validateInput() {
         require(key.isNotEmpty()) { "Key is empty, $this" }
@@ -91,6 +92,7 @@ sealed class ResItem : Serializable {
 
         init {
             validateInput()
+            origin = file
         }
 
         override fun toString(): String {

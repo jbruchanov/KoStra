@@ -101,6 +101,7 @@ class KostraPlugin : Plugin<Project> {
             modulePrefix.set("")
             internalVisibility.set(false)
             interfaces.set(modulePrefix.map { it.isNotEmpty() })
+            failOnDuplicates.set(true)
             resourcesDefaults.set(
                 when {
                     target.hasComposePlugin() -> ResourcesDefaults.AllCompose

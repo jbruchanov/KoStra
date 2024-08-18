@@ -55,7 +55,7 @@ class FileResolverTest {
         addStrings("src2/strings.xml", strings = mapOf("item1" to "src2Item1", "item2" to "src2Item2"))
         buildResources()
 
-        val items = FileResolver().resolve(listOf(resourcesRoot))
+        val items = FileResolver(config = FileResolverConfig(failOnDuplicates = false)).resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
             ResItem.StringRes("item1", "src2Item1", KQualifiers.Undefined.key),
             ResItem.StringRes("item2", "src2Item2", KQualifiers.Undefined.key),
@@ -174,7 +174,7 @@ class FileResolverTest {
 
         buildResources()
 
-        val items = FileResolver().resolve(listOf(resourcesRoot))
+        val items = FileResolver(config = FileResolverConfig(failOnDuplicates = false)).resolve(listOf(resourcesRoot))
         assertThat(items).containsExactly(
             ResItem.FileRes("image", file("drawable/image.png"), KQualifiers.Undefined.key, group = "drawable", root = resourcesRoot),
             ResItem.FileRes("image", file("drawable-en/image.png"), KQualifiers(locale = KLocale("en")).key, group = "drawable", root = resourcesRoot),
@@ -210,7 +210,24 @@ class FileResolverTest {
     }
 
     @Test
-    fun `resolve WHEN string THEN distinct by latest`() {
+    fun `resolve WHEN when multiple qualifiers AND duplicated files THEN fails`() = testResources {
+        addFile("drawable/image.png")
+        addFile("drawable-en/image.png")
+        addFile("drawable-en-rGB/image.png")
+        addFile("drawable-hdpi-en-rGB/image.png")
+        addFile("drawable-hdpi-en-rUS/image.png")
+        addFile("drawable-en-rGB-xxhdpi/image.png")
+        addFile("drawable-en-rGB-q1-xxhdpi/image.png")
+        addFile("drawable-en-rGB-q1-xxhdpi-q2/image.png")
+
+        buildResources()
+
+        val resolver = FileResolver(config = FileResolverConfig(failOnDuplicates = true))
+        assertThrows<IllegalStateException> { resolver.resolve(listOf(resourcesRoot)) }
+    }
+
+    @Test
+    fun `resolve WHEN string duplicates AND failOnDuplicates = false THEN distinct by latest`() {
         val res1 = File("build/resources-test1")
         val res2 = File("build/resources-test2")
 
@@ -222,7 +239,7 @@ class FileResolverTest {
             addStrings("values/strings.xml", strings = mapOf("item1" to "src2Item1"))
         }.buildResources()
 
-        val fileResolver = FileResolver()
+        val fileResolver = FileResolver(config = FileResolverConfig(failOnDuplicates = false))
 
         assertThat(fileResolver.resolve(listOf(res1, res2))).containsExactly(
             ResItem.StringRes("item1", "src2Item1", KQualifiers.Undefined.key),
@@ -231,6 +248,24 @@ class FileResolverTest {
         assertThat(fileResolver.resolve(listOf(res2, res1))).containsExactly(
             ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined.key),
         )
+    }
+
+    @Test
+    fun `resolve WHEN string duplicates AND failOnDuplicates = true THEN distinct by latest`() {
+        val res1 = File("build/resources-test1")
+        val res2 = File("build/resources-test2")
+
+        resources(res1, autoDelete = true) {
+            addStrings("values/strings.xml", strings = mapOf("item1" to "src1Item1"))
+        }.buildResources()
+
+        resources(res2, autoDelete = true) {
+            addStrings("values/strings.xml", strings = mapOf("item1" to "src2Item1"))
+        }.buildResources()
+
+        val fileResolver = FileResolver(config = FileResolverConfig(failOnDuplicates = true))
+
+        assertThrows<IllegalStateException> { fileResolver.resolve(listOf(res1, res2)) }
     }
 
     @Test
@@ -249,7 +284,7 @@ class FileResolverTest {
             addStrings("values-en-rGB/strings.xml", strings = mapOf("item1" to "src2Item1EnGb", "item2" to "src2Item2EnGb"))
         }.buildResources()
 
-        val items = FileResolver().resolve(listOf(res2, res1))
+        val items = FileResolver(config = FileResolverConfig(failOnDuplicates = false)).resolve(listOf(res2, res1))
 
         assertThat(items).containsExactly(
             ResItem.StringRes("item1", "src1Item1", KQualifiers.Undefined.key),
@@ -449,7 +484,7 @@ class FileResolverTest {
 
         buildResources()
 
-        val items = FileResolver().resolve(resourcesRoot)
+        val items = FileResolver(config = FileResolverConfig(failOnDuplicates = false)).resolve(resourcesRoot)
 
         //looks like java does trimEnd on windows file name when creating the file
         assertThat(items).containsExactly(

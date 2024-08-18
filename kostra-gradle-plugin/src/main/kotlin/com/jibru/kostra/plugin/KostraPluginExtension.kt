@@ -18,6 +18,11 @@ abstract class KostraPluginExtension {
     abstract val autoConfig: Property<Boolean>
 
     /**
+     * enable failure during processing when duplicate keys found
+     */
+    abstract val failOnDuplicates: Property<Boolean>
+
+    /**
      * generate for all K object records also interfaces for potential resource merging via class delegation
      */
     abstract val interfaces: Property<Boolean>
@@ -79,6 +84,7 @@ abstract class KostraPluginExtension {
             imageExtensions = painterExtensions.get().toSet(),
             strictLocale = strictLocale.get(),
             modulePrefix = modulePrefix.getOrElse(""),
+            failOnDuplicates = failOnDuplicates.getOrElse(defaults.failOnDuplicates)
         )
     }
 }
