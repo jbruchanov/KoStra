@@ -193,6 +193,9 @@ class KostraPlugin : Plugin<Project> {
                     extension.resourceDirs.set(extension.resourceDirs.get() + commonMainSourceSet.resources.srcDirs)
                     //let KMP know about kostra resource dir
                     commonMainSourceSet.resources.srcDir(generateDbsTaskProvider)
+                    //looks like this is might help to fix KS-02, otherwise the task is just not properly hooked up
+                    //and the DBs are not generated
+                    commonMainSourceSet.kotlin.srcDir(generateDbsTaskProvider)
                 }
 
             /*
